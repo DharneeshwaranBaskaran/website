@@ -1,0 +1,288 @@
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-page {
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  background-color:lightgrey;
+  border-radius: 4px;
+}
+
+input {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
+}
+
+button {
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.home-page {
+  text-align: center;
+  background-color: #ffffff;
+  /* padding: 20px;  */
+  /* border: 5px 0px 5px 0px solid #ffffff; */
+  width: 100%;
+}
+
+.logout-button {
+  display: flex;
+  justify-content: flex-end;
+  border: 5px solid #ffffff;
+  background-color: rgb(202, 202, 205);
+}
+
+.male{
+  border: 5px solid #ffffff;
+  background-color: #f0f0f0;
+}
+
+.button{
+  border: 5px solid #ffffff;
+  background-color: #a39c9c;
+  text-align: right;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.img-wrapper {
+  overflow: hidden;
+}
+
+.hover-zoom img:hover {
+  transform: scale(1.25);
+}
+
+.card-button {
+  text-transform: none;
+  font-weight: 600;
+  background-color:#00a278 !important;
+}
+
+.card1 {
+  height:100%; 
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 5px solid #ffffff;
+}
+.container {
+  display: flex;
+  align-items: center; 
+}
+
+.imagemen {
+  width: 50%; 
+  margin-right: 20px; 
+}
+
+.form {
+  flex: 1; 
+}
+
+.log{ 
+  width: 100%;
+}
+
+.lob{
+  background-color: darkgrey;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lob:hover {
+  background-color: #313131;
+}
+
+#mag{
+width:250px;
+height: 250px;
+}
+
+.menext{
+  background-color: lightgrey;
+  padding: '20px';
+  border: '2px solid black';
+  width:'20%';
+  height:auto
+}
+
+.contain {
+    display: flex;
+    padding-left: 10%;
+    align-items: center; 
+    gap: 30%; 
+  }
+
+.but{
+  background-color: grey;
+  padding-left:15.38%;
+  padding-right: 15.38%;
+}
+
+.contain1 {
+  display: flex;
+ 
+  align-items: center; 
+  gap: 5%; 
+}
+
+.class-contain {
+  display: flex;
+  flex-wrap: wrap;
+  
+  justify-content: center; /* Horizontally center content */
+  align-items: center; /* Vertically center content */
+}
+
+.class {
+  border: 1px solid #ccc;
+  padding: 1%;
+  margin: 5px; 
+  width: 16%; 
+  
+}
+
+.class img {
+  max-width: 100%; 
+  height: auto; 
+}
+
+.con{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; 
+}
+
+.cart-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+.cart-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-item-name {
+  flex: 2;
+}
+
+.cart-item-count {
+  flex: 1;
+  text-align: center;
+}
+
+.cart-item-cost {
+  flex: 1;
+  text-align: right;
+}
+
+.cart-total {
+  font-size: 18px;
+  margin-top: 20px;
+  text-align: right;
+}
+
+.cart-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.cart-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color:darkgrey;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-button:hover {
+  background-color: #313131;
+}
+
+.balance-header {
+  color: #686868;
+  
+  text-align: center;
+}
+
+.balance-amount {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: rgb(67, 67, 67); 
+}
+.star-Rating {
+  display: inline-block; 
+  justify-content: center;
+  align-items: center;
+}
+
+.search-container {
+  display: flex; 
+  align-items: center;
+  justify-content: center; /* Horizontally center-align items */
+}
+.search-bar {
+  width: 200px;
+  padding: 10px 30px 10px 10px; /* Adjust padding as needed */
+  background-image: url('./images/search.png'); /* Replace with your search icon image */
+  background-repeat: no-repeat;
+  background-position: right center; /* Position the icon on the right center */
+  background-size: 20px 20px; /* Adjust the size of the icon */
+  border: 1px solid #ccc; /* Add a border to the input for clarity */
+}
+
+.rec {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 2% 10% 0% 71%; /* Set margin-left to auto for right alignment */
+  width: 25%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 4px; 
+  
+}
+.error-input {
+  border: 1px solid red;
+}
+.custom-select {
+  height: 30px;
+  width:60px;
+}
