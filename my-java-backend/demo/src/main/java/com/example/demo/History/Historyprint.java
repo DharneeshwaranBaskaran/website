@@ -41,7 +41,9 @@ public class Historyprint {
                 historyItem.setCost(resultSet.getDouble("cost"));
                 historyItem.setCount(resultSet.getInt("count"));
                 historyItem.setUsername(resultSet.getString("username")); 
-                historyItem.setState(resultSet.getBoolean("state"));
+                historyItem.setState(resultSet.getBoolean("state")); 
+                historyItem.setRating(resultSet.getDouble("rating")); 
+                historyItem.setUrl(resultSet.getString("url"));
                 historyItems.add(historyItem);
             }
 

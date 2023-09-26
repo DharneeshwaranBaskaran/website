@@ -25,12 +25,27 @@ function App() {
     setMend(false);
     setRedirectToAnotherPage(false);
   }  
+  const redirecttodraft=()=>{
+    setisCart(true);
+    setMend(true);
+    setRedirectToAnotherPage(true); 
+    setisPay(true);
+    setisHistory(true);
+  }
   const handlebacktohomefromhis =()=>{
     setisCart(false);
     setMend(false);
     setRedirectToAnotherPage(false); 
     setisPay(false);
     setisHistory(false);
+  }
+  const redirecttoadd=()=>{
+    setisBalance(true); 
+    setisHistory(true);
+    setisCart(true);
+    setMend(true);
+    setRedirectToAnotherPage(true); 
+    setisPay(true);
   }
   const backtohome =()=>{
     setisBalance(false); 
@@ -111,6 +126,13 @@ function App() {
     setRedirectToAnotherPage(false);
     setMend(false);
   }
+  const drafttodata=()=>{
+    setisBalance(false); 
+    setisHistory(false);
+  }
+  
+    
+    
   return (
     <SnackbarProvider maxSnack={3}>
      <div> 
@@ -121,7 +143,7 @@ function App() {
       <LoginPage onLogin={handleLogin} backRegister={handlebackRegister} />
       :<>
       {!redirectToAnotherPage?
-        <HomePage click={handleRedirect} homelog={homelogout}tocart={redirecttocart} reco={handleRecommendation}/>
+        <HomePage click={handleRedirect} addata={redirecttoadd} draft={redirecttodraft} homelog={homelogout}tocart={redirecttocart} reco={handleRecommendation}/>
         : <>
         {!mend?
            <Men menex={handlemenex} backhome={handlebackhome}/>
@@ -134,7 +156,7 @@ function App() {
                   <Payment full={handlebacktohomefrompay}/>
                   :<>{!isBalance?
                        <History his={handlebacktohomefromhis} histocart={HistorytoCart}/>:
-                          <Add  backpay={backtohome}  backcart={backtocart}/>}
+                          <Add  backpay={backtohome}  backcart={backtocart} dtod={drafttodata}/>}
                           </> 
                         }
                   </>

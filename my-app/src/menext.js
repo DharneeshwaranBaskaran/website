@@ -44,7 +44,10 @@ function Menext({back,cart,rechome}) {
           description: imageData.description,
           cost: imageData.cost,
           count: count,
-          username: localStorage.getItem("username"),
+          username: localStorage.getItem("username"), 
+          rating:imageData.rating,
+          url:imageData.url
+
         };
         console.log(cartItem);
         const existingCartItems = (Items) || [];

@@ -6,6 +6,7 @@ function Payment({full}) {
 let Username=localStorage.getItem('username');
 const [Balance,setBalance]=useState(0);
 const { enqueueSnackbar } = useSnackbar();
+const [id,setid]=useState();
 const handlebacktohomefrompay=()=>{
   enqueueSnackbar("Redirecting to homepage",{variant:"default"});
   full();
@@ -18,10 +19,26 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         setBalance(data);
       })
       .catch((error) => {
-        console.error('Error fetching data:', error);
+        // console.error('Error fetching data:', error);
       });
   }, [Username]);
-let balance=localStorage.getItem('Balance');
+  const drafttodatabase = async () => {
+    axios.post(`http://localhost:8080/api/transferdata/${id}`)
+          .then((response) => {
+              console.log(response.data);
+              console.log(response.status);
+              enqueueSnackbar(response.data);
+              
+          })
+          .catch((error) => {
+              console.error('Error transferring data:', error); 
+              enqueueSnackbar(error);
+          });
+          full();  
+   
+                
+  }
+
 return(
   <div style={{ 
     backgroundColor: "lightgrey", minHeight: "100vh"
@@ -30,13 +47,32 @@ return(
           <button onClick={handlebacktohomefrompay} style={{ 
                     backgroundColor: "darkgrey", }}>Back To Home</button>
   </div>
-  <div >
+  {localStorage.getItem('type') === 'buyer' && (
   <div >
       <h2 className='balance-header'>Thank you for shopping with us</h2>
       <h2 className='balance-header'>Your Balance:</h2>
-      <p className="balance-amount">${Balance}</p>
-    </div>  
+      <p className="balance-amount">${Balance}</p> 
+    </div> 
+  )}
+  {localStorage.getItem('type') === 'seller' && ( 
+    <div className="app">
+    <div className="login-page" style={{backgroundColor:"white"}}> 
+    <h2>ADD DATA TO DB</h2> 
+    <div className="con">
+    <input
+        type="Long"
+        placeholder="refnum"
+        value={id}
+        onChange={(e) => setid(e.target.value)}
+       
+    />
+    
     </div>
+   <button className="lob" onClick={drafttodatabase}>
+    ADD DATA</button> 
+    </div>
+    </div>
+  )}
   </div>
 )
 }

@@ -22,6 +22,8 @@ public class CartItem {
     private double cost;
     private int count;
     private String username; 
-    private Boolean state;
+    private Boolean state; 
+    private String url;
+    private double rating;
     // Constructors, getters, and setters
 }

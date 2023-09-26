@@ -26,7 +26,8 @@ public class Combo {
     private String url; 
     private int cost;
     private String cat;
-    private String person; 
+    private String person;  
+    private Long refnum;
     
     // // getters and setters
     // public void add(Combo combo) {

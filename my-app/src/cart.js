@@ -6,7 +6,8 @@ const { enqueueSnackbar } = useSnackbar();
  
 const [Balance,setBalance]=useState(0);
 let Username=localStorage.getItem('username');
-const [Items, setItems] = useState([]);
+const [Items, setItems] = useState([]); 
+const [Data,setData]=useState([]);
 const handlebacktohome=()=>{
   backtohome();
   enqueueSnackbar("Redirecting to homepage",{ variant:"default"});
@@ -122,19 +123,34 @@ useEffect(() => {
       console.error('Error fetching cart items:', error);
     });
 }, [Username]);
-
+let backButton=null;
+if(localStorage.getItem('type')=='buyer'){
+  backButton = (
+    <button onClick={handlehistory} style={{ 
+      backgroundColor: "darkgrey", 
+      }}>Purchase History</button>
+   );
+}
+useEffect(() => {
+  axios.get(`http://localhost:8080/api/cart/sellerview`)
+    .then((response) => {
+      setData(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching cart items:', error);
+    });
+}, [Username]);
 return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}>
     <div className="logout-button">
     <button onClick={handlebacktohome} style={{ 
                     backgroundColor: "darkgrey", 
                     }}>Back To Home</button>  
-    <button onClick={handlehistory} style={{ 
-                    backgroundColor: "darkgrey", 
-                    }}>Purchase History</button> 
+     {backButton}
     </div>
     
- 
+    {localStorage.getItem('type') === 'buyer' && (
+        <>
       <h1 className="cart-header">Cart for {Username}</h1>
       <div>
   
@@ -161,6 +177,21 @@ return (
         <button onClick={updateBalance} className="cart-button">Add Balance</button>
       </div>
     </div>
+    </>
+    )}
+    {localStorage.getItem('type') === 'seller' && (
+      <>
+    {Data.map((item, index) => (
+          <li className="cart-item" key={index}>
+            <div></div>
+            <div className="cart-item-name">{item.name}</div>
+            <div className="cart-item-count">{item.count}</div> 
+            <div className="cart-item-cost">{item.cost}</div>
+            <div className="cart-item-cost">${item.cost * item.count}</div>
+            <div></div>
+          </li>
+        ))}
+        </>)}
     </div>
   )
 }

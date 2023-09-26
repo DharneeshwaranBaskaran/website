@@ -9,16 +9,7 @@ function Men({menex,backhome}) {
   const { enqueueSnackbar } = useSnackbar();
     let num=1;
     const [selectedCategory, setSelectedCategory] = useState(''); 
-    const [cat,setcat]=useState('');
-    const [cost,setcost]=useState();
-    const [id,setid]=useState();
-    const [description,setdescription]=useState('');
-    const [rating,setrating]=useState(); 
-    const [url,seturl]=useState(''); 
-    const [topic,settopic]=useState('');
-    const [person,setperson]=useState('');
-    const [removeId, setRemoveId] = useState();
-    const [removeTopic, setRemoveTopic] = useState('');
+    
     let per="";
     let fil1="";
     let fil2="";
@@ -27,49 +18,6 @@ function Men({menex,backhome}) {
     const [data, setData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
    
-    const addData = async () => {
-                    
-      const response = await fetch('http://localhost:8080/api/adddata', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person}),
-        credentials: 'include',
-      }); 
-      
-      if (response.ok ) {
-        
-          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-          backhome();   
-          }
-      else if (response.status === 409) {
-              const errorData = await response.json();
-              enqueueSnackbar(errorData.error,{variant:"error"});
-          }    
-
-    }; 
-    const removeData = async () => {
-      const response = await fetch('http://localhost:8080/api/removedata', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: removeId, topic: removeTopic }),
-        credentials: 'include',
-      }); 
-      
-      if (response.ok ) {
-        
-          enqueueSnackbar("Data Removed Sucessfully",{variant:"success" });  
-          backhome();   
-          }
-      else if (response.status === 409) {
-              const errorData = await response.json();
-              enqueueSnackbar(errorData.error,{variant:"error" });
-          }  
-          
-    }
     const handlemenex=(id)=>{
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"");
@@ -185,100 +133,7 @@ function Men({menex,backhome}) {
         ))}
         </div> 
         <br/>
-        {localStorage.getItem('type') =="seller" && (
         
-      
-        <div className='contain'>
-        
-        <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>ADD DATA</h2> 
-                <div className="con">
-                <input
-                    type="Long"
-                    placeholder="Id"
-                    value={id}
-                    onChange={(e) => setid(e.target.value)}
-                    
-                />
-                <input
-                    type="text"
-                    placeholder="catogory"
-                    value={cat}
-                    onChange={(e) => setcat(e.target.value)}
-                   
-                />
-                
-                <input
-                    type="integer"
-                    placeholder="cost" 
-                    value={cost}
-                    onChange={(e) => setcost(e.target.value)}
-                />
-                
-                <input
-                    type="text"
-                    placeholder="Description" 
-                    value={description}
-                   
-                    onChange={(e) => setdescription(e.target.value)}
-                />
-                
-                <input
-                    type="double"
-                    placeholder="Rating"
-                    value={rating}
-                    onChange={(e) => setrating(e.target.value)}
-                   
-                />
-                <input
-                    type="text"
-                    placeholder="Topic" 
-                    value={topic}
-                    onChange={(e) => settopic(e.target.value)}
-                   
-                />
-                <input
-                    type="text"
-                    placeholder="Url"
-                    value={url}
-                    onChange={(e) => seturl(e.target.value)}
-
-                />
-                <input
-                    type="text"
-                    placeholder="person"
-                    value={person}
-                    onChange={(e) => setperson(e.target.value)}
-                   
-                />
-                </div>
-               <button className="lob" onClick={addData}>
-                Add Data</button> 
-                </div>
-                <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>Remove Data</h2> 
-                <div className="con">
-                <input
-                    type="Long"
-                    placeholder="Id"
-                    value={removeId}
-                    onChange={(e) => setRemoveId(e.target.value)}
-                   
-                />
-                <input
-                    type="text"
-                    placeholder="Topic" 
-                    value={removeTopic}
-                    onChange={(e) => setRemoveTopic(e.target.value)}
-                   
-                />
-                </div>
-               <button className="lob" onClick={removeData}>
-                Remove Data</button> 
-                </div>
-           </div> 
-           
-           )}
           
       </div>    
     )

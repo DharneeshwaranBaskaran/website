@@ -1,4 +1,4 @@
-package com.example.demo.History;
+package com.example.demo.posi;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,38 +15,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.History.HistoryItem;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cart")
 @CrossOrigin(origins = "http://localhost:3000")
-public class HistoryHome {
+public class Viewpurchase {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @GetMapping("/historyhome/{username}")
-    public ResponseEntity<List<HistoryItem>> getHistoryItemsForUsername(@PathVariable String username) {
+    @GetMapping("/sellerview")
+    public ResponseEntity<List<CartItem>> getHistoryItemsForAll() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM history WHERE username = ?";
+            String sql = "SELECT * FROM cart";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<HistoryItem> historyItems = new ArrayList<>();
-
+            List<CartItem> cartItems = new ArrayList<>();
             while (resultSet.next()) {
-                HistoryItem historyItem = new HistoryItem();
-                historyItem.setName(resultSet.getString("name"));
-                historyItem.setDescription(resultSet.getString("description"));
-                historyItem.setCost(resultSet.getDouble("cost"));
-                historyItem.setCount(resultSet.getInt("count"));
-                historyItem.setUsername(resultSet.getString("username")); 
-                historyItem.setState(resultSet.getBoolean("state"));
-                historyItem.setRating(resultSet.getDouble("rating")); 
-                historyItem.setUrl(resultSet.getString("url"));
-                historyItems.add(historyItem);
+                CartItem cartItem = new CartItem();
+                cartItem.setCost(resultSet.getDouble("cost"));
+                cartItem.setCount(resultSet.getInt("count"));
+                cartItem.setName(resultSet.getString("name"));
+                cartItem.setDescription(resultSet.getString("description"));
+                cartItem.setUsername(resultSet.getString("username"));
+                cartItem.setState(resultSet.getBoolean("state"));
+                cartItem.setRating(resultSet.getDouble("rating")); 
+                cartItem.setUrl(resultSet.getString("url"));
+                cartItems.add(cartItem);
             }
 
-            return ResponseEntity.ok(historyItems);
+            return ResponseEntity.ok(cartItems);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

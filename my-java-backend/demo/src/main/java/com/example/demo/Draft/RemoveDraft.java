@@ -1,7 +1,9 @@
-package com.example.demo.combo;
+package com.example.demo.Draft;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.combo.Comborequest;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,16 +14,16 @@ import java.util.Random;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") 
-public class RemoveData {
+public class RemoveDraft {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "GBds@28102001";
-    @PostMapping("/removedata")    
-    public ResponseEntity<String> login(@RequestBody Comborequest request) {
+    @PostMapping("/removedatadraft")    
+    public ResponseEntity<String> login(@RequestBody Draftrequest request) {
             Long id=request.getId();
             String topic = request.getTopic(); 
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                String sql = "DELETE FROM combo WHERE id= ?";
+                String sql = "DELETE FROM draft WHERE id= ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id); 
                 int rowsAffected = preparedStatement.executeUpdate();
@@ -37,4 +39,5 @@ public class RemoveData {
             }
             return null;
     }
+    
 }
