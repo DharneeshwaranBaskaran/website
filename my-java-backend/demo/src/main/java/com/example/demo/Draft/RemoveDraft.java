@@ -21,11 +21,14 @@ public class RemoveDraft {
     @PostMapping("/removedatadraft")    
     public ResponseEntity<String> login(@RequestBody Draftrequest request) {
             Long id=request.getId();
-            String topic = request.getTopic(); 
+            String topic = request.getTopic();
+            String person = request.getPerson(); 
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                String sql = "DELETE FROM draft WHERE id= ?";
+                String sql = "DELETE FROM combo WHERE id = ? AND state = ? AND person = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id); 
+                preparedStatement.setBoolean(2, false);
+                preparedStatement.setString(3, person);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Product deleted successfully: " + topic);

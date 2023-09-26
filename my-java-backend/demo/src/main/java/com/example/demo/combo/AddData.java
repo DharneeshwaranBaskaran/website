@@ -35,7 +35,7 @@ public class AddData {
                 if (checkUsernameStatement.executeQuery().next()) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum already exists.\"}");
                 }
-                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum) VALUES (?,?,?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state) VALUES (?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id);
                 preparedStatement.setString(2, topic);
@@ -46,6 +46,7 @@ public class AddData {
                 preparedStatement.setDouble(7, rating);
                 preparedStatement.setString(8, person);
                 preparedStatement.setLong(9, refnum);
+                preparedStatement.setBoolean(10, true);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     connection.commit(); // Commit the transaction

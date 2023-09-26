@@ -1,4 +1,4 @@
-package com.example.demo.History;
+package com.example.demo.combo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,8 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.History.HistoryItem;
 
 @RestController
 @RequestMapping("/api/history")
@@ -23,30 +26,30 @@ public class ViewHistory {
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
 
-    @GetMapping("/view")
-    public ResponseEntity<List<HistoryItem>> getHistoryItems() {
+    @GetMapping("/view/{username}")
+    public ResponseEntity<List<Combo>> getHistoryItems(@PathVariable String username) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM history";
+            String sql = "SELECT * FROM combo WHERE seller=?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<HistoryItem> historyItems = new ArrayList<>();
+            List<Combo> combos = new ArrayList<>();
+
             while (resultSet.next()) {
-                HistoryItem historyItem = new HistoryItem();
-                historyItem.setCost(resultSet.getDouble("cost"));
-                historyItem.setCount(resultSet.getInt("count"));
-                historyItem.setName(resultSet.getString("name"));
-                historyItem.setDescription(resultSet.getString("description"));
-                historyItem.setUsername(resultSet.getString("username"));
-                historyItem.setState(resultSet.getBoolean("state"));
-                historyItem.setRating(resultSet.getDouble("rating")); 
-                historyItem.setUrl(resultSet.getString("url"));
-                // Set other properties of HistoryItem as needed
-
-                historyItems.add(historyItem);
+                Combo combo = new Combo();
+                combo.setId(resultSet.getLong("id"));
+                combo.setTopic(resultSet.getString("topic"));
+                combo.setRating(resultSet.getDouble("rating"));
+                combo.setDescription(resultSet.getString("description"));
+                combo.setUrl(resultSet.getString("url"));
+                combo.setCost(resultSet.getInt("cost"));
+                combo.setCat(resultSet.getString("cat"));
+                combo.setPerson(resultSet.getString("person"));
+                combos.add(combo);
             }
+            return ResponseEntity.ok(combos);
 
-            return ResponseEntity.ok(historyItems);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

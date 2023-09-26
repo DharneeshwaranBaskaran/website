@@ -9,7 +9,7 @@ function History({ his,histocart}) {
     const [rating,setrating]=useState(); 
     const [url,seturl]=useState(''); 
     const [topic,settopic]=useState('');
-    const [person,setperson]=useState('');
+    const [person,setperson]=useState([]);
     const [removeId, setRemoveId] = useState();
     const [removeTopic, setRemoveTopic] = useState('');
   const [Items, setItems] = useState([]);
@@ -77,13 +77,23 @@ else{
             }    
   
       }; 
+      useEffect(() => {
+        axios.get(`http://localhost:8080/api/getperson/${Username}`)
+          .then((response) => {
+              setperson(response.data[0].person); // Extract and set the person value
+  
+          })
+          .catch((error) => {
+            console.error('Error fetching cart items:', error);
+          });
+      }, [Username]);
       const removeData = async () => {
         const response = await fetch('http://localhost:8080/api/removedata', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: removeId, topic: removeTopic }),
+          body: JSON.stringify({ id: removeId, topic: removeTopic ,person:person}),
           credentials: 'include',
         }); 
         
@@ -176,13 +186,13 @@ else{
                     onChange={(e) => seturl(e.target.value)}
 
                 />
-                <input
+                {/* <input
                     type="text"
                     placeholder="person"
                     value={person}
                     onChange={(e) => setperson(e.target.value)}
                    
-                />
+                /> */}
                 </div>
                <button className="lob" onClick={addData}>
                 Add Data</button> 
@@ -209,8 +219,8 @@ else{
                 Remove Data</button> 
                 </div>
            </div> 
-           
            )}
+           {/* {person} */}
     </div>
   );
 }

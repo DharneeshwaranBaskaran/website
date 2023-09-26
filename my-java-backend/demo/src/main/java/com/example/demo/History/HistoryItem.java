@@ -30,6 +30,6 @@ public class HistoryItem {
     private Boolean state;
     private String url;
     private double rating;
-
+    private String person;
     // Getters and setters
 }

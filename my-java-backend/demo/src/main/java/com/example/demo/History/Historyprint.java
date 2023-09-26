@@ -44,6 +44,7 @@ public class Historyprint {
                 historyItem.setState(resultSet.getBoolean("state")); 
                 historyItem.setRating(resultSet.getDouble("rating")); 
                 historyItem.setUrl(resultSet.getString("url"));
+                historyItem.setPerson(resultSet.getString("person"));
                 historyItems.add(historyItem);
             }
 

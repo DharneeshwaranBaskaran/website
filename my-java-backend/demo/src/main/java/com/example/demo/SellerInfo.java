@@ -1,30 +1,23 @@
-package com.example.demo.posi;
+package com.example.demo;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor 
-
-@Table(name = "cart")
-public class CartItem {
+public class SellerInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String description;
-    private double cost;
-    private int count;
-    private String username; 
-    private Boolean state; 
-    private String url;
-    private double rating;
+    private String username;
     private String person;
+
     // Constructors, getters, and setters
 }

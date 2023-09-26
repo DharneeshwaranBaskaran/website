@@ -26,6 +26,16 @@ function Add({backpay,backcart,dtod}) {
       backcart(); 
       enqueueSnackbar("Back to Cart",{variant:"default"});
     }
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/getperson/${Username}`)
+        .then((response) => {
+            setperson(response.data[0].person); // Extract and set the person value
+
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        });
+    }, [Username]);
     const addData = async () => {
                     
       const response = await fetch('http://localhost:8080/api/adddatadraft', {
@@ -54,7 +64,7 @@ function Add({backpay,backcart,dtod}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: removeId, topic: removeTopic }),
+        body: JSON.stringify({ id: removeId, topic: removeTopic ,person:person}),
         credentials: 'include',
       }); 
       
@@ -198,13 +208,13 @@ function Add({backpay,backcart,dtod}) {
                     onChange={(e) => seturl(e.target.value)}
 
                 />
-                <input
+                {/* <input
                     type="text"
                     placeholder="person"
                     value={person}
                     onChange={(e) => setperson(e.target.value)}
                    
-                />
+                /> */}
                 </div>
                <button className="lob" onClick={addData}>
                 Add Data</button> 
@@ -233,6 +243,7 @@ function Add({backpay,backcart,dtod}) {
            </div> 
            
            )}
+           {/* {person} */}
     </div>
   );
 }

@@ -26,4 +26,6 @@ public class Comborequest {
     private int cost;
     private String cat;
     private String person;
+    private Boolean state; 
+    private String seller;
 }

@@ -41,6 +41,7 @@ public class CartPrint {
             cartItem.setDescription(resultSet.getString("description"));
             cartItem.setUsername(resultSet.getString("username"));
             cartItem.setState(resultSet.getBoolean("state"));
+            
             cartItems.add(cartItem);
         }
         return ResponseEntity.ok(cartItems);

@@ -28,16 +28,19 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
               console.log(response.data);
               console.log(response.status);
               enqueueSnackbar(response.data);
+              full(); 
               
           })
           .catch((error) => {
-              console.error('Error transferring data:', error); 
-              enqueueSnackbar(error);
+            if (error.response){ 
+              enqueueSnackbar(error.response.data.error); 
+            }
+           else 
+              enqueueSnackbar(error.message); // Display the error message
           });
-          full();  
-   
-                
+                        
   }
+  
 
 return(
   <div style={{ 

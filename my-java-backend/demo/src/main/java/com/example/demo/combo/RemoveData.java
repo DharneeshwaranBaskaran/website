@@ -20,10 +20,12 @@ public class RemoveData {
     public ResponseEntity<String> login(@RequestBody Comborequest request) {
             Long id=request.getId();
             String topic = request.getTopic(); 
+            String person = request.getPerson();
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                String sql = "DELETE FROM combo WHERE id= ?";
+                String sql = "DELETE FROM combo WHERE id= ? AND person = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setLong(1, id); 
+                preparedStatement.setLong(1, id);
+                preparedStatement.setString(2, person); 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Product deleted successfully: " + topic);

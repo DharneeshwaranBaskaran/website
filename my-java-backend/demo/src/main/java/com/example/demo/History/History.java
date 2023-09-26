@@ -31,7 +31,7 @@ public class History {
                     ResultSet resultSet = selectStatement.executeQuery();
 
                     // Insert selected cart items into the history table
-                    String insertSql = "INSERT INTO history (name, description, cost, count, username,state,rating,url) VALUES (?,?,?,?,?,?,?,?)";
+                    String insertSql = "INSERT INTO history (name, description, cost, count, username,state,rating,url,person) VALUES (?,?,?,?,?,?,?,?,?)";
                     PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
                     while (resultSet.next()) {
@@ -42,7 +42,8 @@ public class History {
                         insertStatement.setString(5, resultSet.getString("username"));
                         insertStatement.setBoolean(6,resultSet.getBoolean("state"));
                         insertStatement.setDouble(7,resultSet.getDouble("rating"));
-                        insertStatement.setString(8, resultSet.getString("url"));
+                        insertStatement.setString(8, resultSet.getString("url")); 
+                        insertStatement.setString(9, resultSet.getString("person"));
                         insertStatement.executeUpdate();
                     }
 

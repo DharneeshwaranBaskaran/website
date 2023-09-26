@@ -46,7 +46,8 @@ function Menext({back,cart,rechome}) {
           count: count,
           username: localStorage.getItem("username"), 
           rating:imageData.rating,
-          url:imageData.url
+          url:imageData.url,
+          person:imageData.person
 
         };
         console.log(cartItem);

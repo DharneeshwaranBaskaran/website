@@ -38,10 +38,11 @@ public class CartController {
         int count=cartItem.getCount(); 
         String username=cartItem.getUsername(); 
         Double rating=cartItem.getRating();
-        String url=cartItem.getUrl(); 
+        String url=cartItem.getUrl();  
+        String person=cartItem.getPerson();
         // Boolean state=true;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "INSERT INTO cart (cost, count,name,description,username,state,rating,url) VALUES (?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO cart (cost, count,name,description,username,state,rating,url,person) VALUES (?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setDouble(1,cost);
                 preparedStatement.setInt(2, count); 
@@ -51,6 +52,7 @@ public class CartController {
                 preparedStatement.setBoolean(6,true);
                 preparedStatement.setDouble(7,rating);
                 preparedStatement.setString(8, url);
+                preparedStatement.setString(9, person);
         int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Data inserted successfully.");

@@ -10,6 +10,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);
+  const [person,setPerson]=useState([]);
   const username = localStorage.getItem('username'); 
   let type=localStorage.getItem('type');
     const redirecttocart=()=>{
@@ -40,6 +41,16 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
 
     }
     useEffect(() => {
+      axios.get(`http://localhost:8080/api/getperson/${username}`)
+        .then((response) => {
+            setPerson(response.data[0].person); // Extract and set the person value
+
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        });
+    }, [username]);
+    useEffect(() => {
       axios.get(`http://localhost:8080/api/historyhome/${username}`)
           .then((response) => {
               setItems(response.data);
@@ -48,16 +59,16 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
               console.error('Error fetching history items:', error);
           });
     }, [username]);
-    
+
     useEffect(() => {
-      axios.get(`http://localhost:8080/api/history/view`)
+      axios.get(`http://localhost:8080/api/history/view/${username}`)
         .then((response) => {
           setData(response.data);
         })
         .catch((error) => {
           console.error('Error fetching cart items:', error);
         });
-    },[]);
+    },[username]);
     const uniqueItems = Items.filter((item, index, self) =>
     index === self.findIndex((t) => t.name === item.name)
     );  
@@ -109,8 +120,9 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           <button className="but" onClick={() => handleRedirect(3)}>Kids</button>
         </div>
         {uniqueItems.length > 0 && (
+          <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
-          
+         
          {(uniqueItems).map(item => (
          <div key={item.id} className='class'>
          <Card >
@@ -144,7 +156,8 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
          </Card> 
          </div>
        ))}
-       </div> 
+       </div>
+       </> 
       )}
           {/* <div className="video-container">
           <ReactPlayer ref={playerRef} url={VIDEO_PATH} controls={true} /> 
@@ -157,27 +170,23 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           </center> */}
           {localStorage.getItem('type') === 'seller' && (
       <>
+         <h2>PURCHASE HISTORY:</h2>
           {Data.map((item, index) => (
           <li className="cart-item" key={index}>
             <div></div>
-            <div className="cart-item-name">{item.name}</div>
-            <div className="cart-item-count">{item.count}</div> 
+            <div className="cart-item-name">{item.topic}</div>
+            {/* <div className="cart-item-count">{item.count}</div>  */}
             <div className="cart-item-cost">{item.cost}</div>
-            <div className="cart-item-cost">${item.cost * item.count}</div>
+            {/* <div className="cart-item-cost">${item.cost * item.count}</div> */}
             <div></div>
           </li>
         ))}
         </>
           )}
         </div>
+         {/* {person} */}
+        
       </div>
     );
   } 
   export default HomePage;
-   {/* {uniqueItems.map((item, index) => ( 
-              // <li className="cart-item" key={index}>
-              //   <div className="cart-item-name">{item.name}</div>
-              //   <button className="lob" onClick={() =>handleRecommendation(item.name)}>View</button>
-              // </li>
-              
-            {/* ))} */}

@@ -5,6 +5,7 @@ function Cart({backtohome,pay,history,balance}) {
 const { enqueueSnackbar } = useSnackbar();
  
 const [Balance,setBalance]=useState(0);
+const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
 const [Data,setData]=useState([]);
@@ -132,9 +133,19 @@ if(localStorage.getItem('type')=='buyer'){
    );
 }
 useEffect(() => {
-  axios.get(`http://localhost:8080/api/cart/sellerview`)
+  axios.get(`http://localhost:8080/api/cart/sellerview/${person}`)
     .then((response) => {
       setData(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching cart items:', error);
+    });
+}, [person]);
+useEffect(() => {
+  axios.get(`http://localhost:8080/api/getperson/${Username}`)
+    .then((response) => {
+        setperson(response.data[0].person); // Extract and set the person value
+
     })
     .catch((error) => {
       console.error('Error fetching cart items:', error);
@@ -192,6 +203,7 @@ return (
           </li>
         ))}
         </>)}
+        {/* {person} */}
     </div>
   )
 }

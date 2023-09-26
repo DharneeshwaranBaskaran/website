@@ -31,14 +31,14 @@ public class AddDraft {
             String person=request.getPerson(); 
             Long refnum=id;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String checkIdQuery = "SELECT * FROM draft WHERE id = ?";
+            String checkIdQuery = "SELECT * FROM combo WHERE id = ?";
             PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
             checkIdStatement.setLong(1, id);
             if (checkIdStatement.executeQuery().next()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum already exists.\"}");
             }
 
-            String sql = "INSERT INTO draft (id,topic, description,url,cat,cost,rating,person,refnum) VALUES (?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state) VALUES (?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id);
                 preparedStatement.setString(2, topic);
@@ -49,11 +49,12 @@ public class AddDraft {
                 preparedStatement.setDouble(7, rating);
                 preparedStatement.setString(8, person);
                 preparedStatement.setLong(9, refnum);
+                preparedStatement.setBoolean(10, false);
             // Set other parameters based on your DraftRequest class
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                connection.commit(); // Commit the transaction
+                // connection.commit(); // Commit the transaction
                 System.out.println("Draft data inserted successfully.");
             } else {
                 System.out.println("Draft data insertion failed.");

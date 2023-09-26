@@ -28,7 +28,8 @@ public class Combo {
     private String cat;
     private String person;  
     private Long refnum;
-    
+    private Boolean state; 
+    private String seller;
     // // getters and setters
     // public void add(Combo combo) {
     // }
