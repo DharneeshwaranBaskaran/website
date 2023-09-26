@@ -48,6 +48,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
               console.error('Error fetching history items:', error);
           });
     }, [username]);
+    
     useEffect(() => {
       axios.get(`http://localhost:8080/api/history/view`)
         .then((response) => {
