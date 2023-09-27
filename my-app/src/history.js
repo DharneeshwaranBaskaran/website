@@ -49,7 +49,7 @@ else{
     let backButton = null;
           if (type=="buyer") { 
             backButton = (<div className="logout-button">
-            <button style={{ backgroundColor: "darkgrey" }} 
+            <button  
             onClick={handleHistoryClear}>
               Clear History</button>
             </div>
@@ -62,7 +62,7 @@ else{
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person}),
+          body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
           credentials: 'include',
         }); 
         
@@ -77,23 +77,14 @@ else{
             }    
   
       }; 
-      useEffect(() => {
-        axios.get(`http://localhost:8080/api/getperson/${Username}`)
-          .then((response) => {
-              setperson(response.data[0].person); // Extract and set the person value
-  
-          })
-          .catch((error) => {
-            console.error('Error fetching cart items:', error);
-          });
-      }, [Username]);
+      
       const removeData = async () => {
         const response = await fetch('http://localhost:8080/api/removedata', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: removeId, topic: removeTopic ,person:person}),
+          body: JSON.stringify({ id: removeId, topic: removeTopic ,seller:Username}),
           credentials: 'include',
         }); 
         
@@ -111,21 +102,32 @@ else{
   return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
       <div className="logout-button">
-        <button onClick={handlebacktohomefromhis} style={{ backgroundColor: "darkgrey" }}>
+        <button onClick={handlebacktohomefromhis} >
           Back To Home
         </button>
       </div>
-      <ul>
-        {Items.map((item, index) => (
-          <li className="cart-item" key={index}>
-            <div className="cart-item-name">{item.name}</div>
-            <div className="cart-item-count">{item.count}</div> 
-            <div className="cart-item-cost">{item.cost}</div>
-            <div className="cart-item-cost">${item.cost * item.count}</div>
-            
-          </li>
-        ))}
-      </ul> 
+      <table className="purchase-history-table">
+      {localStorage.getItem('type') =="buyer" && (
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Count</th>
+            <th>Cost</th>
+            <th>Total Cost</th>
+          </tr>
+        </thead> 
+      )}
+        <tbody>
+          {Items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>{item.count}</td>
+              <td>${item.cost}</td>
+              <td>${item.cost * item.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {backButton}
       {localStorage.getItem('type') =="seller" && (
         
@@ -186,13 +188,13 @@ else{
                     onChange={(e) => seturl(e.target.value)}
 
                 />
-                {/* <input
+                <input
                     type="text"
                     placeholder="person"
                     value={person}
                     onChange={(e) => setperson(e.target.value)}
                    
-                /> */}
+                />
                 </div>
                <button className="lob" onClick={addData}>
                 Add Data</button> 
@@ -220,7 +222,7 @@ else{
                 </div>
            </div> 
            )}
-           {/* {person} */}
+          
     </div>
   );
 }

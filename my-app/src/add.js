@@ -26,16 +26,7 @@ function Add({backpay,backcart,dtod}) {
       backcart(); 
       enqueueSnackbar("Back to Cart",{variant:"default"});
     }
-    useEffect(() => {
-      axios.get(`http://localhost:8080/api/getperson/${Username}`)
-        .then((response) => {
-            setperson(response.data[0].person); // Extract and set the person value
-
-        })
-        .catch((error) => {
-          console.error('Error fetching cart items:', error);
-        });
-    }, [Username]);
+    
     const addData = async () => {
                     
       const response = await fetch('http://localhost:8080/api/adddatadraft', {
@@ -43,7 +34,7 @@ function Add({backpay,backcart,dtod}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person}),
+        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
         credentials: 'include',
       }); 
       
@@ -64,7 +55,7 @@ function Add({backpay,backcart,dtod}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: removeId, topic: removeTopic ,person:person}),
+        body: JSON.stringify({ id: removeId, topic: removeTopic ,seller:Username}),
         credentials: 'include',
       }); 
       
@@ -82,9 +73,7 @@ function Add({backpay,backcart,dtod}) {
     let drafttodb=null;
     if (localStorage.getItem('type')=="seller") { 
       drafttodb = (
-        <button onClick={drafttodata} style={{ 
-          backgroundColor: "darkgrey", 
-          }}>Draft To DB</button>
+        <button onClick={drafttodata}>Draft To DB</button>
        );
         }
         const addBalance=()=>{ 
@@ -121,20 +110,20 @@ function Add({backpay,backcart,dtod}) {
               });
           }, [Username]); 
   return (
-    <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#f0f0f0"  }}>
     <div  className="logout-button">
         {drafttodb}
-        <button onClick={backtocart} style={{ backgroundColor: "darkgrey" }}>
+        <button onClick={backtocart} >
           Cart
         </button>
-      <button onClick={backtohomebal} style={{ backgroundColor: "darkgrey" }}>
+      <button onClick={backtohomebal} >
           Back To Home
         </button>
     </div> 
     {localStorage.getItem('type') === 'buyer' && ( 
       <>
     <div className="app">
-      <div className="login-page" style={{backgroundColor:"white"}}>
+      <div className="login-page" >
       <h1>Balance: ${Balance}</h1>
       <form >
         <label>
@@ -208,13 +197,13 @@ function Add({backpay,backcart,dtod}) {
                     onChange={(e) => seturl(e.target.value)}
 
                 />
-                {/* <input
+                <input
                     type="text"
                     placeholder="person"
                     value={person}
                     onChange={(e) => setperson(e.target.value)}
                    
-                /> */}
+                />
                 </div>
                <button className="lob" onClick={addData}>
                 Add Data</button> 
@@ -243,7 +232,7 @@ function Add({backpay,backcart,dtod}) {
            </div> 
            
            )}
-           {/* {person} */}
+           
     </div>
   );
 }

@@ -127,36 +127,32 @@ useEffect(() => {
 let backButton=null;
 if(localStorage.getItem('type')=='buyer'){
   backButton = (
-    <button onClick={handlehistory} style={{ 
-      backgroundColor: "darkgrey", 
-      }}>Purchase History</button>
+    <button onClick={handlehistory} >Purchase History</button>
    );
 }
 useEffect(() => {
-  axios.get(`http://localhost:8080/api/cart/sellerview/${person}`)
+  axios.get(`http://localhost:8080/api/cart/sellerview/${Username}`)
     .then((response) => {
       setData(response.data);
     })
     .catch((error) => {
       console.error('Error fetching cart items:', error);
     });
-}, [person]);
-useEffect(() => {
-  axios.get(`http://localhost:8080/api/getperson/${Username}`)
-    .then((response) => {
-        setperson(response.data[0].person); // Extract and set the person value
-
-    })
-    .catch((error) => {
-      console.error('Error fetching cart items:', error);
-    });
 }, [Username]);
+// useEffect(() => {
+//   axios.get(`http://localhost:8080/api/getperson/${Username}`)
+//     .then((response) => {
+//         setperson(response.data[0].person); // Extract and set the person value
+
+//     })
+//     .catch((error) => {
+//       console.error('Error fetching cart items:', error);
+//     });
+// }, [Username]);
 return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}>
     <div className="logout-button">
-    <button onClick={handlebacktohome} style={{ 
-                    backgroundColor: "darkgrey", 
-                    }}>Back To Home</button>  
+    <button onClick={handlebacktohome} >Back To Home</button>  
      {backButton}
     </div>
     
@@ -164,22 +160,30 @@ return (
         <>
       <h1 className="cart-header">Cart for {Username}</h1>
       <div>
-  
-      <ul>
-        {Items.map((item, index) => (
-          <li className="cart-item" key={index}>
-            <div className="cart-item-name">{item.name}</div>
-            <div className="cart-item-count">{item.count}</div> 
-            <div className="cart-item-cost">{item.cost}</div>
-            <div className="cart-item-cost">${item.cost * item.count}</div>
-            <button className="cart-button"
+      <table className="purchase-history-table">
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Count</th>
+            <th>Cost</th>
+            <th>Total Cost</th>
+            <th> Cancel</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Items.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>{item.count}</td>
+              <td>${item.cost}</td>
+              <td>${item.cost * item.count}</td>
+              <td><button className="cart-button"
             onClick={() => removeItemFromCart(item.name)}>
-                  Cancel</button>
-          </li>
-        ))}
-      </ul> 
-      
-      
+                  Cancel</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>      
       <div className="cart-total">Total: $ {calculateTotal(Items)}</div>
       <div className="cart-item-count">Available Balance:${Balance}</div>
       <div className="cart-buttons">
@@ -192,16 +196,26 @@ return (
     )}
     {localStorage.getItem('type') === 'seller' && (
       <>
-    {Data.map((item, index) => (
-          <li className="cart-item" key={index}>
-            <div></div>
-            <div className="cart-item-name">{item.name}</div>
-            <div className="cart-item-count">{item.count}</div> 
-            <div className="cart-item-cost">{item.cost}</div>
-            <div className="cart-item-cost">${item.cost * item.count}</div>
-            <div></div>
-          </li>
-        ))}
+    <table className="purchase-history-table">
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Count</th>
+            <th>Cost</th>
+            <th>Total Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Data.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>{item.count}</td>
+              <td>${item.cost}</td>
+              <td>${item.cost * item.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>  
         </>)}
         {/* {person} */}
     </div>

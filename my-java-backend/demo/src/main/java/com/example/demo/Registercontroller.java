@@ -16,8 +16,8 @@ public class Registercontroller {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "GBds@28102001";
-    @PostMapping("/register")    
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    @PostMapping("/register/buyer")    
+    public ResponseEntity<String> loginbuyer(@RequestBody LoginRequest request) {
             String username = request.getUsername();
             String password = request.getPassword();
             String address=request.getAddress();
@@ -38,6 +38,44 @@ public class Registercontroller {
                 preparedStatement.setString(3, address); 
                 preparedStatement.setString(4, email);  
                 preparedStatement.setInt(5, balance);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("Data inserted successfully.");
+                    return ResponseEntity.ok("Registered successful");
+                    
+                } else {
+                    System.out.println("Data insertion failed.");
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Data Insertion failed\"}");
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+            }
+    }
+    @PostMapping("/register/seller")    
+    public ResponseEntity<String> loginseller(@RequestBody LoginRequest request) {
+            String username = request.getUsername();
+            String password = request.getPassword();
+            String address=request.getAddress();
+            String email=request.getEmail();  
+            // Integer balance=1000;
+            
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                String checkUsernameQuery = "SELECT * FROM seller WHERE username = ?";
+                PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
+                checkUsernameStatement.setString(1, username);
+                if (checkUsernameStatement.executeQuery().next()) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
+                }
+                String sql = "INSERT INTO seller (username, password,address,email) VALUES (?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password); 
+                preparedStatement.setString(3, address); 
+                preparedStatement.setString(4, email);  
+                
                 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {

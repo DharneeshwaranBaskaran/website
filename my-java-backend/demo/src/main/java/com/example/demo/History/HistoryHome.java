@@ -44,6 +44,7 @@ public class HistoryHome {
                 historyItem.setRating(resultSet.getDouble("rating")); 
                 historyItem.setUrl(resultSet.getString("url"));
                 historyItem.setPerson(resultSet.getString("person"));
+                historyItem.setSeller(resultSet.getString("seller"));
                 historyItems.add(historyItem);
             }
 

@@ -24,4 +24,5 @@ public class Draftrequest {
     private String cat;
     private String person;
     private String refnum;
+    private String seller;
 }

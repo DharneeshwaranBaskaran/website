@@ -29,7 +29,8 @@ public class Combo {
     private String person;  
     private Long refnum;
     private Boolean state; 
-    private String seller;
+    private String seller; 
+    private int count;
     // // getters and setters
     // public void add(Combo combo) {
     // }

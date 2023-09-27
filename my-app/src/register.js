@@ -21,7 +21,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
     const [error3, setError3] = useState('');
     const [showLoginOption, setShowLoginOption] = useState(true); 
      
-        const handleRegister = async () => {
+        const handleRegister = async (event) => {
             if (!username || !password || !conpassword || !email || !address) {
                 enqueueSnackbar("Please fill in all required fields", { variant: "error" });
                 return;
@@ -31,9 +31,8 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 setError2('Passwords do not match');
                 return;
             }
-        
-            
-                const response = await fetch('http://localhost:8080/api/register', {
+            const selectedValue = event.target.value;
+                const response = await fetch(`http://localhost:8080/api/register/${selectedValue}`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 });
                 if (response.ok) {
                     enqueueSnackbar("Registration Successful", { variant: "success" });
-                    localStorage.setItem('type', "buyer"); 
+                    
                     console.log(response); 
                     console.log(username,password);
                     onRegister();
@@ -52,20 +51,11 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                     enqueueSnackbar(errorData.error, { variant: "error" });
                 } else {
                     enqueueSnackbar("Registration Failed", { variant: "error" });
-                }
-                
+                }        
+                console.log(selectedValue)
               
         };
         
-        const redirectinglogin =(num)=>{
-            redirectlogin();
-            if(num==1){
-                localStorage.setItem('type',"buyer");
-            }
-            else{
-                localStorage.setItem('type',"seller");
-            }
-        }
         const handlegoogle=()=>{
             enqueueSnackbar("Login successfully",{ variant: "success" });
         }
@@ -121,16 +111,9 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             } 
                 setAddress(value);    
            };
-           const handleBuyerSellerSelection = (event) => {
-            const selectedValue = event.target.value;
-            if (selectedValue === "buyer") {
-              redirectinglogin(1);
-            } else if (selectedValue === "seller") {
-              redirectinglogin(2);
-            }
-            
-          };
-          
+           const redirectinglogin =()=>{
+            redirectlogin();
+        }
     return ( 
         <div style={{ 
           backgroundImage: `url(${backpic})` 
@@ -184,17 +167,20 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 />
             
                 </div>
-               <button onClick={handleRegister} className="lob">
-                Register</button> 
+               {/* <button onClick={handleRegister} className="lob">
+                Register</button>  */}
+                <select
+                onChange={handleRegister}
+                className="custom-select lob"
+                >
+                <option>Register</option>
+                <option value="buyer">As Buyer</option>
+                <option value="seller">As Seller</option>
+                </select>
                 
                     <div className="log"> 
                     <p>already have a account:</p>
-                    <select onChange={handleBuyerSellerSelection} className="custom-select lob">
-                        <option>Login</option>
-                        <option value="buyer">As Buyer</option>
-                        <option value="seller">As Seller</option>
-                    </select>
-                    
+                    <button onClick={redirectinglogin} className="lob"> Login </button>
                     <p>Sign Up with Google</p>
                     <LoginSocialGoogle
                         client_id={"812988011805-bjggbnbauqg4a4g7f9e8r2qd0rh290u6.apps.googleusercontent.com"}

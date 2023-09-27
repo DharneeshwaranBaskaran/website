@@ -44,8 +44,10 @@ public class ViewHistory {
                 combo.setDescription(resultSet.getString("description"));
                 combo.setUrl(resultSet.getString("url"));
                 combo.setCost(resultSet.getInt("cost"));
+                combo.setCount(resultSet.getInt("count"));
                 combo.setCat(resultSet.getString("cat"));
-                combo.setPerson(resultSet.getString("person"));
+                combo.setPerson(resultSet.getString("person")); 
+                
                 combos.add(combo);
             }
             return ResponseEntity.ok(combos);

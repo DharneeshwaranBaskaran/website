@@ -47,7 +47,8 @@ function Menext({back,cart,rechome}) {
           username: localStorage.getItem("username"), 
           rating:imageData.rating,
           url:imageData.url,
-          person:imageData.person
+          person:imageData.person,
+          seller:imageData.seller
 
         };
         console.log(cartItem);
@@ -161,16 +162,12 @@ function Menext({back,cart,rechome}) {
           let backButton = null;
           if (state !== "true") { 
             backButton = (
-              <button onClick={handleback} style={{
-                backgroundColor: "darkgrey",
-              }}>Back</button>
+              <button onClick={handleback}>Back</button>
             );
           }
           else{
             backButton = (
-              <button onClick={handlebackfromrec} style={{
-                backgroundColor: "darkgrey",
-              }}>Back To Home</button>
+              <button onClick={handlebackfromrec} >Back To Home</button>
             );
           }
           let cartButton = null; 
@@ -178,9 +175,7 @@ function Menext({back,cart,rechome}) {
           let countButton=null;
       if (type=="buyer") { 
         cartButton = (
-          <button onClick={viewcart} style={{ 
-            backgroundColor: "darkgrey", 
-            }}>View Cart</button>
+          <button onClick={viewcart} >View Cart</button>
          );
          addButton=(<button type="submit" 
          className="lob"onClick={handlecart} 
@@ -194,7 +189,7 @@ function Menext({back,cart,rechome}) {
          </div>)
       }  
     return (
-      <div>
+      <div style={{ backgroundColor:"#f0f0f0", minHeight: "100vh"}}>
         
         <div className="logout-button"> 
         {cartButton}

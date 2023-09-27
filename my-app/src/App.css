@@ -36,11 +36,33 @@ button {
   width: 100%;
 }
 
-.logout-button {
+/* .logout-button {
   display: flex;
   justify-content: flex-end;
   border: 5px solid #ffffff;
   background-color: rgb(202, 202, 205);
+} */
+/* Start.css */
+/* Start.css */
+.logout-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px; /* Add some padding to the button container */
+}
+
+.logout-button button {
+  background-color: #868686; /* Change button background color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 5px; /* Add border radius for rounded corners */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+.logout-button button:hover {
+  background-color: #4a4a4a; /* Change button background color on hover */
 }
 
 .male{
@@ -132,10 +154,28 @@ height: 250px;
     gap: 30%; 
   }
 
-.but{
+/* .but{
   background-color: grey;
   padding-left:15.38%;
   padding-right: 15.38%;
+} */
+.but {
+ background-color: #868686; /* Change button background color */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; /* Add rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+  margin: 0px 50px;
+  /* Adjust padding for responsiveness */
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+  }
+}
+
+.but:hover {
+  background-color: #4a4a4a; /* Change button background color on hover */
 }
 
 .contain1 {
@@ -194,20 +234,6 @@ height: 250px;
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
-}
-
-.cart-item-name {
-  flex: 2;
-}
-
-.cart-item-count {
-  flex: 1;
-  text-align: center;
-}
-
-.cart-item-cost {
-  flex: 1;
-  text-align: right;
 }
 
 .cart-total {
@@ -285,4 +311,22 @@ height: 250px;
 .custom-select {
   height: 30px;
   width:60px;
+}
+.purchase-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.purchase-history-table th, .purchase-history-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.purchase-history-table th {
+  background-color: #f2f2f2;
+}
+
+.purchase-history-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
 }

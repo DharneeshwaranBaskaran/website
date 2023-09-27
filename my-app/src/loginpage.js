@@ -10,19 +10,15 @@ function LoginPage({ onLogin,backRegister }) {
     const { enqueueSnackbar } = useSnackbar();
     let link="";
     const user = localStorage.getItem('type'); 
-    if(user==="buyer"){
-      link="http://localhost:8080/api/login";
-    }
-    else{
-      link="http://localhost:8080/api/seller";
-    }
-    const handleLogin = async () => { 
+    
+    const handleLogin = async (event) => { 
        if(password==""){
         setError1("*Enter Password");
         setError2('');
        }
+       const selectedValue = event.target.value;
         try {
-          const response = await fetch(link, {
+          const response = await fetch(`http://localhost:8080/api/${selectedValue}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -32,14 +28,16 @@ function LoginPage({ onLogin,backRegister }) {
           });
 
           if (response.ok) {
-            localStorage.setItem('username', username);
+            localStorage.setItem('username', username); 
+            localStorage.setItem('type',selectedValue);
             console.log(username);
             onLogin();
             enqueueSnackbar("Login successfully",{ variant: "success" });
           }
           else{
             console.log(response); 
-            console.log(link);
+            console.log(link); 
+            enqueueSnackbar(response);
           }
           
           } catch (error) {
@@ -80,7 +78,7 @@ function LoginPage({ onLogin,backRegister }) {
         <div className="login-page">
           <h2>Login</h2> 
           <div className="con"> 
-          {user}
+          
           <input
             type="text"
             placeholder="Username"
@@ -96,9 +94,17 @@ function LoginPage({ onLogin,backRegister }) {
           />
           <div style={errorStyle}>{error1}</div>
           </div> 
-        <div className="log">
+        {/* <div className="log">
             <button onClick={handleLogin} className="lob" >Login</button> 
-        </div>
+        </div> */}
+        <select
+                onChange={handleLogin}
+                className="custom-select lob"
+                >
+                <option>Login</option>
+                <option value="buyer">As Buyer</option>
+                <option value="seller">As Seller</option>
+                </select>
         <div style={errorStyle}>{error2}</div>
         <div className="log"> 
             <p>Don't have a account:</p><button onClick={handlebackRegister} className="lob">Register</button>

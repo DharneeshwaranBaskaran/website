@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
 
-    @PostMapping("/login")
+    @PostMapping("/buyer")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         String jdbcUrl = "jdbc:mysql://localhost:3306/ecom";
         String username = "root";

@@ -83,7 +83,7 @@ function Men({menex,backhome}) {
             <MenuItem value={fil2}>{fil2}</MenuItem>
             <MenuItem value={fil3}>{fil3}</MenuItem>
           </Select>
-            <button onClick={handlebackhome} style={{ backgroundColor: "darkgrey", }}>Back</button>
+            <button onClick={handlebackhome}>Back</button>
           </div>
           
           <div className="search-container">

@@ -24,12 +24,13 @@ public class Viewpurchase {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @GetMapping("/sellerview/{person}")
-    public ResponseEntity<List<CartItem>> getHistoryItemsForAll(@PathVariable String person) {
+    @GetMapping("/sellerview/{Username}")
+    public ResponseEntity<List<CartItem>> getHistoryItemsForAll(@PathVariable String Username) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM cart where person =? ";
+            String sql = "SELECT * FROM cart where seller = ? AND state = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, person);
+            preparedStatement.setString(1, Username);
+            preparedStatement.setBoolean(2, true);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<CartItem> cartItems = new ArrayList<>();

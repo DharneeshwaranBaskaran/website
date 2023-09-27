@@ -18,7 +18,8 @@ public class seller {
     private Long id;
     private String username;  
     private String password;  
-    private String person;
+    private String email;
+    private String address;
 
     // Constructors, getters, and setters
 }

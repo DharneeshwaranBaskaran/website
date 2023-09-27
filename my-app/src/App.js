@@ -7,11 +7,12 @@ import Menext from "./menext";
 import RegisterPage from "./register";
 import Cart from "./cart";
 import Payment from "./payment";
-import { Toaster } from 'react-hot-toast';
 import { SnackbarProvider } from "notistack";  
 import Add from "./add";
 import History from "./history";
+import Start from "./start";
 function App() {
+  const [istart,setistart]=useState(false);
   const [isAuthenticated, setisAuthenticated] = useState(false);
   const [redirectToAnotherPage, setRedirectToAnotherPage] = useState(false); 
   const [mend,setMend]=useState(false);
@@ -130,12 +131,20 @@ function App() {
     setisBalance(false); 
     setisHistory(false);
   }
-  
-    
+  const handletoregister=()=>{
+    setistart(true);
+  }
+  const handletologin=()=>{
+    setistart(true); 
+    setisRegistered(true);
+  }
     
   return (
     <SnackbarProvider maxSnack={3}>
-     <div> 
+     <div>  
+      {!istart?
+      <Start toregister={handletoregister} tologin={handletologin}/>:
+      <>
       {!isRegistered?
       <RegisterPage onRegister={handleRegister} redirectlogin={handleRegister} google={handlegoogle}/>:
       <>
@@ -170,7 +179,9 @@ function App() {
        </>
        }  
        </> 
-      }      
+      }   
+      </> 
+    }   
     </div>
     </SnackbarProvider>
   );

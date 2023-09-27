@@ -28,6 +28,7 @@ public class AddData {
             Double rating=request.getRating(); 
             String person=request.getPerson(); 
             Long refnum=id;
+            String seller=request.getSeller();
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String checkUsernameQuery = "SELECT * FROM combo WHERE id = ?";
                 PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
@@ -35,7 +36,7 @@ public class AddData {
                 if (checkUsernameStatement.executeQuery().next()) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum already exists.\"}");
                 }
-                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id);
                 preparedStatement.setString(2, topic);
@@ -46,7 +47,9 @@ public class AddData {
                 preparedStatement.setDouble(7, rating);
                 preparedStatement.setString(8, person);
                 preparedStatement.setLong(9, refnum);
-                preparedStatement.setBoolean(10, true);
+                preparedStatement.setBoolean(10, true); 
+                preparedStatement.setString(11, seller);  
+                preparedStatement.setInt(12, 0);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     connection.commit(); // Commit the transaction

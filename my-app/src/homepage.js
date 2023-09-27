@@ -77,48 +77,37 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
     let draftButton = null;
       if (type=="buyer") { 
         backButton = (
-          <button onClick={redirecttocart} style={{ 
-            backgroundColor: "darkgrey", 
-            }}>View Cart</button>
+          <button onClick={redirecttocart}>View Cart</button>
          );
           }
          else{
           backButton=(
-            <button onClick={redirecttocart} style={{ 
-              backgroundColor: "darkgrey", 
-              }}>Cart Details</button>
+            <button onClick={redirecttocart}>Cart Details</button>
           );
           addButton=(
-            <button onClick={redirecttodraft} style={{ 
-              backgroundColor: "darkgrey", 
-              }}>ADD & REMOVE</button>
+            <button onClick={redirecttodraft}>ADD & REMOVE</button>
           );
           draftButton=(
-            <button onClick={redirecttoadd} style={{ 
-              backgroundColor: "darkgrey", 
-              }}>Draft</button>
+            <button onClick={redirecttoadd}>Draft</button>
           );
       }
     return (
       <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
           <div className="logout-button">
-            <button style={{ 
-                    backgroundColor: "darkgrey", 
-                    }}>{username}</button>
-            {backButton}
-            {addButton}
-            {draftButton}
-            <button onClick={logout} style={{ 
-                    backgroundColor: "darkgrey", 
-                    }}>
-              Logout
-            </button> 
-          </div>
-        <div>
+          <div>
           <button className="but" onClick={() => handleRedirect(1)} >Men</button>
           <button className="but" onClick={() => handleRedirect(2)}>Women</button>
           <button className="but" onClick={() => handleRedirect(3)}>Kids</button>
         </div>
+            <button >{username}</button>
+            {backButton}
+            {addButton}
+            {draftButton}
+            <button onClick={logout} >
+              Logout
+            </button> 
+          </div>
+        
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
@@ -159,9 +148,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
        </div>
        </> 
       )}
-          {/* <div className="video-container">
-          <ReactPlayer ref={playerRef} url={VIDEO_PATH} controls={true} /> 
-        </div> */}
+          
         <div>
           {/* <center>
             <video width="50%" height="50%" controls>
@@ -171,16 +158,27 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           {localStorage.getItem('type') === 'seller' && (
       <>
          <h2>PURCHASE HISTORY:</h2>
+         <table className="purchase-history-table">
+          <thead>
+           <tr>
+            <th>Topic</th>
+            <th>Count</th>
+            <th>Cost</th>
+            <th>Total Cost</th>
+          </tr>
+        </thead>
+        <tbody>
           {Data.map((item, index) => (
-          <li className="cart-item" key={index}>
-            <div></div>
-            <div className="cart-item-name">{item.topic}</div>
-            {/* <div className="cart-item-count">{item.count}</div>  */}
-            <div className="cart-item-cost">{item.cost}</div>
-            {/* <div className="cart-item-cost">${item.cost * item.count}</div> */}
-            <div></div>
-          </li>
-        ))}
+            <tr key={index}>
+              <td>{item.topic}</td>
+              <td>{item.count}</td>
+              <td>${item.cost}</td>
+              <td>${item.cost * item.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
         </>
           )}
         </div>

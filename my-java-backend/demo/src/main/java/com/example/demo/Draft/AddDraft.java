@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.seller;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -29,6 +31,7 @@ public class AddDraft {
             Integer cost=request.getCost();
             Double rating=request.getRating(); 
             String person=request.getPerson(); 
+            String seller=request.getSeller();
             Long refnum=id;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String checkIdQuery = "SELECT * FROM combo WHERE id = ?";
@@ -38,7 +41,7 @@ public class AddDraft {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum already exists.\"}");
             }
 
-            String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id);
                 preparedStatement.setString(2, topic);
@@ -50,6 +53,8 @@ public class AddDraft {
                 preparedStatement.setString(8, person);
                 preparedStatement.setLong(9, refnum);
                 preparedStatement.setBoolean(10, false);
+                preparedStatement.setString(11, seller); 
+                preparedStatement.setInt(12, 0);
             // Set other parameters based on your DraftRequest class
 
             int rowsAffected = preparedStatement.executeUpdate();

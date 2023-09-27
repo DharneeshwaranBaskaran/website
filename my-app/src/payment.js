@@ -47,8 +47,7 @@ return(
     backgroundColor: "lightgrey", minHeight: "100vh"
     }}>
   <div className="logout-button">
-          <button onClick={handlebacktohomefrompay} style={{ 
-                    backgroundColor: "darkgrey", }}>Back To Home</button>
+          <button onClick={handlebacktohomefrompay} >Back To Home</button>
   </div>
   {localStorage.getItem('type') === 'buyer' && (
   <div >

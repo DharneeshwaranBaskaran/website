@@ -28,9 +28,10 @@ public class comboprint {
     @GetMapping("/combo/{person}")
     public ResponseEntity<List<Combo>> getComboByPerson(@PathVariable String person) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM combo WHERE person = ?";
+            String sql = "SELECT * FROM combo WHERE person = ? AND state = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, person);
+            preparedStatement.setBoolean(2, true);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             List<Combo> combos = new ArrayList<>();

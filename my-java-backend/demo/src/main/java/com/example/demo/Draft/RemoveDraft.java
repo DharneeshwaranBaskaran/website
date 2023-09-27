@@ -22,13 +22,13 @@ public class RemoveDraft {
     public ResponseEntity<String> login(@RequestBody Draftrequest request) {
             Long id=request.getId();
             String topic = request.getTopic();
-            String person = request.getPerson(); 
+            String seller = request.getSeller(); 
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                String sql = "DELETE FROM combo WHERE id = ? AND state = ? AND person = ?";
+                String sql = "DELETE FROM combo WHERE id = ? AND state = ? AND seller = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setLong(1, id); 
                 preparedStatement.setBoolean(2, false);
-                preparedStatement.setString(3, person);
+                preparedStatement.setString(3, seller);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Product deleted successfully: " + topic);

@@ -25,6 +25,7 @@ public class CartItem {
     private Boolean state; 
     private String url;
     private double rating;
-    private String person;
+    private String person; 
+    private String seller;
     // Constructors, getters, and setters
 }
