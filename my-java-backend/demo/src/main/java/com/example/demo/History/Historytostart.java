@@ -1,5 +1,4 @@
-package com.example.demo.combo;
-
+package com.example.demo.History;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,40 +16,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/history")
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-public class ViewHistory {
+public class Historytostart {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-
-    @GetMapping("/view/{username}")
-    public ResponseEntity<List<Combo>> getHistoryItems(@PathVariable String username) {
+    @GetMapping("/start")
+    public ResponseEntity<List<HistoryItem>> getHistoryItemsForUsername() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM combo WHERE seller = ? AND state = ?";
+            String sql = "SELECT * FROM history";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setBoolean(2, true);
+        
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<Combo> combos = new ArrayList<>();
+            List<HistoryItem> historyItems = new ArrayList<>();
 
             while (resultSet.next()) {
-                Combo combo = new Combo();
-                combo.setId(resultSet.getLong("id"));
-                combo.setTopic(resultSet.getString("topic"));
-                combo.setRating(resultSet.getDouble("rating"));
-                combo.setDescription(resultSet.getString("description"));
-                combo.setUrl(resultSet.getString("url"));
-                combo.setCost(resultSet.getInt("cost"));
-                combo.setCount(resultSet.getInt("count"));
-                combo.setCat(resultSet.getString("cat"));
-                combo.setPerson(resultSet.getString("person")); 
-                
-                combos.add(combo);
+                HistoryItem historyItem = new HistoryItem();
+                historyItem.setName(resultSet.getString("name"));
+                historyItem.setDescription(resultSet.getString("description"));
+                historyItem.setCost(resultSet.getDouble("cost"));
+                historyItem.setCount(resultSet.getInt("count"));
+                historyItem.setUsername(resultSet.getString("username")); 
+                historyItem.setState(resultSet.getBoolean("state")); 
+                historyItem.setRating(resultSet.getDouble("rating")); 
+                historyItem.setUrl(resultSet.getString("url"));
+                historyItem.setPerson(resultSet.getString("person"));
+                historyItem.setSeller(resultSet.getString("seller"));
+                historyItems.add(historyItem);
             }
-            return ResponseEntity.ok(combos);
 
+            return ResponseEntity.ok(historyItems);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

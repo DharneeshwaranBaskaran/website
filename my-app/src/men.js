@@ -102,11 +102,11 @@ function Men({menex,backhome}) {
           <div key={item.id} className='class'>
           <Card >
             <CardMedia component="img" image={item.url} alt="img" />
-            <CardContent className="card-content">
+            <CardContent className="card-content" style={{ padding: '0px'}}>
               <Typography gutterBottom variant="h6">
-                <p>{item.topic}</p>
+                <p style={{textAlign:"center"}}>{item.topic}</p>
               </Typography> 
-              <div class="contain">
+              <div class="contain" style={{marginLeft: '25px'}}>
               <Typography gutterBottom fontWeight="bold">
                 <p>${item.cost}</p>
               </Typography> 

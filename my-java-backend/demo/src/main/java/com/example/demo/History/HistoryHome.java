@@ -25,9 +25,10 @@ public class HistoryHome {
     @GetMapping("/historyhome/{username}")
     public ResponseEntity<List<HistoryItem>> getHistoryItemsForUsername(@PathVariable String username) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM history WHERE username = ?";
+            String sql = "SELECT * FROM history WHERE username = ? AND state = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
+            preparedStatement.setBoolean(2, true);
             
             ResultSet resultSet = preparedStatement.executeQuery();
 

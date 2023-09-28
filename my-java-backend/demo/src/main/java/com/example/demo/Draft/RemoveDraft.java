@@ -21,7 +21,7 @@ public class RemoveDraft {
     @PostMapping("/removedatadraft")    
     public ResponseEntity<String> login(@RequestBody Draftrequest request) {
             Long id=request.getId();
-            String topic = request.getTopic();
+            
             String seller = request.getSeller(); 
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String sql = "DELETE FROM combo WHERE id = ? AND state = ? AND seller = ?";
@@ -31,11 +31,11 @@ public class RemoveDraft {
                 preparedStatement.setString(3, seller);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Product deleted successfully: " + topic);
-                    return ResponseEntity.ok("Product deleted successfully: " + topic);
+                    System.out.println("Product deleted successfully: " + id);
+                    return ResponseEntity.ok("Product deleted successfully: " + id);
                 } else {
-                    System.out.println("No product found with name: " + topic);
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum with topic not found.\"}");
+                    System.out.println("No product found with name: " + id);
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum not found.\"}");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

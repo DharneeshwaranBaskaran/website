@@ -16,7 +16,7 @@ function LoginPage({ onLogin,backRegister }) {
         setError1("*Enter Password");
         setError2('');
        }
-       const selectedValue = event.target.value;
+       const selectedValue = localStorage.getItem('type');
         try {
           const response = await fetch(`http://localhost:8080/api/${selectedValue}`, {
             method: 'POST',
@@ -28,8 +28,7 @@ function LoginPage({ onLogin,backRegister }) {
           });
 
           if (response.ok) {
-            localStorage.setItem('username', username); 
-            localStorage.setItem('type',selectedValue);
+            localStorage.setItem('username', username);             
             console.log(username);
             onLogin();
             enqueueSnackbar("Login successfully",{ variant: "success" });
@@ -37,7 +36,7 @@ function LoginPage({ onLogin,backRegister }) {
           else{
             console.log(response); 
             console.log(link); 
-            enqueueSnackbar(response);
+            enqueueSnackbar("Invalid Credentials");
           }
           
           } catch (error) {
@@ -94,17 +93,17 @@ function LoginPage({ onLogin,backRegister }) {
           />
           <div style={errorStyle}>{error1}</div>
           </div> 
-        {/* <div className="log">
+        <div className="log">
             <button onClick={handleLogin} className="lob" >Login</button> 
-        </div> */}
-        <select
+        </div>
+        {/* <select
                 onChange={handleLogin}
                 className="custom-select lob"
                 >
                 <option>Login</option>
                 <option value="buyer">As Buyer</option>
                 <option value="seller">As Seller</option>
-                </select>
+                </select> */}
         <div style={errorStyle}>{error2}</div>
         <div className="log"> 
             <p>Don't have a account:</p><button onClick={handlebackRegister} className="lob">Register</button>

@@ -306,7 +306,11 @@ height: 250px;
   
 }
 .error-input {
-  border: 1px solid red;
+  outline: 1px solid red;
+}
+.custom-select1 {
+  height: 30px;
+  width:75px;
 }
 .custom-select {
   height: 30px;

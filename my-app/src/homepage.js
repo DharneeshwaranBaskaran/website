@@ -37,7 +37,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
     const logout=()=>{
       localStorage.removeItem('username');
       window.location.reload()
-      localStorage.removeItem("token");
+      enqueueSnackbar("Logout Successful");
 
     }
     useEffect(() => {
@@ -116,11 +116,11 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
          <div key={item.id} className='class'>
          <Card >
            <CardMedia component="img" image={item.url} alt="img" />
-           <CardContent className="card-content">
+           <CardContent className="card-content" style={{ padding: '0px'}}>
              <Typography gutterBottom variant="h6">
-               <p>{item.name}</p>
+               <p style={{textAlign:"center"}}>{item.name}</p>
              </Typography> 
-             <div class="contain">
+             <div class="contain" style={{marginLeft: '25px'}}>
              <Typography gutterBottom fontWeight="bold">
                <p>${item.cost}</p>
              </Typography> 

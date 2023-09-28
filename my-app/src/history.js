@@ -11,7 +11,6 @@ function History({ his,histocart}) {
     const [topic,settopic]=useState('');
     const [person,setperson]=useState([]);
     const [removeId, setRemoveId] = useState();
-    const [removeTopic, setRemoveTopic] = useState('');
   const [Items, setItems] = useState([]);
   let Username=localStorage.getItem('username');
   let type=localStorage.getItem('type');
@@ -84,7 +83,7 @@ else{
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: removeId, topic: removeTopic ,seller:Username}),
+          body: JSON.stringify({ id: removeId,seller:Username}),
           credentials: 'include',
         }); 
         
@@ -209,13 +208,7 @@ else{
                     onChange={(e) => setRemoveId(e.target.value)}
                    
                 />
-                <input
-                    type="text"
-                    placeholder="Topic" 
-                    value={removeTopic}
-                    onChange={(e) => setRemoveTopic(e.target.value)}
-                   
-                />
+                {/*  */}
                 </div>
                <button className="lob" onClick={removeData}>
                 Remove Data</button> 

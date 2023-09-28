@@ -19,10 +19,12 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
     const [error1, setError1] = useState('');
     const [error2, setError2] = useState('');
     const [error3, setError3] = useState('');
-    const [showLoginOption, setShowLoginOption] = useState(true); 
-     
+    const [isClicked, setIsClicked] = useState(false);
+    const [isPassword,setIspassword]=useState(false)
+    const [isconPassword,setIsconpassword]=useState(false)
+    const [isAddress,setIsAddress]=useState(false);
         const handleRegister = async (event) => {
-            if (!username || !password || !conpassword || !email || !address) {
+            if (!username || !password || !conpassword || !email ) {
                 enqueueSnackbar("Please fill in all required fields", { variant: "error" });
                 return;
             }
@@ -31,7 +33,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 setError2('Passwords do not match');
                 return;
             }
-            const selectedValue = event.target.value;
+            const selectedValue = localStorage.getItem("type");
                 const response = await fetch(`http://localhost:8080/api/register/${selectedValue}`, {
                   method: 'POST',
                   headers: {
@@ -68,8 +70,13 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             setUsername(value);
             setValidUsername(value.length >= 6);
             if (value.length >=6) {
-                     setError('')
-                    }
+                     setError('') 
+                     setIsClicked(false);
+                }
+                else{
+                    setIsClicked(true);
+                }
+            
           };
           
           const handleChange1 = (e) => {
@@ -78,6 +85,12 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             setValidPassword(value.length >= 6);
             if (username.length <6) {
                 setError("*Username should contain a minimum of 6 characters");    
+            }
+            if(value.length>=6){
+                setIspassword(false);
+            }
+            else{
+                setIspassword(true);
             }
             setError1('');
           };
@@ -89,6 +102,12 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             if (password.length<6) {
                 setError1("*Passwords should contain a minimum of 6 characters");             
             } 
+            if(value===password){    
+                setIsconpassword(false);
+            }
+            else{
+                setIsconpassword(true);
+            }
             setError2('');
           };
           
@@ -99,6 +118,12 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             if (conpassword!=password) {
                 setError2('*Passwords do not match')
             } 
+            if(value.length>=6){    
+                setIsAddress(false);
+            }
+            else{
+                setIsAddress(true);
+            }
              setError3('')
           };
           
@@ -114,6 +139,20 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
            const redirectinglogin =()=>{
             redirectlogin();
         }
+        
+        const inputStyle = {
+            outline:isClicked ? '1px solid red' : '1px solid black',
+            
+          };
+          const inputStyle1={
+            outline:isPassword? '1px solid red' : '1px solid black',
+          }
+          const inputStyle2 = {
+            outline:isconPassword? '1px solid red' : '1px solid black',   
+          };
+          const inputStyle3 = {
+            outline:isAddress? '1px solid red' : '1px solid black',    
+          };
     return ( 
         <div style={{ 
           backgroundImage: `url(${backpic})` 
@@ -127,7 +166,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 placeholder="Username"
                 value={username}
                 onChange={handleChange}
-                className={validUsername ? "" : "error-input"}
+                style={inputStyle}
                 />
                 <div style={errorStyle}>{error}</div>
 
@@ -136,7 +175,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 placeholder="Password"
                 value={password}
                 onChange={handleChange1}
-                className={validPassword ? "" : "error-input"}
+                style={inputStyle1}
                 />
                 <div style={errorStyle}>{error1}</div>
 
@@ -145,7 +184,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 placeholder="Confirm Password"
                 value={conpassword}
                 onChange={handleChange2}
-                className={validConPassword ? "" : "error-input"}
+                style={inputStyle2}
                 />
                 <div style={errorStyle}>{error2}</div>
 
@@ -154,7 +193,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 placeholder="Email"
                 value={email}
                 onChange={handleChange3}
-                className={validEmail ? "" : "error-input"}
+                style={inputStyle3}
                 />
                 <div style={errorStyle}>{error3}</div>
 
@@ -167,17 +206,17 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 />
             
                 </div>
-               {/* <button onClick={handleRegister} className="lob">
-                Register</button>  */}
-                <select
+               <button onClick={handleRegister} className="lob">
+                Register</button> 
+                {/* <select
                 onChange={handleRegister}
-                className="custom-select lob"
+                className="custom-select1 lob"
                 >
                 <option>Register</option>
                 <option value="buyer">As Buyer</option>
                 <option value="seller">As Seller</option>
-                </select>
-                
+                </select> */}
+                {localStorage.getItem('type') === 'buyer' && (
                     <div className="log"> 
                     <p>already have a account:</p>
                     <button onClick={redirectinglogin} className="lob"> Login </button>
@@ -213,7 +252,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                             .then(data => {
                                 console.log(data.username); 
                               
-                                localStorage.setItem('type',"buyer");
+                                //localStorage.setItem('type',"buyer");
                                 google(); 
                             })
                             .catch(error => {
@@ -227,6 +266,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                     <GoogleLoginButton onClick={handlegoogle}/>
                     </LoginSocialGoogle >
                     </div>
+                )}
                 </div>
                 
             </div>
