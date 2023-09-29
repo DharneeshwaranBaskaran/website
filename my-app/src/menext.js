@@ -40,7 +40,7 @@ function Menext({back,cart,rechome}) {
     const handlecart = () => {
       if (count > 0) {
         const cartItem = {
-          name: imageData.topic,
+          topic: imageData.topic,
           description: imageData.description,
           cost: imageData.cost,
           count: count,
@@ -53,10 +53,10 @@ function Menext({back,cart,rechome}) {
         };
         console.log(cartItem);
         const existingCartItems = (Items) || [];
-        const existingIndex = existingCartItems.findIndex(item => item.name === cartItem.name);
+        const existingIndex = existingCartItems.findIndex(item => item.topic === cartItem.topic);
         if (existingIndex !== -1) { 
           enqueueSnackbar("Already in cart Incrementing The count",{ variant:"success"});
-          fetch(`http://localhost:8080/api/update/${cartItem.name}/${Username}`, {
+          fetch(`http://localhost:8080/api/update/${cartItem.topic}/${Username}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

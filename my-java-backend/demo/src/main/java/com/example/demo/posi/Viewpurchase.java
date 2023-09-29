@@ -38,7 +38,7 @@ public class Viewpurchase {
                 CartItem cartItem = new CartItem();
                 cartItem.setCost(resultSet.getDouble("cost"));
                 cartItem.setCount(resultSet.getInt("count"));
-                cartItem.setName(resultSet.getString("name"));
+                cartItem.setTopic(resultSet.getString("topic"));
                 cartItem.setDescription(resultSet.getString("description"));
                 cartItem.setUsername(resultSet.getString("username"));
                 cartItem.setState(resultSet.getBoolean("state"));

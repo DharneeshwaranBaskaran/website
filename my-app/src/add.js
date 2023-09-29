@@ -27,8 +27,26 @@ function Add({backpay,backcart,dtod}) {
       enqueueSnackbar("Back to Cart",{variant:"default"});
     }
     
-    const addData = async () => {
-                    
+    const addDatadb = async () => {                
+      const response = await fetch('http://localhost:8080/api/adddata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
+        credentials: 'include',
+      }); 
+      
+      if (response.ok ) {  
+          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+          backpay();   
+          }
+      else if (response.status === 409) {
+              const errorData = await response.json();
+              enqueueSnackbar(errorData.error,{variant:"error"});
+          }   
+    }; 
+    const addData = async () => {             
       const response = await fetch('http://localhost:8080/api/adddatadraft', {
         method: 'POST',
         headers: {
@@ -39,41 +57,21 @@ function Add({backpay,backcart,dtod}) {
       }); 
       
       if (response.ok ) {
+        enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+        backpay();
         
-          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-          backpay();   
           }
       else if (response.status === 409) {
-              const errorData = await response.json();
-              enqueueSnackbar(errorData.error,{variant:"error"});
+            const errorData = await response.json();
+            enqueueSnackbar(errorData.error,{variant:"error"});
           }    
 
     }; 
-    const removeData = async () => {
-      const response = await fetch('http://localhost:8080/api/removedatadraft', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: removeId,seller:Username}),
-        credentials: 'include',
-      }); 
-      
-      if (response.ok ) {
-        
-          enqueueSnackbar("Data Removed Sucessfully",{variant:"success" });  
-          backpay();   
-          }
-      else if (response.status === 409) {
-              const errorData = await response.json();
-              enqueueSnackbar(errorData.error,{variant:"error" });
-          }  
-          
-    }
+    
     let drafttodb=null;
     if (localStorage.getItem('type')=="seller") { 
       drafttodb = (
-        <button onClick={drafttodata}>Draft To DB</button>
+        <button onClick={drafttodata}>Launch Draft</button>
        );
         }
         const addBalance=()=>{ 
@@ -142,13 +140,13 @@ function Add({backpay,backcart,dtod}) {
     </>
     )}
     {localStorage.getItem('type') =="seller" && (
-        <div className='contain'>
+        <div className='app'>
         <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>ADD DATA TO DRAFT</h2> 
+                <h2>ADD DATA </h2> 
                 <div className="con">
                 <input
                     type="Long"
-                    placeholder="refnum"
+                    placeholder="Referance Number"
                     value={id}
                     onChange={(e) => setid(e.target.value)}
                     
@@ -205,25 +203,14 @@ function Add({backpay,backcart,dtod}) {
                    
                 />
                 </div>
-               <button className="lob" onClick={addData}>
-                Add Data</button> 
+                <button className="lob" onClick={addDatadb} style={{marginRight:"5px"}}>
+                Launch Product</button> 
+                <button className="lob" onClick={addData} style={{marginLeft:"5px"}}>
+                Add To Draft</button> 
+                
                 </div>
-                <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>REMOVE DATA FROM DRAFT</h2> 
-                <div className="con">
-                <input
-                    type="Long"
-                    placeholder="refnum"
-                    value={removeId}
-                    onChange={(e) => setRemoveId(e.target.value)}
-                   
-                />
-              
-                </div>
-               <button className="lob" onClick={removeData}>
-                Remove Data</button> 
-                </div>
-           </div> 
+                
+           </div>  
            
            )}
            

@@ -29,15 +29,15 @@ public class HistoryCartRetained {
                 selectStatement.setString(1, username); 
                 selectStatement.setBoolean(2, true);
                 ResultSet resultSet = selectStatement.executeQuery(); 
-                String insertSql = "INSERT INTO history (name, description, cost, count, username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
                 String updateComboSql = "UPDATE combo SET count = count + ? WHERE topic = ?";
                 PreparedStatement insertStatement = connection.prepareStatement(insertSql);
                 PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
 
                 while (resultSet.next()) {
-                    String itemName = resultSet.getString("name");
+                    String itemName = resultSet.getString("topic");
                     int itemCount = resultSet.getInt("count");
-                    insertStatement.setString(1, resultSet.getString("name"));
+                    insertStatement.setString(1, resultSet.getString("topic"));
                     insertStatement.setString(2, resultSet.getString("description"));
                     insertStatement.setDouble(3, resultSet.getDouble("cost"));
                     insertStatement.setInt(4, resultSet.getInt("count"));

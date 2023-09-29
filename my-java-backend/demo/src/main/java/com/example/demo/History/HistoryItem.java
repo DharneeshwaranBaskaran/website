@@ -23,6 +23,7 @@ public class HistoryItem {
     private Long id;
 
     private String name;
+    private String topic;
     private String description;
     private Double cost;
     private Integer count;

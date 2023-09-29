@@ -1,6 +1,9 @@
 import React, {useRef,useEffect, useState } from "react";
 import ReactPlayer from 'react-player'; 
 import Video from "./sam.mp4";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import CustomCard from "./customcard";
 import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
@@ -12,7 +15,9 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
   const [Data,setData]=useState([]);
   const [person,setPerson]=useState([]);
   const username = localStorage.getItem('username'); 
+  const [selectedPerson, setSelectedPerson] = useState(''); 
   let type=localStorage.getItem('type');
+  const [searchQuery, setSearchQuery] = useState('');
     const redirecttocart=()=>{
        tocart(); 
        enqueueSnackbar("Redirecting to cart",{ variant:"default"});
@@ -23,12 +28,9 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
     const redirecttoadd=()=>{
       addata();
     }
-    const handleRedirect = (id) => {
-      localStorage.setItem('myRef', id);
-      click();
-    };
+   
     const handleRecommendation = (id)=>{
-     
+      
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"true");
       reco();
@@ -70,7 +72,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
         });
     },[username]);
     const uniqueItems = Items.filter((item, index, self) =>
-    index === self.findIndex((t) => t.name === item.name)
+    index === self.findIndex((t) => t.topic === item.topic)
     );  
     let backButton = null;
     let addButton = null;
@@ -91,28 +93,129 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
             <button onClick={redirecttoadd}>Draft</button>
           );
       }
+      const [selectedCategory, setSelectedCategory] = useState(""); // Default category
+
+  const handleCategoryChange = (event) => {
+    if(event.target.value=="Men"){
+      localStorage.setItem("myRef",1);
+    }
+    else if(event.target.value=="Women"){
+      localStorage.setItem("myRef",2);
+    }
+    else{
+      localStorage.setItem("myRef",3);
+    }
+    console.log(event.target.value); 
+    
+    click();
+  };
+  
+  const [selectedAction, setSelectedAction] = useState(""); // Default action
+  const handleActionChange = (event) => {
+    // setSelectedAction(event.target.value);
+    if(event.target.value=="Back"){
+      tocart(); 
+      enqueueSnackbar("Redirecting to cart",{ variant:"default"});
+    }
+    else if(event.target.value=="Add")
+    draft();
+    else if(event.target.value=="Draft"){
+      addata();
+    }
+    else{
+      localStorage.removeItem('username');
+      window.location.reload()
+      enqueueSnackbar("Logout Successful");
+    }
+  };
+  const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
+    const filterdata=Data.filter(item => {
+      const lowerCaseTopic = item.topic.toLowerCase();
+      const lowerCaseCategory = item.person.toLowerCase();
+      const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
+      return matchesSearchQuery && matchesCategory;
+    });
+
     return (
       <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
-          <div className="logout-button">
-          <div>
-          <button className="but" onClick={() => handleRedirect(1)} >Men</button>
-          <button className="but" onClick={() => handleRedirect(2)}>Women</button>
-          <button className="but" onClick={() => handleRedirect(3)}>Kids</button>
-        </div>
-            <button >{username}</button>
-            {backButton}
+        <div className="logout-button">
+        <button >{username}</button>
+        <select value={selectedCategory} onChange={handleCategoryChange} 
+         style={{ backgroundColor: "grey", color: "white", 
+         border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
+            <option>Category</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Kids">Kids</option>
+            
+          </select>
+            
+            {localStorage.getItem('type') === 'seller' && (
+            <>
+            <select 
+            style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
+            ,marginRight:"5px",color: "white",marginLeft:"5px"}}
+            value={selectedPerson}
+            onChange={(e) => setSelectedPerson(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="kid">Kids</option>
+          </select>
+            <select
+            value={selectedAction}
+            onChange={handleActionChange}
+            style={{ backgroundColor: "grey", color: "white", border: "none",
+             padding: "5px",borderRadius:"5px",marginLeft:"5px"  }}
+          >
+            <option>Menu</option>
+            <option value="Back">Cart</option>
+            <option value="Add">Remove</option>
+            <option value="Draft">Add</option>
+            <option value="Logout">Logout</option>
+            </select>
+            </>
+            )}
+            {localStorage.getItem('type') === 'buyer' && (
+            <select
+            value={selectedAction}
+            onChange={handleActionChange}
+            style={{ backgroundColor: "grey", color: "white", border: "none",
+             padding: "5px",borderRadius:"5px",marginLeft:"5px" }}
+          >
+            <option>Menu</option>
+            <option value="Back">Cart</option>
+            <option value="Logout">Logout</option>
+            </select>
+            )}
+            {/* {backButton}
             {addButton}
             {draftButton}
             <button onClick={logout} >
               Logout
-            </button> 
+            </button>  */}
           </div>
+          {localStorage.getItem('type') === 'seller' && (
+            
+          <div className="search-container">
+          <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          className="search-bar"
+        />
+        </div>
+        )}
+
         
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
          
-         {(uniqueItems).map(item => (
+         {/* {(uniqueItems).map(item => (
          <div key={item.id} className='class'>
          <Card >
            <CardMedia component="img" image={item.url} alt="img" />
@@ -144,7 +247,15 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
            </CardActions>
          </Card> 
          </div>
-       ))}
+       ))} */}
+       {uniqueItems.map(item => (
+              <CustomCard
+                key={item.id}
+                item={item}
+                handleView={(itemName) => handleRecommendation(itemName)}
+                showButton={true}
+              />
+            ))}
        </div>
        </> 
       )}
@@ -168,7 +279,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           </tr>
         </thead>
         <tbody>
-          {Data.map((item, index) => (
+          {(filteredData&&filterdata).map((item, index) => (
             <tr key={index}>
               <td>{item.topic}</td>
               <td>{item.count}</td>

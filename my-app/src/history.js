@@ -2,16 +2,10 @@ import React, { useState,useEffect } from "react";
 import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
 function History({ his,histocart}) {
-    const [cat,setcat]=useState('');
-    const [cost,setcost]=useState();
-    const [id,setid]=useState();
-    const [description,setdescription]=useState('');
-    const [rating,setrating]=useState(); 
-    const [url,seturl]=useState(''); 
-    const [topic,settopic]=useState('');
-    const [person,setperson]=useState([]);
-    const [removeId, setRemoveId] = useState();
-  const [Items, setItems] = useState([]);
+    
+    const [Data,setData]=useState([]);
+    const [Items, setItems] = useState([]);
+    const [Draft,setDraft]= useState([]);
   let Username=localStorage.getItem('username');
   let type=localStorage.getItem('type');
   const handlebacktohomefromhis = () => {
@@ -54,50 +48,49 @@ else{
             </div>
             );
       }
-      const addData = async () => {
-                    
-        const response = await fetch('http://localhost:8080/api/adddata', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
-          credentials: 'include',
-        }); 
-        
-        if (response.ok ) {
-          
-            enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-            his();   
-            }
-        else if (response.status === 409) {
-                const errorData = await response.json();
-                enqueueSnackbar(errorData.error,{variant:"error"});
-            }    
-  
-      }; 
-      
-      const removeData = async () => {
-        const response = await fetch('http://localhost:8080/api/removedata', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: removeId,seller:Username}),
-          credentials: 'include',
-        }); 
-        
-        if (response.ok ) {
-          
-            enqueueSnackbar("Data Removed Sucessfully",{variant:"success" });  
-            his();   
-            }
-        else if (response.status === 409) {
-                const errorData = await response.json();
-                enqueueSnackbar(errorData.error,{variant:"error" });
-            }  
-            
-      }
+      useEffect(() => {
+        axios.get(`http://localhost:8080/api/history/view/${Username}`)
+          .then((response) => {
+            setData(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching cart items:', error);
+          });
+      },[Username]);
+      useEffect(() => {
+        axios.get(`http://localhost:8080/api/history/viewdraft/${Username}`)
+          .then((response) => {
+            setDraft(response.data);
+          })
+          .catch((error) => {
+            console.error('Error fetching cart items:', error);
+          });
+      },[Username]);
+      const removeItemFromCart = (topic) => {
+        axios
+            .delete(`http://localhost:8080/api/deletecombo/${topic}/${Username}`)
+            .then((response) => {
+              // const updatedCartItems = Items.filter((item) => item.topic !== topic);
+              // setData(updatedCartItems);
+              axios.get(`http://localhost:8080/api/history/view/${Username}`)
+              .then((response) => {
+                setData(response.data);
+              })
+              .catch((error) => {
+                console.error('Error fetching cart items:', error);
+              });
+              axios.get(`http://localhost:8080/api/history/viewdraft/${Username}`)
+              .then((response) => {
+                setDraft(response.data);
+              })
+              .catch((error) => {
+                console.error('Error fetching cart items:', error);
+              });
+              // localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+            })
+            .catch((error) => {
+            });
+      };
   return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
       <div className="logout-button">
@@ -119,7 +112,7 @@ else{
         <tbody>
           {Items.map((item, index) => (
             <tr key={index}>
-              <td>{item.name}</td>
+              <td>{item.topic}</td>
               <td>{item.count}</td>
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
@@ -129,93 +122,59 @@ else{
       </table>
       {backButton}
       {localStorage.getItem('type') =="seller" && (
-        
-      
-        <div className='contain'>
-        
-        <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>ADD DATA TO DB</h2> 
-                <div className="con">
-                <input
-                    type="Long"
-                    placeholder="refnum"
-                    value={id}
-                    onChange={(e) => setid(e.target.value)}
-                    
-                />
-                <input
-                    type="text"
-                    placeholder="catogory"
-                    value={cat}
-                    onChange={(e) => setcat(e.target.value)}
-                   
-                />
-                
-                <input
-                    type="integer"
-                    placeholder="cost" 
-                    value={cost}
-                    onChange={(e) => setcost(e.target.value)}
-                />
-                
-                <input
-                    type="text"
-                    placeholder="Description" 
-                    value={description}
-                   
-                    onChange={(e) => setdescription(e.target.value)}
-                />
-                
-                <input
-                    type="double"
-                    placeholder="Rating"
-                    value={rating}
-                    onChange={(e) => setrating(e.target.value)}
-                   
-                />
-                <input
-                    type="text"
-                    placeholder="Topic" 
-                    value={topic}
-                    onChange={(e) => settopic(e.target.value)}
-                   
-                />
-                <input
-                    type="text"
-                    placeholder="Url"
-                    value={url}
-                    onChange={(e) => seturl(e.target.value)}
-
-                />
-                <input
-                    type="text"
-                    placeholder="person"
-                    value={person}
-                    onChange={(e) => setperson(e.target.value)}
-                   
-                />
-                </div>
-               <button className="lob" onClick={addData}>
-                Add Data</button> 
-                </div>
-                <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>REMOVE DATA FROM DB</h2> 
-                <div className="con">
-                <input
-                    type="Long"
-                    placeholder="refnum"
-                    value={removeId}
-                    onChange={(e) => setRemoveId(e.target.value)}
-                   
-                />
-                {/*  */}
-                </div>
-               <button className="lob" onClick={removeData}>
-                Remove Data</button> 
-                </div>
-           </div> 
+        <>
+        <h2>PRODUCTS:</h2>
+        <table className="purchase-history-table">
+         <thead>
+          <tr>
+           <th>Referance Number</th>
+           <th>Topic</th>
+           <th>Cost</th>
+           <th>Remove</th>
+         </tr>
+       </thead>
+       <tbody>
+         {Data.map((item, index) => (
+           <tr key={index}>
+             <td>{item.id}</td>
+             <td>{item.topic}</td>
+             <td>${item.cost}</td>  
+             <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
+                  Remove</button></td>           
+           </tr>
+         ))}
+       </tbody>
+     </table>
+     {Draft.length > 0 && (
+        <>
+     <h2>DRAFT:</h2>
+        <table className="purchase-history-table">
+         <thead>
+          <tr>
+           <th>Referance Number</th>
+           <th>Topic</th>
+           <th>Cost</th>
+           <th>Remove</th>
+         </tr>
+       </thead>
+       
+       <tbody>
+       
+         {Draft.map((item, index) => (
+           <tr key={index}>
+             <td>{item.id}</td>
+             <td>{item.topic}</td>
+             <td>${item.cost}</td>  
+             <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
+                  Remove</button></td>           
+           </tr>
+         ))}
+       </tbody>
+     </table>
+       </>
            )}
-          
+         </>
+         )} 
     </div>
   );
 }

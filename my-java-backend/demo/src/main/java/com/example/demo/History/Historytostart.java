@@ -34,7 +34,7 @@ public class Historytostart {
 
             while (resultSet.next()) {
                 HistoryItem historyItem = new HistoryItem();
-                historyItem.setName(resultSet.getString("name"));
+                historyItem.setTopic(resultSet.getString("topic"));
                 historyItem.setDescription(resultSet.getString("description"));
                 historyItem.setCost(resultSet.getDouble("cost"));
                 historyItem.setCount(resultSet.getInt("count"));

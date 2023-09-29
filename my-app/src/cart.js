@@ -102,11 +102,11 @@ const calculateTotal = (cartItems) => {
   return total;
 };
 
-const removeItemFromCart = (name) => {
+const removeItemFromCart = (topic) => {
   axios
-      .delete(`http://localhost:8080/api/delete/${name}/${Username}`)
+      .delete(`http://localhost:8080/api/delete/${topic}/${Username}`)
       .then((response) => {
-        const updatedCartItems = Items.filter((item) => item.name !== name);
+        const updatedCartItems = Items.filter((item) => item.topic !== topic);
         setItems(updatedCartItems);
 
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
@@ -167,19 +167,19 @@ return (
             <th>Count</th>
             <th>Cost</th>
             <th>Total Cost</th>
-            <th> Cancel</th>
+            <th> Remove</th>
           </tr>
         </thead>
         <tbody>
           {Items.map((item, index) => (
             <tr key={index}>
-              <td>{item.name}</td>
+              <td>{item.topic}</td>
               <td>{item.count}</td>
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
               <td><button className="cart-button"
-            onClick={() => removeItemFromCart(item.name)}>
-                  Cancel</button></td>
+            onClick={() => removeItemFromCart(item.topic)}>
+                  Remove</button></td>
             </tr>
           ))}
         </tbody>
@@ -208,7 +208,7 @@ return (
         <tbody>
           {Data.map((item, index) => (
             <tr key={index}>
-              <td>{item.name}</td>
+              <td>{item.topic}</td>
               <td>{item.count}</td>
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>

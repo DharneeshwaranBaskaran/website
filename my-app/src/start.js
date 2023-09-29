@@ -4,9 +4,11 @@ import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import ReactPlayer from 'react-player'; 
+import CustomCard from "./customcard";
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function Start({toregister,tologin}){ 
     const [data,setData]=useState([]); 
+    
     const handletologin=(key)=>{
         tologin(); 
         if(key==2)
@@ -32,7 +34,7 @@ function Start({toregister,tologin}){
       },[]);
     const playerRef = useRef(null);
     const uniqueItems = data.filter((item, index, self) =>
-    index === self.findIndex((t) => t.name === item.name)
+    index === self.findIndex((t) => t.topic === item.topic)
     );   
     return (
         <div style={{ backgroundImage: `url(${backpic})` , minHeight: "220vh" }}> 
@@ -44,44 +46,42 @@ function Start({toregister,tologin}){
         <h2 style={{textAlign:"center"}}> MOST PURCHASED PRODUCTS: </h2>
         <div  className='class-contain' >
             {(uniqueItems).map(item => (
-         <div key={item.id} className='class'>
-         <Card >
-           <CardMedia component="img" image={item.url} alt="img" />
-           <CardContent className="card-content" style={{ padding: '0px'}}>
-             <Typography gutterBottom variant="h6">
-               <p style={{textAlign:"center"}}>{item.name}</p>
-             </Typography> 
-             <div class="contain" style={{marginLeft: '25px'}}>
-             <Typography gutterBottom fontWeight="bold">
-               <p>${item.cost}</p>
-             </Typography> 
+        //  <div key={item.id} className='class'>
+        //  <Card >
+        //    <CardMedia component="img" image={item.url} alt="img" />
+        //    <CardContent className="card-content" style={{ padding: '0px'}}>
+        //      <Typography gutterBottom variant="h6">
+        //        <p style={{textAlign:"center"}}>{item.name}</p>
+        //      </Typography> 
+        //      <div class="contain" style={{marginLeft: '25px'}}>
+        //      <Typography gutterBottom fontWeight="bold">
+        //        <p>${item.cost}</p>
+        //      </Typography> 
              
-             <Typography gutterBottom fontWeight="bold"> 
-             <div className='star-Rating'>
-             <FaStar size={15} color="black" />{item.rating}
-             </div>    
+        //      <Typography gutterBottom fontWeight="bold"> 
+        //      <div className='star-Rating'>
+        //      <FaStar size={15} color="black" />{item.rating}
+        //      </div>    
              
-             </Typography>
-             </div>
-           </CardContent>
-           {/* <CardActions className="card-actions">
-             <Button
-               variant="contained"
-               className="card-button"
-               fullWidth
-               onClick={() =>handleRecommendation(item.name)}>
-               view
-             </Button>
-           </CardActions> */}
-         </Card> 
-         </div>
+        //      </Typography>
+        //      </div>
+        //    </CardContent>
+           
+        //  </Card> 
+        //  </div>
+        <CustomCard
+          key={item.id}
+          item={item}
+          handleView={(itemName) => handletologin(itemName)}
+          showButton={false} // Don't show the button
+        />
        ))}
         <div className="video-container">
           <ReactPlayer ref={playerRef} url={VIDEO_PATH} controls={true} /> 
         </div>
         
         </div ><div style={{textAlign:"center"}}>
-        <h2>Want To Sell Your Product I Our Website: <br/>
+        <h2>Want To Sell Your Product In Our Website: <br/>
          
         <button className="lob" onClick={() => handletoregister(1)}>
                 Register</button>

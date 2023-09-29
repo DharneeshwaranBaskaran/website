@@ -56,4 +56,36 @@ public class ViewHistory {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+     @GetMapping("/viewdraft/{username}")
+    public ResponseEntity<List<Combo>> getHistorydraftItems(@PathVariable String username) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT * FROM combo WHERE seller = ? AND state = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setBoolean(2, false);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Combo> combos = new ArrayList<>();
+
+            while (resultSet.next()) {
+                Combo combo = new Combo();
+                combo.setId(resultSet.getLong("id"));
+                combo.setTopic(resultSet.getString("topic"));
+                combo.setRating(resultSet.getDouble("rating"));
+                combo.setDescription(resultSet.getString("description"));
+                combo.setUrl(resultSet.getString("url"));
+                combo.setCost(resultSet.getInt("cost"));
+                combo.setCount(resultSet.getInt("count"));
+                combo.setCat(resultSet.getString("cat"));
+                combo.setPerson(resultSet.getString("person")); 
+                
+                combos.add(combo);
+            }
+            return ResponseEntity.ok(combos);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

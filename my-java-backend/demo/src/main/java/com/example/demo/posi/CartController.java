@@ -32,7 +32,7 @@ public class CartController {
     String DB_PASSWORD = "GBds@28102001";
     @PostMapping("/add")
     public ResponseEntity<String> addItemToCart(@RequestBody CartItem cartItem) {
-        String name = cartItem.getName();
+        String topic = cartItem.getTopic();
         String description = cartItem.getDescription();
         Double cost=cartItem.getCost();
         int count=cartItem.getCount(); 
@@ -43,11 +43,11 @@ public class CartController {
         String seller=cartItem.getSeller();
         // Boolean state=true;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "INSERT INTO cart (cost, count,name,description,username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO cart (cost, count,topic,description,username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setDouble(1,cost);
                 preparedStatement.setInt(2, count); 
-                preparedStatement.setString(3, name); 
+                preparedStatement.setString(3, topic); 
                 preparedStatement.setString(4, description); 
                 preparedStatement.setString(5, username);  
                 preparedStatement.setBoolean(6,true);
