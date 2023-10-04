@@ -27,7 +27,7 @@ public class Combo {
     private int cost;
     private String cat;
     private String person;  
-    private Long refnum;
+    
     private Boolean state; 
     private String seller; 
     private int count;

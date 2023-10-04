@@ -9,7 +9,9 @@ import com.example.demo.seller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @RestController
 @RequestMapping("/api")
@@ -21,7 +23,7 @@ public class AddDraft {
 
     @PostMapping("/adddatadraft")
     public ResponseEntity<String> addDraft(@RequestBody Draftrequest request) {
-            Long id = request.getId();
+            
         
             String topic = request.getTopic();
             String description= request.getDescription();
@@ -32,18 +34,22 @@ public class AddDraft {
             Double rating=request.getRating(); 
             String person=request.getPerson(); 
             String seller=request.getSeller();
-            Long refnum=id;
+            
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String checkIdQuery = "SELECT * FROM combo WHERE id = ?";
-            PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
-            checkIdStatement.setLong(1, id);
-            if (checkIdStatement.executeQuery().next()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"refnum already exists.\"}");
+           String getLastIdQuery = "SELECT MAX(id) FROM combo";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(getLastIdQuery);
+            int lastId = 0;
+            if (resultSet.next()) {
+                lastId = resultSet.getInt(1);
             }
-
-            String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,refnum,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setLong(1, id);
+            
+            // Step 2: Increment the last ID to get the new ID
+            int newId = lastId + 1;
+            
+                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setLong(1, newId);
                 preparedStatement.setString(2, topic);
                 preparedStatement.setString(3, description); 
                 preparedStatement.setString(4, url); 
@@ -51,12 +57,10 @@ public class AddDraft {
                 preparedStatement.setInt(6, cost); 
                 preparedStatement.setDouble(7, rating);
                 preparedStatement.setString(8, person);
-                preparedStatement.setLong(9, refnum);
-                preparedStatement.setBoolean(10, false);
-                preparedStatement.setString(11, seller); 
-                preparedStatement.setInt(12, 0);
-            // Set other parameters based on your DraftRequest class
-
+                
+                preparedStatement.setBoolean(9, false); 
+                preparedStatement.setString(10, seller);  
+                preparedStatement.setInt(11, 0);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
                 // connection.commit(); // Commit the transaction

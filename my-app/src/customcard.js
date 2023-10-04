@@ -25,7 +25,7 @@ function CustomCard({ item, handleView ,showButton}) {
             </Typography>
           </div>
         </CardContent>
-        {showButton && ( // Conditionally render the button
+         
         <CardActions className="card-actions">
           <Button
             variant="contained"
@@ -35,7 +35,7 @@ function CustomCard({ item, handleView ,showButton}) {
           >View
         </Button>
         </CardActions>
-        )}
+        
       </Card>
     </div>
   );

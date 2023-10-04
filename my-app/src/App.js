@@ -26,6 +26,19 @@ function App() {
     setMend(false);
     setRedirectToAnotherPage(false);
   }  
+  const handletomenex=()=>{
+    setistart(true); 
+    setisRegistered(true);
+    setisAuthenticated(true);
+    setRedirectToAnotherPage(true);
+    setMend(true);
+  }
+  const tostart=()=>{
+    setisRegistered(false);
+    setisAuthenticated(false);
+    setRedirectToAnotherPage(false);
+    setMend(false);
+  }
   const redirecttodraft=()=>{
     setisCart(true);
     setMend(true);
@@ -143,7 +156,7 @@ function App() {
     <SnackbarProvider maxSnack={3}>
      <div>  
       {!istart?
-      <Start toregister={handletoregister} tologin={handletologin}/>:
+      <Start toregister={handletoregister} tologin={handletologin} startmen={handletomenex}/>:
       <>
       {!isRegistered?
       <RegisterPage onRegister={handleRegister} redirectlogin={handleRegister} google={handlegoogle}/>:
@@ -158,7 +171,7 @@ function App() {
            <Men menex={handlemenex} backhome={handlebackhome}/>
            :<>
            {!isCart?
-           <Menext back={handleback} cart={handlecart} rechome={handlebackfromrec}/>:<>
+           <Menext back={handleback} cart={handlecart} rechome={handlebackfromrec} star={tostart}/>:<>
             {!isPay?
             <Cart backtohome={handlebacktohome} pay={handlepayment} history={handlehistory} balance={updateBalance}/>:<>
               {!isHistory?

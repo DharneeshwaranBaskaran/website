@@ -58,7 +58,7 @@ return(
   )}
   {localStorage.getItem('type') === 'seller' && ( 
     <div className="app">
-    <div className="login-page" style={{backgroundColor:"white"}}> 
+    {/* <div className="login-page" style={{backgroundColor:"white"}}> 
     <h2>Launch Product</h2> 
     <div className="con">
     <input
@@ -72,7 +72,7 @@ return(
     </div>
    <button className="lob" onClick={drafttodatabase}>
     Launch</button> 
-    </div>
+    </div> */}
     </div>
   )}
   </div>

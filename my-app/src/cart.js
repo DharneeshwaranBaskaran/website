@@ -9,6 +9,7 @@ const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
 const [Data,setData]=useState([]);
+const [searchQuery, setSearchQuery] = useState('');
 const handlebacktohome=()=>{
   backtohome();
   enqueueSnackbar("Redirecting to homepage",{ variant:"default"});
@@ -139,16 +140,13 @@ useEffect(() => {
       console.error('Error fetching cart items:', error);
     });
 }, [Username]);
-// useEffect(() => {
-//   axios.get(`http://localhost:8080/api/getperson/${Username}`)
-//     .then((response) => {
-//         setperson(response.data[0].person); // Extract and set the person value
+const handleSearchChange = (e) => {
+  setSearchQuery(e.target.value);
+};
 
-//     })
-//     .catch((error) => {
-//       console.error('Error fetching cart items:', error);
-//     });
-// }, [Username]);
+// Filter items based on the search query
+const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
+
 return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}>
     <div className="logout-button">
@@ -159,6 +157,14 @@ return (
     {localStorage.getItem('type') === 'buyer' && (
         <>
       <h1 className="cart-header">Cart for {Username}</h1>
+      <input
+                type="text"
+                placeholder="Search Items"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="search-bar"
+                style={{marginLeft:"10px"}}
+            />
       <div>
       <table className="purchase-history-table">
         <thead>
@@ -171,7 +177,7 @@ return (
           </tr>
         </thead>
         <tbody>
-          {Items.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <tr key={index}>
               <td>{item.topic}</td>
               <td>{item.count}</td>

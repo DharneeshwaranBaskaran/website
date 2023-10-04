@@ -4,7 +4,7 @@ import { FaStar } from 'react-icons/fa';
 import ReactImageMagnify from "react-image-magnify";
 import { useSnackbar } from "notistack";
 import axios from 'axios';
-function Menext({back,cart,rechome}) {
+function Menext({back,cart,rechome,star}) {
     const [imageData, setImageData] = useState({});
     const targetImageId = localStorage.getItem('myID');
     const [Items, setItems] = useState([]);
@@ -21,7 +21,12 @@ function Menext({back,cart,rechome}) {
     const handleback=()=>{
         back();
     } 
-    
+    const tostart=()=>{
+       star();  
+       
+       localStorage.setItem('type',"buyer"); 
+       enqueueSnackbar("Register",{ variant:"default" });
+    }
     const viewcart=()=>{
       cart();
     }
@@ -160,16 +165,25 @@ function Menext({back,cart,rechome}) {
               .catch(error => console.error('Error fetching data:', error));
           }, []);
           let backButton = null;
+          let purchase= null;
           if (state !== "true") { 
+            if(localStorage.getItem('value')==""){
+              backButton=null; 
+              purchase = (
+                <button className="lob" onClick={tostart}>Purchase</button>
+              );
+            }else{
             backButton = (
               <button onClick={handleback}>Back</button>
             );
+          }
           }
           else{
             backButton = (
               <button onClick={handlebackfromrec} >Back To Home</button>
             );
           }
+          
           let cartButton = null; 
           let addButton=null; 
           let countButton=null;
@@ -178,7 +192,7 @@ function Menext({back,cart,rechome}) {
           <button onClick={viewcart} >View Cart</button>
          );
          addButton=(<button type="submit" 
-         className="lob"onClick={handlecart} 
+         className="lob" onClick={handlecart} 
          >Add To Cart</button>)
          countButton=(<div className='contain1'>
          <button onClick={decrement} style={{ 
@@ -193,11 +207,7 @@ function Menext({back,cart,rechome}) {
         
         <div className="logout-button"> 
         {cartButton}
-{/*           
-          <button onClick={viewcart} style={{ 
-                      backgroundColor: "darkgrey", }}>View Cart</button> */}
-          {/* <button onClick={handleback} style={{ 
-                    backgroundColor: "darkgrey", }}>Back</button> */}
+
                     {backButton}
         </div>   
         <br />
@@ -230,7 +240,8 @@ function Menext({back,cart,rechome}) {
             </div>
             </Box> 
             <br />
-            {addButton}
+            {addButton} 
+            {purchase}
         </Card>
         </div>
         </div>

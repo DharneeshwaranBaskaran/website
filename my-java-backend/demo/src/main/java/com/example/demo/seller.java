@@ -20,6 +20,10 @@ public class seller {
     private String password;  
     private String email;
     private String address;
+    private String comaddress;
+    private String name; 
+    private String company;
+    private Long num;
 
     // Constructors, getters, and setters
 }

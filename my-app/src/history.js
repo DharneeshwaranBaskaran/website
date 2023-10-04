@@ -6,8 +6,9 @@ function History({ his,histocart}) {
     const [Data,setData]=useState([]);
     const [Items, setItems] = useState([]);
     const [Draft,setDraft]= useState([]);
-  let Username=localStorage.getItem('username');
-  let type=localStorage.getItem('type');
+    let Username=localStorage.getItem('username');
+    let type=localStorage.getItem('type'); 
+    const [searchQuery, setSearchQuery] = useState('');
   const handlebacktohomefromhis = () => {
     his(); 
     enqueueSnackbar('Redirecting To Home Page',{variant:"default"})
@@ -91,6 +92,30 @@ else{
             .catch((error) => {
             });
       };
+      const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+      };
+
+      // Filter items based on the search query
+      const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
+      const drafttodatabase = async (id) => {
+        axios.post(`http://localhost:8080/api/transferdata/${id}`)
+              .then((response) => {
+                  console.log(response.data);
+                  console.log(response.status);
+                  enqueueSnackbar(response.data);
+                  his(); 
+                  
+              })
+              .catch((error) => {
+                if (error.response){ 
+                  enqueueSnackbar(error.response.data.error); 
+                }
+               else 
+                  enqueueSnackbar(error.message); // Display the error message
+              });
+                            
+      }
   return (
     <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
       <div className="logout-button">
@@ -98,6 +123,16 @@ else{
           Back To Home
         </button>
       </div>
+      {localStorage.getItem('type') =="buyer" && (
+      <input
+                type="text"
+                placeholder="Search Items"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="search-bar"
+                style={{marginLeft:"10px"}}
+            />
+      )}
       <table className="purchase-history-table">
       {localStorage.getItem('type') =="buyer" && (
         <thead>
@@ -110,7 +145,7 @@ else{
         </thead> 
       )}
         <tbody>
-          {Items.map((item, index) => (
+          {filteredItems.map((item, index) => (
             <tr key={index}>
               <td>{item.topic}</td>
               <td>{item.count}</td>
@@ -154,7 +189,8 @@ else{
            <th>Referance Number</th>
            <th>Topic</th>
            <th>Cost</th>
-           <th>Remove</th>
+           <th>Remove</th> 
+           <th>Launch</th>
          </tr>
        </thead>
        
@@ -166,7 +202,9 @@ else{
              <td>{item.topic}</td>
              <td>${item.cost}</td>  
              <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
-                  Remove</button></td>           
+                  Remove</button></td>     
+             <td><button className="cart-button" onClick={() => drafttodatabase(item.id)}>
+                  Launch</button></td>      
            </tr>
          ))}
        </tbody>

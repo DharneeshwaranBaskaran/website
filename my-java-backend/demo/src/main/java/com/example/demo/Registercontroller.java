@@ -55,11 +55,15 @@ public class Registercontroller {
             }
     }
     @PostMapping("/register/seller")    
-    public ResponseEntity<String> loginseller(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> loginseller(@RequestBody seller request) {
             String username = request.getUsername();
             String password = request.getPassword();
             String address=request.getAddress();
             String email=request.getEmail();  
+            String name=request.getName();
+            Long num=request.getNum();
+            String comaddress=request.getComaddress(); 
+            String company=request.getCompany();
             // Integer balance=1000;
             
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -69,13 +73,16 @@ public class Registercontroller {
                 if (checkUsernameStatement.executeQuery().next()) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
                 }
-                String sql = "INSERT INTO seller (username, password,address,email) VALUES (?,?,?,?)";
+                String sql = "INSERT INTO seller (username, password,address,email,name,num,comaddress,company) VALUES (?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password); 
                 preparedStatement.setString(3, address); 
                 preparedStatement.setString(4, email);  
-                
+                preparedStatement.setString(5, name);
+                preparedStatement.setLong(6, num);
+                preparedStatement.setString(7, comaddress);
+                preparedStatement.setString(8, company);
                 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {

@@ -6,14 +6,11 @@ function Add({backpay,backcart,dtod}) {
     const [Balance,setBalance]=useState(0);
     const [cat,setcat]=useState('');
     const [cost,setcost]=useState();
-    const [id,setid]=useState();
     const [description,setdescription]=useState('');
     const [rating,setrating]=useState(); 
     const [url,seturl]=useState(''); 
     const [topic,settopic]=useState('');
     const [person,setperson]=useState('');
-    const [removeId, setRemoveId] = useState();
-   
     let Username=localStorage.getItem('username');
     const backtohomebal=()=>{
         backpay();
@@ -33,7 +30,7 @@ function Add({backpay,backcart,dtod}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
+        body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
         credentials: 'include',
       }); 
       
@@ -52,7 +49,7 @@ function Add({backpay,backcart,dtod}) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id,cat,cost,description,rating,url,topic,person,seller:Username}),
+        body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
         credentials: 'include',
       }); 
       
@@ -68,11 +65,9 @@ function Add({backpay,backcart,dtod}) {
 
     }; 
     
-    let drafttodb=null;
+    
     if (localStorage.getItem('type')=="seller") { 
-      drafttodb = (
-        <button onClick={drafttodata}>Launch Draft</button>
-       );
+      
         }
         const addBalance=()=>{ 
           const amountToAdd = parseFloat(inputValue);
@@ -110,7 +105,7 @@ function Add({backpay,backcart,dtod}) {
   return (
     <div style={{ backgroundColor: "#f0f0f0"  }}>
     <div  className="logout-button">
-        {drafttodb}
+        
         <button onClick={backtocart} >
           Cart
         </button>
@@ -142,15 +137,15 @@ function Add({backpay,backcart,dtod}) {
     {localStorage.getItem('type') =="seller" && (
         <div className='app'>
         <div className="login-page" style={{backgroundColor:"white"}}> 
-                <h2>ADD DATA </h2> 
+                <h2>LAUNCH PRODUCT</h2> 
                 <div className="con">
-                <input
+                {/* <input
                     type="Long"
                     placeholder="Referance Number"
                     value={id}
                     onChange={(e) => setid(e.target.value)}
                     
-                />
+                /> */}
                 <input
                     type="text"
                     placeholder="catogory"

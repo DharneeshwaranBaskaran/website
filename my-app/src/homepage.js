@@ -1,10 +1,9 @@
 import React, {useRef,useEffect, useState } from "react";
 import ReactPlayer from 'react-player'; 
 import Video from "./sam.mp4";
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+
 import CustomCard from "./customcard";
-import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
+// import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -18,6 +17,9 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
   const [selectedPerson, setSelectedPerson] = useState(''); 
   let type=localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortingCriteria, setSortingCriteria] = useState("");
+  const [sortedData, setSortedData] = useState([]);
+  let count=0;
     const redirecttocart=()=>{
        tocart(); 
        enqueueSnackbar("Redirecting to cart",{ variant:"default"});
@@ -35,23 +37,18 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
       localStorage.setItem('rec',"true");
       reco();
     }
-    const playerRef = useRef(null); 
-    const logout=()=>{
-      localStorage.removeItem('username');
-      window.location.reload()
-      enqueueSnackbar("Logout Successful");
+    // const playerRef = useRef(null); 
+    
+    // useEffect(() => {
+    //   axios.get(`http://localhost:8080/api/getperson/${username}`)
+    //     .then((response) => {
+    //         setPerson(response.data[0].person); // Extract and set the person value
 
-    }
-    useEffect(() => {
-      axios.get(`http://localhost:8080/api/getperson/${username}`)
-        .then((response) => {
-            setPerson(response.data[0].person); // Extract and set the person value
-
-        })
-        .catch((error) => {
-          console.error('Error fetching cart items:', error);
-        });
-    }, [username]);
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error fetching cart items:', error);
+    //     });
+    // }, [username]);
     useEffect(() => {
       axios.get(`http://localhost:8080/api/historyhome/${username}`)
           .then((response) => {
@@ -123,11 +120,17 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
       addata();
     }
     else{
-      localStorage.removeItem('username');
+      localStorage.clear();
       window.location.reload()
       enqueueSnackbar("Logout Successful");
     }
   };
+  const handleSortingChange = (event) => {
+    setSortingCriteria(event.target.value);
+    count=count+1;
+    
+  };
+  
   const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
     const filterdata=Data.filter(item => {
       const lowerCaseTopic = item.topic.toLowerCase();
@@ -135,12 +138,29 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
       const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
       const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
       return matchesSearchQuery && matchesCategory;
-    });
-
+    }); 
+    useEffect(() => {
+      const sorted = [...(filteredData && filterdata)].sort((a, b) => {
+        if (sortingCriteria === "cost") {
+          return b.cost - a.cost;
+        } else if (sortingCriteria === "count") {
+          return b.count - a.count;
+        }
+        else if(sortingCriteria === "revenue"){
+          return (b.cost)*(b.count)-((a.cost)*(a.count));
+        }
+        else{
+        return 0; // Default to no sorting
+        }
+      });
+      setSortedData(sorted);
+    }, [filteredData, filterdata, sortingCriteria]);
+     
     return (
       <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
         <div className="logout-button">
         <button >{username}</button>
+        {localStorage.getItem('type') === 'buyer' && (
         <select value={selectedCategory} onChange={handleCategoryChange} 
          style={{ backgroundColor: "grey", color: "white", 
          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
@@ -150,20 +170,10 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
             <option value="Kids">Kids</option>
             
           </select>
-            
+        )}
             {localStorage.getItem('type') === 'seller' && (
             <>
-            <select 
-            style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
-            ,marginRight:"5px",color: "white",marginLeft:"5px"}}
-            value={selectedPerson}
-            onChange={(e) => setSelectedPerson(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="kid">Kids</option>
-          </select>
+            
             <select
             value={selectedAction}
             onChange={handleActionChange}
@@ -190,64 +200,13 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
             <option value="Logout">Logout</option>
             </select>
             )}
-            {/* {backButton}
-            {addButton}
-            {draftButton}
-            <button onClick={logout} >
-              Logout
-            </button>  */}
-          </div>
-          {localStorage.getItem('type') === 'seller' && (
             
-          <div className="search-container">
-          <input
-          type="text"
-          placeholder="Search..."
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)} 
-          className="search-bar"
-        />
-        </div>
-        )}
-
+          </div>
         
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
-         
-         {/* {(uniqueItems).map(item => (
-         <div key={item.id} className='class'>
-         <Card >
-           <CardMedia component="img" image={item.url} alt="img" />
-           <CardContent className="card-content" style={{ padding: '0px'}}>
-             <Typography gutterBottom variant="h6">
-               <p style={{textAlign:"center"}}>{item.name}</p>
-             </Typography> 
-             <div class="contain" style={{marginLeft: '25px'}}>
-             <Typography gutterBottom fontWeight="bold">
-               <p>${item.cost}</p>
-             </Typography> 
-             
-             <Typography gutterBottom fontWeight="bold"> 
-             <div className='star-Rating'>
-             <FaStar size={15} color="black" />{item.rating}
-             </div>    
-             
-             </Typography>
-             </div>
-           </CardContent>
-           <CardActions className="card-actions">
-             <Button
-               variant="contained"
-               className="card-button"
-               fullWidth
-               onClick={() =>handleRecommendation(item.name)}>
-               view
-             </Button>
-           </CardActions>
-         </Card> 
-         </div>
-       ))} */}
+                
        {uniqueItems.map(item => (
               <CustomCard
                 key={item.id}
@@ -268,18 +227,49 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           </center> */}
           {localStorage.getItem('type') === 'seller' && (
       <>
-         <h2>PURCHASE HISTORY:</h2>
+         <h2 style={{marginLeft:"10px"}}>SOLD HISTORY:</h2> 
+         <div className="search-container">
+          <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+          className="search-bar"
+        />
+        <select
+          value={sortingCriteria}
+          onChange={handleSortingChange}
+          style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
+            ,marginRight:"5px",color: "white",marginLeft:"800px"}}
+        > <option value="">Sort</option>
+          <option value="cost">By Cost</option>
+          <option value="count">By Count</option>
+          <option value="revenue">By Revenue</option>
+        </select>
+        <select 
+            style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
+            ,marginRight:"5px",color: "white",marginLeft:"10px"}}
+            value={selectedPerson}
+            onChange={(e) => setSelectedPerson(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+            <option value="kid">Kids</option>
+          </select>
+        </div>
+        
          <table className="purchase-history-table">
           <thead>
            <tr>
             <th>Topic</th>
             <th>Count</th>
             <th>Cost</th>
-            <th>Total Cost</th>
+            <th>Revenue</th>
           </tr>
         </thead>
         <tbody>
-          {(filteredData&&filterdata).map((item, index) => (
+          {(sortedData).map((item, index) => (
             <tr key={index}>
               <td>{item.topic}</td>
               <td>{item.count}</td>
@@ -293,8 +283,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
         </>
           )}
         </div>
-         {/* {person} */}
-        
+       
       </div>
     );
   } 
