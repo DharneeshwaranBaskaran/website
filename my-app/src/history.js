@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
-function History({ his,histocart}) {
+function History({ his,histocart,edit}) {
     
     const [Data,setData]=useState([]);
     const [Items, setItems] = useState([]);
@@ -71,8 +71,7 @@ else{
         axios
             .delete(`http://localhost:8080/api/deletecombo/${topic}/${Username}`)
             .then((response) => {
-              // const updatedCartItems = Items.filter((item) => item.topic !== topic);
-              // setData(updatedCartItems);
+              
               axios.get(`http://localhost:8080/api/history/view/${Username}`)
               .then((response) => {
                 setData(response.data);
@@ -95,7 +94,10 @@ else{
       const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
       };
-
+      const handleEdit=(id)=>{ 
+        localStorage.setItem('edit',id)
+        edit();
+      }
       // Filter items based on the search query
       const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
       const drafttodatabase = async (id) => {
@@ -117,7 +119,7 @@ else{
                             
       }
   return (
-    <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
       <div className="logout-button">
         <button onClick={handlebacktohomefromhis} >
           Back To Home
@@ -166,6 +168,7 @@ else{
            <th>Topic</th>
            <th>Cost</th>
            <th>Remove</th>
+           <th>Edit</th>
          </tr>
        </thead>
        <tbody>
@@ -175,7 +178,8 @@ else{
              <td>{item.topic}</td>
              <td>${item.cost}</td>  
              <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
-                  Remove</button></td>           
+                  Remove</button></td>  
+             <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>         
            </tr>
          ))}
        </tbody>

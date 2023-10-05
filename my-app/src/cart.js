@@ -148,7 +148,7 @@ const handleSearchChange = (e) => {
 const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
 return (
-    <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
     <div className="logout-button">
     <button onClick={handlebacktohome} >Back To Home</button>  
      {backButton}

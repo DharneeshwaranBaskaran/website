@@ -127,7 +127,7 @@ function Menext({back,cart,rechome,star}) {
         console.log('Form submitted with data:', formData);
     };
     const divStyle = {
-        backgroundColor: 'lightgrey',
+        backgroundColor: '#ccccff',
         padding: '20px',
         border: '2px solid black',
         width:'300px',
@@ -196,14 +196,14 @@ function Menext({back,cart,rechome,star}) {
          >Add To Cart</button>)
          countButton=(<div className='contain1'>
          <button onClick={decrement} style={{ 
-                 backgroundColor: "darkgrey", }}>-</button>
+                 backgroundColor: "#6666ff", }}>-</button>
           <h1>{count}</h1>
            <button onClick={increment} style={{ 
-                 backgroundColor: "darkgrey", }}>+</button>
+                 backgroundColor: "#6666ff", }}>+</button>
          </div>)
       }  
     return (
-      <div style={{ backgroundColor:"#f0f0f0", minHeight: "100vh"}}>
+      <div style={{ backgroundColor:"#e5e5ff", minHeight: "100vh"}}>
         
         <div className="logout-button"> 
         {cartButton}

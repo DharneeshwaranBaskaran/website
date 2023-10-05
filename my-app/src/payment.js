@@ -6,7 +6,7 @@ function Payment({full}) {
 let Username=localStorage.getItem('username');
 const [Balance,setBalance]=useState(0);
 const { enqueueSnackbar } = useSnackbar();
-const [id,setid]=useState();
+const [cost,setcost]=useState();
 const handlebacktohomefrompay=()=>{
   enqueueSnackbar("Redirecting to homepage",{variant:"default"});
   full();
@@ -23,28 +23,33 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       });
   }, [Username]);
   const drafttodatabase = async () => {
-    axios.post(`http://localhost:8080/api/transferdata/${id}`)
-          .then((response) => {
-              console.log(response.data);
-              console.log(response.status);
-              enqueueSnackbar(response.data);
-              full(); 
-              
-          })
-          .catch((error) => {
-            if (error.response){ 
-              enqueueSnackbar(error.response.data.error); 
-            }
-           else 
-              enqueueSnackbar(error.message); // Display the error message
-          });
+    const response = await fetch('http://localhost:8080/api/editdata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id:localStorage.getItem('edit'),cost}),
+        credentials: 'include',
+      }); 
+      
+      if (response.ok ) {
+        enqueueSnackbar("Data Updated Sucessfully",{ variant:"success" });  
+        full();
+        
+          }
+      else if (response.status === 409) {
+            const errorData = await response.json();
+            enqueueSnackbar(errorData.error,{variant:"error"});
+          }    
+
+    }; 
                         
-  }
+  
   
 
 return(
   <div style={{ 
-    backgroundColor: "lightgrey", minHeight: "100vh"
+    backgroundColor: "#e5e5ff", minHeight: "100vh"
     }}>
   <div className="logout-button">
           <button onClick={handlebacktohomefrompay} >Back To Home</button>
@@ -58,21 +63,21 @@ return(
   )}
   {localStorage.getItem('type') === 'seller' && ( 
     <div className="app">
-    {/* <div className="login-page" style={{backgroundColor:"white"}}> 
-    <h2>Launch Product</h2> 
+    <div className="login-page" style={{backgroundColor:"white"}}> 
+    <h2>Edit Product</h2> 
     <div className="con">
     <input
         type="Long"
-        placeholder="refnum"
-        value={id}
-        onChange={(e) => setid(e.target.value)}
+        placeholder="cost"
+        value={cost}
+        onChange={(e) => setcost(e.target.value)}
        
     />
     
     </div>
    <button className="lob" onClick={drafttodatabase}>
     Launch</button> 
-    </div> */}
+    </div>
     </div>
   )}
   </div>

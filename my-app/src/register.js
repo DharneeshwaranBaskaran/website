@@ -348,10 +348,12 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                <button onClick={handleRegister} className="lob">
                 Register</button> 
                 
-                {localStorage.getItem('type') === 'buyer' && (
+               
                     <div className="log"> 
                     <p>already have a account:</p>
                     <button onClick={redirectinglogin} className="lob"> Login </button>
+                    {localStorage.getItem('type') === 'buyer' && (
+                        <>
                     <p>Sign Up with Google</p>
                     <LoginSocialGoogle
                         client_id={"812988011805-bjggbnbauqg4a4g7f9e8r2qd0rh290u6.apps.googleusercontent.com"}
@@ -397,8 +399,10 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                     >
                     <GoogleLoginButton onClick={handlegoogle}/>
                     </LoginSocialGoogle >
+                    </>
+                    )}
                     </div>
-                )}
+                
                 </div>
                 
             </div>

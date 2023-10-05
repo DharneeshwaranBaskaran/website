@@ -70,7 +70,7 @@ function Men({menex,backhome}) {
       return matchesSearchQuery && matchesCategory;
     });
     return (
-      <div style={{ backgroundColor:"lightgrey",
+      <div style={{ backgroundColor:"#e5e5ff",
       overflowX: 'hidden'
        }}>
           <div className="logout-button">

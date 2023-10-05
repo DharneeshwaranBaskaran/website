@@ -7,6 +7,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Random;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 
 @RestController
@@ -121,9 +125,6 @@ public class Registercontroller {
         String generatedPassword = generateRandomString(6);
         String address=" ";
         
-        if (username.length() < 6 || email.equals("")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid data");
-        }
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String checkUsernameQuery = "SELECT * FROM users WHERE email = ?";
@@ -143,6 +144,7 @@ public class Registercontroller {
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Data inserted successfully.");
+                sendEmail(email,username,generatedPassword);
                 return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
 
             } else {
@@ -157,5 +159,38 @@ public class Registercontroller {
             }
             
         }
+        
+        private void sendEmail(String toEmail, String username, String password) {
+            Properties properties = new Properties();
+            properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
+            properties.put("mail.smtp.port", "587"); // Change this to the appropriate port
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+    
+            // Set up the session with your email credentials
+            Session session = Session.getInstance(properties, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("dharnee28@gmail.com", "kmvu fpjt lfkg zwvp");
+                }
+            });
+    
+            try {
+                // Create a message
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+                message.setSubject("Registration Successful");
+                message.setText("Dear User,\n\nYour registration is successful!\n\nUsername: " + username + "\nPassword: " + password);
+    
+                // Send the message
+                Transport.send(message);
+                System.out.println("Email sent successfully.");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Email sending failed: " + e.getMessage());
+            }
+        }
+        
 
 }

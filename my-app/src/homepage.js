@@ -39,16 +39,6 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
     }
     // const playerRef = useRef(null); 
     
-    // useEffect(() => {
-    //   axios.get(`http://localhost:8080/api/getperson/${username}`)
-    //     .then((response) => {
-    //         setPerson(response.data[0].person); // Extract and set the person value
-
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error fetching cart items:', error);
-    //     });
-    // }, [username]);
     useEffect(() => {
       axios.get(`http://localhost:8080/api/historyhome/${username}`)
           .then((response) => {
@@ -138,9 +128,10 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
       const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
       const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
       return matchesSearchQuery && matchesCategory;
-    }); 
+    });  
+    let patch=filteredData && filterdata;
     useEffect(() => {
-      const sorted = [...(filteredData && filterdata)].sort((a, b) => {
+      const sorted = [...(patch)].sort((a, b) => {
         if (sortingCriteria === "cost") {
           return b.cost - a.cost;
         } else if (sortingCriteria === "count") {
@@ -154,15 +145,15 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
         }
       });
       setSortedData(sorted);
-    }, [filteredData, filterdata, sortingCriteria]);
-     
+    }, [patch, sortingCriteria]);
+    
     return (
-      <div style={{ backgroundColor: "lightgrey", minHeight: "100vh" }}> 
+      <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button">
         <button >{username}</button>
         {localStorage.getItem('type') === 'buyer' && (
         <select value={selectedCategory} onChange={handleCategoryChange} 
-         style={{ backgroundColor: "grey", color: "white", 
+         style={{ backgroundColor: "#6666ff", color: "white", 
          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
             <option>Category</option>
             <option value="Men">Men</option>
@@ -177,7 +168,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
             <select
             value={selectedAction}
             onChange={handleActionChange}
-            style={{ backgroundColor: "grey", color: "white", border: "none",
+            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
              padding: "5px",borderRadius:"5px",marginLeft:"5px"  }}
           >
             <option>Menu</option>
@@ -192,7 +183,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
             <select
             value={selectedAction}
             onChange={handleActionChange}
-            style={{ backgroundColor: "grey", color: "white", border: "none",
+            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
              padding: "5px",borderRadius:"5px",marginLeft:"5px" }}
           >
             <option>Menu</option>
@@ -207,9 +198,9 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
                 
-       {uniqueItems.map(item => (
+       {uniqueItems.map((item, index)  => (
               <CustomCard
-                key={item.id}
+                key={index}
                 item={item}
                 handleView={(itemName) => handleRecommendation(itemName)}
                 showButton={true}
@@ -239,7 +230,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
         <select
           value={sortingCriteria}
           onChange={handleSortingChange}
-          style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
+          style={{ height: '35px',backgroundColor: "#6666ff",borderRadius:"5px"
             ,marginRight:"5px",color: "white",marginLeft:"800px"}}
         > <option value="">Sort</option>
           <option value="cost">By Cost</option>
@@ -247,7 +238,7 @@ function HomePage({click,tocart,homelog,reco,draft,addata}) {
           <option value="revenue">By Revenue</option>
         </select>
         <select 
-            style={{ height: '35px',backgroundColor: "grey",borderRadius:"5px"
+            style={{ height: '35px',backgroundColor: "#6666ff",borderRadius:"5px"
             ,marginRight:"5px",color: "white",marginLeft:"10px"}}
             value={selectedPerson}
             onChange={(e) => setSelectedPerson(e.target.value)}

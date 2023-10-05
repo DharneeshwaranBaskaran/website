@@ -44,7 +44,7 @@ function Start({toregister,tologin,startmen}){
     return (
         <div style={{ backgroundImage: `url(${backpic})` , minHeight: "980vh" }}> 
         <div className="logout-button">
-          <button onClick={() =>handletoregister(2)}>Register</button>
+          <button onClick={() =>handletoregister(2) }>Register</button>
            <button onClick={() =>handletologin(2)}>Login</button>       
                 </div>
                

@@ -10,10 +10,17 @@
   padding: 20px;
   width: 300px;
   text-align: center;
-  background-color:lightgrey;
+  background-color:#9EDDFF;
   border-radius: 4px;
 }
-
+.login{
+  border: 1px solid #ccc;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  background-color:#ccccff;
+  border-radius: 4px;
+}
 input {
   display: block;
   width: 100%;
@@ -51,7 +58,7 @@ button {
 }
 
 .logout-button button {
-  background-color: #868686; /* Change button background color */
+  background-color: #6666ff; /* Change button background color */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -62,7 +69,7 @@ button {
 }
 
 .logout-button button:hover {
-  background-color: #4a4a4a; /* Change button background color on hover */
+  background-color: darkblue; /* Change button background color on hover */
 }
 
 .male{
@@ -124,14 +131,14 @@ button {
 }
 
 .lob{
-  background-color: darkgrey;
+  background-color: #6666ff;
   color: #fff;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .lob:hover {
-  background-color: #313131;
+  background-color: darkblue;
 }
 
 #mag{
@@ -251,7 +258,7 @@ height: 250px;
 .cart-button {
   margin-left: 10px;
   padding: 10px 20px;
-  background-color:darkgrey;
+  background-color:#6666ff;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -259,7 +266,7 @@ height: 250px;
 }
 
 .cart-button:hover {
-  background-color: #313131;
+  background-color: darkblue;
 }
 
 .balance-header {

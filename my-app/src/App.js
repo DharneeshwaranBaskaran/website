@@ -151,7 +151,10 @@ function App() {
     setistart(true); 
     setisRegistered(true);
   }
-    
+    const handleEdit=()=>{
+      
+    setisHistory(false);
+    }
   return (
     <SnackbarProvider maxSnack={3}>
      <div>  
@@ -177,7 +180,7 @@ function App() {
               {!isHistory?
                   <Payment full={handlebacktohomefrompay}/>
                   :<>{!isBalance?
-                       <History his={handlebacktohomefromhis} histocart={HistorytoCart}/>:
+                       <History his={handlebacktohomefromhis} histocart={HistorytoCart} edit={handleEdit}/>:
                           <Add  backpay={backtohome}  backcart={backtocart} dtod={drafttodata}/>}
                           </> 
                         }

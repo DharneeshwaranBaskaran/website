@@ -103,7 +103,7 @@ function Add({backpay,backcart,dtod}) {
               });
           }, [Username]); 
   return (
-    <div style={{ backgroundColor: "#f0f0f0"  }}>
+    <div style={{ backgroundColor: "#e5e5ff"  }}>
     <div  className="logout-button">
         
         <button onClick={backtocart} >
@@ -116,7 +116,7 @@ function Add({backpay,backcart,dtod}) {
     {localStorage.getItem('type') === 'buyer' && ( 
       <>
     <div className="app">
-      <div className="login-page" >
+      <div className="login" >
       <h1>Balance: ${Balance}</h1>
       <form >
         <label>
@@ -128,7 +128,7 @@ function Add({backpay,backcart,dtod}) {
             onChange={handleInputChange}
           />
         </label>
-        <button onClick={addBalance} style={{ backgroundColor: "darkgrey" }}>Add to Balance</button>
+        <button onClick={addBalance} className="lob">Add to Balance</button>
       </form>
     </div>
     </div>
