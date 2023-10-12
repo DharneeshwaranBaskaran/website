@@ -22,6 +22,7 @@ function Men({menex,backhome}) {
     const handlemenex=(id)=>{
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"");
+      localStorage.removeItem('value');
       menex();
     }
     const handlebackhome=()=>{
@@ -97,44 +98,7 @@ function Men({menex,backhome}) {
         />
      
         </div> 
-          {/* <div  className='class-contain' >
-          
-          {(filteredData&&filterdata).map(item => (
-            
-          // <div key={item.id} className='class'>
-          // <Card >
-          //   <CardMedia component="img" image={item.url} alt="img" />
-          //   <CardContent className="card-content" style={{ padding: '0px'}}>
-          //     <Typography gutterBottom variant="h6">
-          //       <p style={{textAlign:"center"}}>{item.topic}</p>
-          //     </Typography> 
-          //     <div class="contain" style={{marginLeft: '25px'}}>
-          //     <Typography gutterBottom fontWeight="bold">
-          //       <p>${item.cost}</p>
-          //     </Typography> 
-              
-          //     <Typography gutterBottom fontWeight="bold"> 
-          //     <div className='star-Rating'>
-          //     <FaStar size={15} color="black" />{item.rating}
-          //     </div>    
-              
-          //     </Typography>
-          //     </div>
-          //   </CardContent>
-          //   <CardActions className="card-actions">
-          //     <Button
-          //       variant="contained"
-          //       className="card-button"
-          //       fullWidth
-          //       onClick={() => handlemenex(item.topic)}>
-          //       view
-          //     </Button>
-          //   </CardActions>
-          // </Card> 
-          
-          // </div>
-        ))}
-        </div>  */}
+        
         <div className='class-contain'>
         {(filteredData && filterdata).map(item => (
           <CustomCard

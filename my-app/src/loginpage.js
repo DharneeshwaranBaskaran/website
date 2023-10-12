@@ -21,13 +21,7 @@ function LoginPage({ onLogin,backRegister }) {
       const toggleModal = () => {
         setShowModal(!showModal);
       };
-      // const handleSubmit = (e) => {
-      //   e.preventDefault();
-      //   // You can handle form submission logic here
-      //   console.log('Form Data:', formData);
-      //   // Close the modal
-      //   toggleModal();
-      // };
+      
     const handlemail= async (event) =>{
       if(username1=="" || email==""){
         enqueueSnackbar("Enter the Required data");
@@ -75,6 +69,9 @@ function LoginPage({ onLogin,backRegister }) {
           });
 
           if (response.ok) {
+            // const jwtToken = await response.text(); // Get the JWT token from the response
+            // localStorage.setItem('jwtToken', jwtToken);
+            // console.log(jwtToken);
             localStorage.setItem('username', username);             
             console.log(username);
             onLogin();
@@ -82,7 +79,7 @@ function LoginPage({ onLogin,backRegister }) {
           }
           else{
             console.log(response); 
-            console.log(link); 
+            console.log(); 
             enqueueSnackbar("Invalid Credentials");
           }
           

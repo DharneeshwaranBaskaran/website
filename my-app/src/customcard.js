@@ -12,7 +12,7 @@ function CustomCard({ item, handleView ,showButton}) {
           <Typography gutterBottom variant="h6">
             <p style={{ textAlign: "center" }}>{item.topic}</p>
           </Typography>
-          <div class="contain" style={{ marginLeft: '25px' }}>
+          <div class="containcard" style={{ marginLeft: '25px' }}>
             <Typography gutterBottom fontWeight="bold">
               <p>${item.cost}</p>
             </Typography>

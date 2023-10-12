@@ -1,4 +1,5 @@
-package com.example.demo.History;
+package com.example.demo;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,38 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-public class HistoryHome {
+public class CommentController {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @GetMapping("/historyhome/{username}")
-    public ResponseEntity<List<HistoryItem>> getHistoryItemsForUsername(@PathVariable String username) {
+
+    @GetMapping("/comments/{topic}")
+    public ResponseEntity<List<Comment>> getCommentsForItem(@PathVariable String topic) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM history WHERE username = ?";
+            String sql = "SELECT * FROM comment WHERE topic = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            
-            
+            preparedStatement.setString(1, topic);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<HistoryItem> historyItems = new ArrayList<>();
+            List<Comment> comments = new ArrayList<>();
 
             while (resultSet.next()) {
-                HistoryItem historyItem = new HistoryItem();
-                historyItem.setTopic(resultSet.getString("topic"));
-                historyItem.setDescription(resultSet.getString("description"));
-                historyItem.setCost(resultSet.getDouble("cost"));
-                historyItem.setCount(resultSet.getInt("count"));
-                historyItem.setUsername(resultSet.getString("username")); 
-                historyItem.setState(resultSet.getBoolean("state"));
-                historyItem.setRating(resultSet.getDouble("rating")); 
-                historyItem.setUrl(resultSet.getString("url"));
-                historyItem.setPerson(resultSet.getString("person"));
-                historyItem.setSeller(resultSet.getString("seller"));
-                historyItems.add(historyItem);
+                Comment comment = new Comment();
+                comment.setId(resultSet.getLong("id"));
+                comment.setTopic(resultSet.getString("topic"));
+                comment.setComment(resultSet.getString("comment")); 
+                comment.setUsername(resultSet.getString("username"));
+                
+                comments.add(comment);
             }
 
-            return ResponseEntity.ok(historyItems);
+            return ResponseEntity.ok(comments);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

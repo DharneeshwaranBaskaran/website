@@ -141,10 +141,7 @@ button {
   background-color: darkblue;
 }
 
-#mag{
-width:250px;
-height: 250px;
-}
+
 
 .menext{
   background-color: lightgrey;
@@ -157,15 +154,16 @@ height: 250px;
 .contain {
     display: flex;
     padding-left: 10%;
-    align-items: center; 
-    gap: 30%; 
+    align-items: left; 
+    gap: 1%; 
+  }
+  .containimg {
+    display: flex;
+    padding-right: 5%; 
+    align-items: left; 
+    gap: 3%; 
   }
 
-/* .but{
-  background-color: grey;
-  padding-left:15.38%;
-  padding-right: 15.38%;
-} */
 .but {
  background-color: #868686; /* Change button background color */
   color: white;
@@ -285,6 +283,7 @@ height: 250px;
   display: inline-block; 
   justify-content: center;
   align-items: center;
+  padding-left: 30px;
 }
 
 .search-container {
@@ -340,4 +339,94 @@ height: 250px;
 
 .purchase-history-table tbody tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+.vim{
+display: flex;
+flex-direction: column; /* Stack images vertically */
+align-items: center;
+}
+.card-header {
+  background-color: #3498db;
+  padding: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.title {
+  font-size: 24px;
+  color: #333;
+}
+
+.description {
+  font-size: 18px;
+  color: #555;
+}
+
+.cost {
+  font-size: 20px;
+  color: #27ae60;
+}
+
+.star-rating {
+  font-size: 16px;
+  color: #f1c40f;
+}
+
+
+
+.comment-button {
+  background-color: #e74c3c;
+  color: #fff;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.comment-button:hover {
+  background-color: #c0392b;
+}
+
+.comment-modal {
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.comment-input {
+  display: flex;
+  align-items: center;
+}
+
+.comment-input input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-right: 10px;
+}
+
+.comment-submit {
+  background-color: #3498db;
+  color: #fff;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.comment-submit:hover {
+  background-color: #2980b9;
+}
+.containcard {
+  display: flex;
+  padding-left: 10%;
+  align-items: center; 
+  gap: 5%; 
 }

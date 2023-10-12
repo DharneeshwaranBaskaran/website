@@ -56,7 +56,7 @@ function Start({toregister,tologin,startmen}){
           key={item.id}
           item={item}
           handleView={(itemName) => handletomenex(itemName)}
-           // Don't show the button
+           
         />
        ))}
        

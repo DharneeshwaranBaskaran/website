@@ -139,13 +139,7 @@ function Add({backpay,backcart,dtod}) {
         <div className="login-page" style={{backgroundColor:"white"}}> 
                 <h2>LAUNCH PRODUCT</h2> 
                 <div className="con">
-                {/* <input
-                    type="Long"
-                    placeholder="Referance Number"
-                    value={id}
-                    onChange={(e) => setid(e.target.value)}
-                    
-                /> */}
+                
                 <input
                     type="text"
                     placeholder="catogory"
