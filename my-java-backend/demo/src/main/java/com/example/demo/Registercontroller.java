@@ -35,13 +35,14 @@ public class Registercontroller {
                 if (checkUsernameStatement.executeQuery().next()) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
                 }
-                String sql = "INSERT INTO users (username, password,address,email,balance) VALUES (?,?,?,?,?)";
+                String sql = "INSERT INTO users (username, password,address,email,balance,loyalty) VALUES (?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password); 
                 preparedStatement.setString(3, address); 
                 preparedStatement.setString(4, email);  
                 preparedStatement.setInt(5, balance);
+                preparedStatement.setDouble(6, 0.0);
                 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
@@ -68,7 +69,7 @@ public class Registercontroller {
             Long num=request.getNum();
             String comaddress=request.getComaddress(); 
             String company=request.getCompany();
-            // Integer balance=1000;
+           
             
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String checkUsernameQuery = "SELECT * FROM seller WHERE username = ?";

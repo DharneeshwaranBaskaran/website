@@ -8,7 +8,7 @@ import { FaStar } from 'react-icons/fa';
 import axios from "axios";
 import { useSnackbar } from "notistack";
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
-function HomePage({click,tocart,homelog,reco,draft,addata}) {
+function HomePage({click,tocart,reco,draft,addata}) {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);

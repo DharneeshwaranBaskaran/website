@@ -20,5 +20,6 @@ public class User {
     private String password;  
     private String email;
     private String address;
-    private Long balance;
+    private Long balance; 
+    private Double loyalty;
 }
