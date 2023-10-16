@@ -42,11 +42,32 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
             enqueueSnackbar(errorData.error,{variant:"error"});
           }    
 
-    }; 
-                        
-  
-  
-
+    };                    
+    const handleActionChange = async (event) => {
+      // setSelectedAction(event.target.value);
+      
+        let weekend=event.target.value;
+        const response = await fetch('http://localhost:8080/api/updateweekend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ weekend,username:Username}),
+        credentials: 'include',
+      }); 
+      
+      if (response.ok ) {
+        enqueueSnackbar("Data Updated Sucessfully",{ variant:"success" });  
+        full();
+        
+          }
+      else if (response.status === 409) {
+            const errorData = await response.json();
+            enqueueSnackbar(errorData.error,{variant:"error"});
+          }    
+        enqueueSnackbar(weekend);
+     
+    };
 return(
   <div style={{ 
     backgroundColor: "#e5e5ff", minHeight: "100vh"
@@ -56,10 +77,25 @@ return(
   </div>
   {localStorage.getItem('type') === 'buyer' && (
   <div >
+    <div>
       <h2 className='balance-header'>Thank you for shopping with us</h2>
       <h2 className='balance-header'>Your Balance:</h2>
       <p className="balance-amount">${Balance}</p> 
-    </div> 
+    </div>  
+    <div >
+      <h2 className='balance-header'>Can We deliver on Weekends</h2>
+    <select 
+            // value={selectedAction}
+            onChange={handleActionChange}
+            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
+             padding: "5px",borderRadius:"5px",marginLeft:"600px"}}
+          >
+            <option>Weekend</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select>
+    </div>
+      </div>
   )}
   {localStorage.getItem('type') === 'seller' && ( 
     <div className="app">

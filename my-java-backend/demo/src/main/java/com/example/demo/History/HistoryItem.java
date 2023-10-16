@@ -33,5 +33,5 @@ public class HistoryItem {
     private double rating;
     private String person; 
     private String seller;
-    // Getters and setters
+    private String weekend;
 }
