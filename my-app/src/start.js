@@ -28,19 +28,25 @@ function Start({toregister,tologin,startmen}){
         else
         localStorage.setItem('type',"seller");
     }
+  
+    const playerRef = useRef(null);
+      
     useEffect(() => {
-        axios.get("http://localhost:8080/api/combo")
+      axios.get(`http://localhost:8080/api/combodata`)
           .then((response) => {
-            setData(response.data);
+              setData(response.data);
           })
           .catch((error) => {
-            console.error('Error fetching cart items:', error);
+              console.error('Error fetching history items:', error);
           });
-      },[]);
-    const playerRef = useRef(null);
-    const uniqueItems = data.filter((item, index, self) =>
-    index === self.findIndex((t) => t.topic === item.topic)
-    );   
+  }, []);
+  
+  // Further down in your component
+  const uniqueItems = Array.isArray(data)
+      ? data.filter((item, index, self) =>
+          index === self.findIndex((t) => t.topic === item.topic)
+      )
+      : [];
     return (
         <div style={{ backgroundImage: `url(${backpic})` , minHeight: "980vh" }}> 
         <div className="logout-button">
