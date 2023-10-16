@@ -35,7 +35,7 @@ public class HistoryCartRetained {
                 selectStatement.setString(1, username); 
                 selectStatement.setBoolean(2, true);
                 ResultSet resultSet = selectStatement.executeQuery(); 
-                String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
                 String updateComboSql = "UPDATE combo SET count = count + ? WHERE topic = ?";
                 PreparedStatement insertStatement = connection.prepareStatement(insertSql);
                 PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
@@ -44,26 +44,38 @@ public class HistoryCartRetained {
                 while (resultSet.next()) {
                     String itemName = resultSet.getString("topic");
                     int itemCount = resultSet.getInt("count");
-                    insertStatement.setString(1, resultSet.getString("topic"));
-                    insertStatement.setString(2, resultSet.getString("description"));
-                    insertStatement.setDouble(3, resultSet.getDouble("cost"));
-                    insertStatement.setInt(4, resultSet.getInt("count"));
-                    insertStatement.setString(5, resultSet.getString("username"));
-                    insertStatement.setBoolean(6,resultSet.getBoolean("state")); 
-                    insertStatement.setDouble(7,resultSet.getDouble("rating"));
-                    insertStatement.setString(8, resultSet.getString("url"));
-                    insertStatement.setString(9, resultSet.getString("person"));
-                    insertStatement.setString(10, resultSet.getString("seller"));
-                     // Add the data to the list
-                    dataToSend.add("Topic: " + resultSet.getString("topic") +
-                    "\nDescription: " + resultSet.getString("description") +
-                    "\nCost: " + resultSet.getDouble("cost") +
-                    "\nCount: " + resultSet.getInt("count") );
-                    insertStatement.executeUpdate();
-                    updateComboStatement.setInt(1, itemCount);
-                    updateComboStatement.setString(2, itemName);
-                    updateComboStatement.executeUpdate();
-                }  
+        
+                    // Fetch the combo's ID from the combo table using its topic
+                    String selectComboIdSql = "SELECT id FROM combo WHERE topic = ?";
+                    PreparedStatement selectComboIdStatement = connection.prepareStatement(selectComboIdSql);
+                    selectComboIdStatement.setString(1, itemName);
+                    ResultSet comboIdResultSet = selectComboIdStatement.executeQuery();
+                    
+                    if (comboIdResultSet.next()) {
+                        int comboId = comboIdResultSet.getInt("id");
+                        insertStatement.setString(1, resultSet.getString("topic"));
+                        insertStatement.setString(2, resultSet.getString("description"));
+                        insertStatement.setDouble(3, resultSet.getDouble("cost"));
+                        insertStatement.setInt(4, resultSet.getInt("count"));
+                        insertStatement.setString(5, resultSet.getString("username"));
+                        insertStatement.setBoolean(6, resultSet.getBoolean("state"));
+                        insertStatement.setDouble(7, resultSet.getDouble("rating"));
+                        insertStatement.setString(8, resultSet.getString("url"));
+                        insertStatement.setString(9, resultSet.getString("person"));
+                        insertStatement.setString(10, resultSet.getString("seller"));
+                        insertStatement.setInt(11, comboId);
+                        insertStatement.executeUpdate();
+        
+                        dataToSend.add("Topic: " + resultSet.getString("topic") +
+                                "\nDescription: " + resultSet.getString("description") +
+                                "\nCost: " + resultSet.getDouble("cost") +
+                                "\nCount: " + resultSet.getInt("count"));
+        
+                        updateComboStatement.setInt(1, itemCount);
+                        updateComboStatement.setInt(2, comboId);
+                        updateComboStatement.executeUpdate();
+                    }
+                }
             sendEmail("dhar19129.ec@rmkec.ac.in", username, dataToSend);
             return ResponseEntity.ok("Cart items transferred to history for username: " + username);
         } catch (SQLException e) {

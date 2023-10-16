@@ -170,7 +170,7 @@ function Menext({back,cart,rechome,star}) {
     const handleToggleVideo = () => {
       setIsImage(false);
     };
-      let link="http://localhost:8080/api/combo";
+      let link="http://localhost:8080/api/combodata";
       
           useEffect(() => {
             fetch(link)
@@ -178,7 +178,8 @@ function Menext({back,cart,rechome,star}) {
               .then(data => {
                 const image = data.find(item => item.topic === (targetImageId));
                 if (image) {
-                  setImageData(image);
+                  setImageData(image); 
+                  console.log(image);
                 } else {
                   console.error(`Image data for id ${targetImageId} not found.`);
                 }

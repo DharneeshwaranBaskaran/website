@@ -70,7 +70,7 @@ public class LoginController {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        //String retrievedUsername = resultSet.getString("username");
+                      
                         String retrievedPassword = resultSet.getString("password");
 
                         if (retrievedPassword.equals(loginRequest.getPassword())) {

@@ -3,7 +3,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.example.demo.combo.Combo;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -28,5 +33,9 @@ public class CartItem {
     private double rating;
     private String person; 
     private String seller;
-    // Constructors, getters, and setters
+    
+    @ManyToOne
+    @JoinColumn(name = "combo_id")
+    private Combo combo;
+
 }

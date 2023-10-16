@@ -23,14 +23,12 @@ public class AddData {
     public ResponseEntity<String> login(@RequestBody Comborequest request) {
             
             String topic = request.getTopic();
-            String description= request.getDescription();
-            //String conpassword=request.getConpassword();  
+            String description= request.getDescription();   
             String url=request.getUrl();
             String cat=request.getCat();  
             Integer cost=request.getCost();
             Double rating=request.getRating(); 
             String person=request.getPerson(); 
-            // Long refnum=id;
             String seller=request.getSeller();
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String getLastIdQuery = "SELECT MAX(id) FROM combo";

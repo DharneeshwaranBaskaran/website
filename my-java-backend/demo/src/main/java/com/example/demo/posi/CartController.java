@@ -54,10 +54,12 @@ public class CartController {
                 preparedStatement.setDouble(7,rating);
                 preparedStatement.setString(8, url);
                 preparedStatement.setString(9, person);
-                preparedStatement.setString(10, seller);  
+                preparedStatement.setString(10, seller); 
+                
         int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     System.out.println("Data inserted successfully.");
+                    System.out.println(seller); 
                 } else {
                     System.out.println("Data insertion failed.");
                 }
