@@ -30,7 +30,7 @@ public class User {
     private Long balance; 
     private Double loyalty;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Combo> combos;
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Combo> combos;
 
 }

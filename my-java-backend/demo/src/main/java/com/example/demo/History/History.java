@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -37,12 +38,23 @@ public class History {
                     ResultSet resultSet = selectStatement.executeQuery();
 
                     // Insert selected cart items into the history table
-                    String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
-                    String updateComboSql = "UPDATE combo SET count = count + ? WHERE topic = ?";
+                    String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                    String updateComboSql = "UPDATE combo SET history_item_id = ?, count = count + ? WHERE topic = ?";
                     PreparedStatement insertStatement = connection.prepareStatement(insertSql);
+
                     PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
                     List<String> dataToSend = new ArrayList<>();
                     while (resultSet.next()) {
+                        String getLastIdQuery = "SELECT MAX(id) FROM history";
+                        Statement statement = connection.createStatement();
+                        ResultSet resultSet1 = statement.executeQuery(getLastIdQuery);
+                        int lastId = 0;
+                        if (resultSet1.next()) {
+                            lastId = resultSet1.getInt(1);
+                        }
+                        
+                        // Step 2: Increment the last ID to get the new ID
+                        int newId = lastId + 1;
                         String itemName = resultSet.getString("topic");
                         int itemCount = resultSet.getInt("count");
                         insertStatement.setString(1, resultSet.getString("topic"));
@@ -55,13 +67,15 @@ public class History {
                         insertStatement.setString(8, resultSet.getString("url"));
                         insertStatement.setString(9, resultSet.getString("person"));
                         insertStatement.setString(10, resultSet.getString("seller"));
+                        insertStatement.setInt(11, resultSet.getInt("combo_id"));
                         insertStatement.executeUpdate(); // This line inserts the data once
                         dataToSend.add("Topic: " + resultSet.getString("topic") +
                                 "\nDescription: " + resultSet.getString("description") +
                                 "\nCost: " + resultSet.getDouble("cost") +
                                 "\nCount: " + resultSet.getInt("count"));
-                        updateComboStatement.setInt(1, itemCount);
-                        updateComboStatement.setString(2, itemName);
+                        updateComboStatement.setLong(1, newId);       
+                        updateComboStatement.setInt(2, itemCount);
+                        updateComboStatement.setString(3, itemName);
                         updateComboStatement.executeUpdate();
                     }
 

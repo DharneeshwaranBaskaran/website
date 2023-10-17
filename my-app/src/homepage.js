@@ -80,7 +80,7 @@ function HomePage({click,tocart,reco,draft,addata}) {
             <button onClick={redirecttoadd}>Draft</button>
           );
       }
-      const [selectedCategory, setSelectedCategory] = useState(""); // Default category
+      // const [selectedCategory, setSelectedCategory] = useState(""); // Default category
 
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
@@ -96,7 +96,14 @@ function HomePage({click,tocart,reco,draft,addata}) {
     
     click();
   };
-  
+  const handleChange = (event) => {  
+    if(event.target.value=="Yes"){
+      localStorage.setItem("weekend","Yes");
+    }
+    else{
+      localStorage.setItem("weekend","No");
+    }
+  }
   const [selectedAction, setSelectedAction] = useState(""); // Default action
   const handleActionChange = (event) => {
     // setSelectedAction(event.target.value);
@@ -152,7 +159,23 @@ function HomePage({click,tocart,reco,draft,addata}) {
         <div className="logout-button">
         <button >{username}</button>
         {localStorage.getItem('type') === 'buyer' && (
-        <select value={selectedCategory} onChange={handleCategoryChange} 
+          <>
+          
+      
+    <select 
+            // value={selectedCategory} 
+            onChange={handleChange} 
+            style={{ backgroundColor: "#6666ff", color: "white", 
+            border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
+          >
+            <option>Weekend</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            </select>
+    
+        <select 
+        // value={selectedCategory} 
+        onChange={handleCategoryChange} 
          style={{ backgroundColor: "#6666ff", color: "white", 
          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
             <option>Category</option>
@@ -161,6 +184,7 @@ function HomePage({click,tocart,reco,draft,addata}) {
             <option value="Kids">Kids</option>
             
           </select>
+          </>
         )}
             {localStorage.getItem('type') === 'seller' && (
             <>

@@ -6,7 +6,7 @@ const { enqueueSnackbar } = useSnackbar();
  
 const [Balance,setBalance]=useState(0); 
 
-const [loyalty,setLoyalty]=useState(0);
+// const [loyalty,setLoyalty]=useState(0);
 const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
@@ -26,40 +26,32 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-      axios.get(`http://localhost:8080/api/loyalty/${Username}`)
-      .then((response) => {
-        const data = response.data;
-        
-        setLoyalty(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, [Username]); 
-  const handleloyalty=()=>{ 
-      if (loyalty > 0) {
-        const updatedBalance = Balance + loyalty;
-        // Set loyalty to 0
-    
-    
-        // Update user's balance and loyalty points in the server
-        axios.post(`http://localhost:8080/api/updateUserloyBalance/${Username}`, updatedBalance, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(() => {
-          enqueueSnackbar("Loyalty points added to balance and loyalty points reset.", { variant: "success" });
-          backtohome();
-        })
-        .catch((error) => {
-          console.error('Error updating user balance:', error);
-        });
-      } else {
-        enqueueSnackbar("No loyalty points to add.", { variant: "info" });
       
-    };
-  }
+  }, [Username]); 
+  // const handleloyalty=()=>{ 
+  //     if (loyalty > 0) {
+  //       const updatedBalance = Balance + loyalty;
+  //       // Set loyalty to 0
+    
+    
+  //       // Update user's balance and loyalty points in the server
+  //       axios.post(`http://localhost:8080/api/updateUserloyBalance/${Username}`, updatedBalance, {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       })
+  //       .then(() => {
+  //         enqueueSnackbar("Loyalty points added to balance and loyalty points reset.", { variant: "success" });
+  //         backtohome();
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error updating user balance:', error);
+  //       });
+  //     } else {
+  //       enqueueSnackbar("No loyalty points to add.", { variant: "info" });
+      
+  //   };
+  // }
 const handlePaymentandretain=()=>{
   let total = 0;
   for (const item of Items) {
@@ -71,8 +63,8 @@ const handlePaymentandretain=()=>{
   if(Items.length === 0)
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
   else if(Balance>total){ 
-    const newBalance = Balance - total
-    const loy = loyalty+(total/10);
+    const newBalance = Balance - (total*9/10);
+    
     axios.post(`http://localhost:8080/api/HistoryRetainCart/${Username}`)
           .then((response) => {
               console.log(response.data);
@@ -85,14 +77,15 @@ const handlePaymentandretain=()=>{
               'Content-Type': 'application/json',
             },
           })
-          axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          // axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          // })
           
     pay(); 
-    enqueueSnackbar("Payment Sucessful",{variant:"success"});
+    enqueueSnackbar("Payment Sucessful",{variant:"success"}); 
+    enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
   }
   else{
     enqueueSnackbar("Insuficient Balance",{variant:"warning"});
@@ -109,8 +102,7 @@ const handlePayment=()=>{
   if(Items.length === 0)
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
   else if(Balance>total){
-    const newBalance = Balance - total;
-    const loy =loyalty+ total/10;
+    const newBalance = Balance - (total*9/10);
       axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
           .then((response) => {
               console.log(response.data);
@@ -123,13 +115,14 @@ const handlePayment=()=>{
               'Content-Type': 'application/json',
             },
           })
-          axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          // axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          // })
     pay(); 
     enqueueSnackbar("Payment Successful",{ variant:"success" });
+    enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
   } 
   else{
     enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
@@ -163,6 +156,7 @@ const calculateTotaldis = (cartItems) => {
 };
 
 const removeItemFromCart = (topic) => {
+  console.log(topic);
   axios
       .delete(`http://localhost:8080/api/delete/${topic}/${Username}`)
       .then((response) => {
@@ -253,7 +247,7 @@ return (
       <div className="cart-total">After Discount: $ {calculateTotaldis(Items)}</div>
       <div className="cart-item-count">Available Balance:${Balance}</div>
       <div className="cart-buttons">
-      <button className="cart-button" onClick={handleloyalty}>Add Loyalty Points</button> 
+      {/* <button className="cart-button" onClick={handleloyalty}>Add Loyalty Points</button>  */}
         <button className="cart-button" onClick={handlePaymentandretain}>Pay And Retain</button> 
         <button className="cart-button" onClick={handlePayment}>Pay</button>  
         <button onClick={updateBalance} className="cart-button">Add Balance</button>
