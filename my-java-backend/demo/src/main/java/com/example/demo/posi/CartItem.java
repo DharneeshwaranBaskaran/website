@@ -33,7 +33,7 @@ public class CartItem {
     private double rating;
     private String person; 
     private String seller;
-    
+    private String weekend;
     @ManyToOne
     @JoinColumn(name = "combo_id")
     private Combo combo;

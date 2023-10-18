@@ -151,9 +151,14 @@ function App() {
     setistart(true); 
     setisRegistered(true);
   }
-    const handleEdit=()=>{
-      
+    const handleEdit=()=>{  
     setisHistory(false);
+    } 
+    const payhome=()=>{
+      setisCart(true);
+    setMend(true);
+    setRedirectToAnotherPage(true); 
+    setisPay(true);
     }
   return (
     <SnackbarProvider maxSnack={3}>
@@ -168,7 +173,7 @@ function App() {
       <LoginPage onLogin={handleLogin} backRegister={handlebackRegister} />
       :<>
       {!redirectToAnotherPage?
-        <HomePage click={handleRedirect} addata={redirecttoadd} draft={redirecttodraft} homelog={homelogout}tocart={redirecttocart} reco={handleRecommendation}/>
+        <HomePage access={payhome} click={handleRedirect} addata={redirecttoadd} draft={redirecttodraft} homelog={homelogout}tocart={redirecttocart} reco={handleRecommendation}/>
         : <>
         {!mend?
            <Men menex={handlemenex} backhome={handlebackhome}/>

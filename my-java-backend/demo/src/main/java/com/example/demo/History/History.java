@@ -38,7 +38,7 @@ public class History {
                     ResultSet resultSet = selectStatement.executeQuery();
 
                     // Insert selected cart items into the history table
-                    String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                    String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id,weekend) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                     String updateComboSql = "UPDATE combo SET history_item_id = ?, count = count + ? WHERE topic = ?";
                     PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
@@ -59,7 +59,7 @@ public class History {
                         int itemCount = resultSet.getInt("count");
                         insertStatement.setString(1, resultSet.getString("topic"));
                         insertStatement.setString(2, resultSet.getString("description"));
-                        insertStatement.setDouble(3, resultSet.getDouble("cost"));
+                        insertStatement.setDouble(3, (resultSet.getDouble("cost"))*10/9);
                         insertStatement.setInt(4, resultSet.getInt("count"));
                         insertStatement.setString(5, resultSet.getString("username"));
                         insertStatement.setBoolean(6, resultSet.getBoolean("state"));
@@ -68,6 +68,7 @@ public class History {
                         insertStatement.setString(9, resultSet.getString("person"));
                         insertStatement.setString(10, resultSet.getString("seller"));
                         insertStatement.setInt(11, resultSet.getInt("combo_id"));
+                        insertStatement.setString(12, resultSet.getString("weekend"));
                         insertStatement.executeUpdate(); // This line inserts the data once
                         dataToSend.add("Topic: " + resultSet.getString("topic") +
                                 "\nDescription: " + resultSet.getString("description") +

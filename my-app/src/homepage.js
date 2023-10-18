@@ -8,7 +8,7 @@ import { FaStar } from 'react-icons/fa';
 import axios from "axios";
 import { useSnackbar } from "notistack";
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
-function HomePage({click,tocart,reco,draft,addata}) {
+function HomePage({click,tocart,reco,draft,addata,access}) {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);
@@ -80,7 +80,7 @@ function HomePage({click,tocart,reco,draft,addata}) {
             <button onClick={redirecttoadd}>Draft</button>
           );
       }
-      // const [selectedCategory, setSelectedCategory] = useState(""); // Default category
+  
 
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
@@ -97,16 +97,15 @@ function HomePage({click,tocart,reco,draft,addata}) {
     click();
   };
   const handleChange = (event) => {  
-    if(event.target.value=="Yes"){
-      localStorage.setItem("weekend","Yes");
+    if(event.target.value=="No"){
+      localStorage.setItem("weekend","No");
     }
     else{
-      localStorage.setItem("weekend","No");
+      localStorage.setItem("weekend","Yes");
     }
   }
   const [selectedAction, setSelectedAction] = useState(""); // Default action
   const handleActionChange = (event) => {
-    // setSelectedAction(event.target.value);
     if(event.target.value=="Back"){
       tocart(); 
       enqueueSnackbar("Redirecting to cart",{ variant:"default"});
@@ -115,6 +114,8 @@ function HomePage({click,tocart,reco,draft,addata}) {
     draft();
     else if(event.target.value=="Draft"){
       addata();
+    }else if(event.target.value=="Access"){
+     access();
     }
     else{
       localStorage.clear();
@@ -168,7 +169,7 @@ function HomePage({click,tocart,reco,draft,addata}) {
             style={{ backgroundColor: "#6666ff", color: "white", 
             border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
           >
-            <option>Weekend</option>
+            <option>Weekend Delivery</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
             </select>
@@ -198,7 +199,8 @@ function HomePage({click,tocart,reco,draft,addata}) {
             <option>Menu</option>
             <option value="Back">Cart</option>
             <option value="Add">Remove</option>
-            <option value="Draft">Add</option>
+            <option value="Draft">Add</option> 
+            <option value="Access">Access</option>
             <option value="Logout">Logout</option>
             </select>
             </>
@@ -217,7 +219,8 @@ function HomePage({click,tocart,reco,draft,addata}) {
             )}
             
           </div>
-        
+        {localStorage.getItem('type') === 'buyer' && ( 
+          <>
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
@@ -228,9 +231,12 @@ function HomePage({click,tocart,reco,draft,addata}) {
                 item={item}
                 handleView={(itemName) => handleRecommendation(itemName)}
                 showButton={true}
-              />
-            ))}
+              /> 
+            ))} 
+            
        </div>
+       </>
+            )}
        </> 
       )}
           

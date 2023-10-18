@@ -43,7 +43,8 @@ public class CartController {
         Double rating = cartItem.getRating();
         String url = cartItem.getUrl();
         String person = cartItem.getPerson();
-        String seller = cartItem.getSeller();
+        String seller = cartItem.getSeller(); 
+        String weekend=cartItem.getWeekend();
         
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String selectComboIdSql = "SELECT id FROM combo WHERE topic = ?";
@@ -64,7 +65,7 @@ public class CartController {
                         // Step 2: Increment the last ID to get the new ID
                         int newId = lastId + 1; 
 
-                String sql = "INSERT INTO cart (cost, count, topic, description, username, state, rating, url, person, seller, combo_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO cart (cost, count, topic, description, username, state, rating, url, person, seller, combo_id,weekend) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setDouble(1, cost);
                 preparedStatement.setInt(2, count);
@@ -77,7 +78,7 @@ public class CartController {
                 preparedStatement.setString(9, person);
                 preparedStatement.setString(10, seller);
                 preparedStatement.setInt(11, comboId);
-                
+                preparedStatement.setString(12, weekend);
                 int rowsAffected = preparedStatement.executeUpdate();
                 
                 if (rowsAffected > 0) {

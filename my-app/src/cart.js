@@ -28,30 +28,6 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       });
       
   }, [Username]); 
-  // const handleloyalty=()=>{ 
-  //     if (loyalty > 0) {
-  //       const updatedBalance = Balance + loyalty;
-  //       // Set loyalty to 0
-    
-    
-  //       // Update user's balance and loyalty points in the server
-  //       axios.post(`http://localhost:8080/api/updateUserloyBalance/${Username}`, updatedBalance, {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       })
-  //       .then(() => {
-  //         enqueueSnackbar("Loyalty points added to balance and loyalty points reset.", { variant: "success" });
-  //         backtohome();
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error updating user balance:', error);
-  //       });
-  //     } else {
-  //       enqueueSnackbar("No loyalty points to add.", { variant: "info" });
-      
-  //   };
-  // }
 const handlePaymentandretain=()=>{
   let total = 0;
   for (const item of Items) {
@@ -77,11 +53,7 @@ const handlePaymentandretain=()=>{
               'Content-Type': 'application/json',
             },
           })
-          // axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          // })
+
           
     pay(); 
     enqueueSnackbar("Payment Sucessful",{variant:"success"}); 
@@ -115,11 +87,7 @@ const handlePayment=()=>{
               'Content-Type': 'application/json',
             },
           })
-          // axios.post(`http://localhost:8080/api/updateUserloyalty/${Username}`, loy, {
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          // })
+
     pay(); 
     enqueueSnackbar("Payment Successful",{ variant:"success" });
     enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
@@ -156,18 +124,27 @@ const calculateTotaldis = (cartItems) => {
 };
 
 const removeItemFromCart = (topic) => {
-  console.log(topic);
-  axios
-      .delete(`http://localhost:8080/api/delete/${topic}/${Username}`)
+    console.log(topic);
+    axios
+      .put(`http://localhost:8080/api/update/${topic}/${Username}`)
       .then((response) => {
-        const updatedCartItems = Items.filter((item) => item.topic !== topic);
+        const updatedCartItems = Items.map((item) => {
+          if (item.topic === topic) {
+            return { ...item, state: true }; // Update the state of the item
+          }
+          return item;
+        });
+  
         setItems(updatedCartItems);
-
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       })
       .catch((error) => {
-      });
-};
+        console.log(error);
+      }); 
+      backtohome(); 
+      enqueueSnackbar(topic+"removed from cart");
+  };
+  
 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 useEffect(() => {
   axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
@@ -278,7 +255,7 @@ return (
         </tbody>
       </table>  
         </>)}
-        {/* {person} */}
+        
     </div>
   )
 }

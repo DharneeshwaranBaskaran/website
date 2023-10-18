@@ -22,7 +22,8 @@ function Men({menex,backhome}) {
     const handlemenex=(id)=>{
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"");
-      localStorage.removeItem('value');
+      localStorage.removeItem('value'); 
+      console.log(localStorage.getItem("count"));
       menex();
     }
     const handlebackhome=()=>{
@@ -100,20 +101,19 @@ function Men({menex,backhome}) {
         </div> 
         
         <div className='class-contain'>
-        {(filteredData && filterdata).map(item => (
+          
+        {(filteredData && filterdata).map((item, index)  => (
           <CustomCard
-            key={item.id}
+            key={index}
             item={item}
             handleView={(itemName) => handlemenex(itemName)}
             showButton={true}
           />
         ))}
-      </div>
-
-        <br/>
         
-          
-      </div>    
+      </div>
+      <br/>   
+    </div>    
     )
   }
 

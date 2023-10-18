@@ -430,3 +430,14 @@ align-items: center;
   align-items: center; 
   gap: 5%; 
 }
+.discount-label {
+  /* position: absolute;
+   */
+  background-color: #FF5733; /* Set the background color for the label */
+  color: white; /* Set the text color */
+  padding: 3px; /* Add some padding for better visual appearance */
+  border-radius: 5px; /* Add rounded corners */
+  font-weight: bold; /* Make the text bold */
+  font-size: 12px; /* Adjust the font size as needed */
+  z-index: 1; /* Ensure the label is above the card image */
+}

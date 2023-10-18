@@ -7,6 +7,9 @@ let Username=localStorage.getItem('username');
 const [Balance,setBalance]=useState(0);
 const { enqueueSnackbar } = useSnackbar();
 const [cost,setcost]=useState();
+const [email,setEmail]=useState('');
+const [username, setUsername] = useState('');
+const [type,setType]=useState('');
 const handlebacktohomefrompay=()=>{
   enqueueSnackbar("Redirecting to homepage",{variant:"default"});
   full();
@@ -22,52 +25,42 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         // console.error('Error fetching data:', error);
       });
   }, [Username]);
-  const drafttodatabase = async () => {
-    const response = await fetch('http://localhost:8080/api/editdata', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id:localStorage.getItem('edit'),cost}),
-        credentials: 'include',
-      }); 
-      
-      if (response.ok ) {
-        enqueueSnackbar("Data Updated Sucessfully",{ variant:"success" });  
-        full();
-        
-          }
-      else if (response.status === 409) {
+  const handleRegister = async (event) => {
+        const response = await fetch(`http://localhost:8080/api/register/access`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username,email,type,provider:Username}),
+          credentials: 'include',
+        });
+        if (response.ok) {
+            enqueueSnackbar("Access Given Successfully", { variant: "success" });
+            full();
+            console.log(response); 
+            
+            
+        } else if (response.status === 409) {
             const errorData = await response.json();
-            enqueueSnackbar(errorData.error,{variant:"error"});
-          }    
-
-    };                    
-    // const handleActionChange = async (event) => {
-    //   // setSelectedAction(event.target.value);
-      
-    //     let weekend=event.target.value;
-    //     const response = await fetch('http://localhost:8080/api/updateweekend', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ weekend,username:Username}),
-    //     credentials: 'include',
-    //   }); 
-      
-    //   if (response.ok ) {
-    //     enqueueSnackbar("Data Updated Sucessfully",{ variant:"success" });  
-    //     full();
+            enqueueSnackbar(errorData.error, { variant: "error" });
+        } else {
+            enqueueSnackbar("Registration Failed", { variant: "error" });
+        }        
         
-    //       }
-    //   else if (response.status === 409) {
-    //         const errorData = await response.json();
-    //         enqueueSnackbar(errorData.error,{variant:"error"});
-    //       }    
-    //     enqueueSnackbar(weekend);
-     
-    // };
+  }
+  const handleChange3 = (e) => {
+    const value = e.target.value;
+    setEmail(value); 
+  } 
+  const handleChange=(e)=>{
+    const value = e.target.value;
+    setUsername(value);
+  }
+  const handleChange2 = (e) => {
+    const value = e.target.value;
+    setType(value); 
+  } 
+    
 return(
   <div style={{ 
     backgroundColor: "#e5e5ff", minHeight: "100vh"
@@ -82,37 +75,36 @@ return(
       <h2 className='balance-header'>Your Balance:</h2>
       <p className="balance-amount">${Balance}</p> 
     </div>  
-    {/* <div >
-      <h2 className='balance-header'>Can We deliver on Weekends</h2>
-    <select 
-            // value={selectedAction}
-            onChange={handleActionChange}
-            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
-             padding: "5px",borderRadius:"5px",marginLeft:"600px"}}
-          >
-            <option>Weekend</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            </select>
-    </div> */}
+   
       </div>
   )}
   {localStorage.getItem('type') === 'seller' && ( 
     <div className="app">
     <div className="login-page" style={{backgroundColor:"white"}}> 
-    <h2>Edit Product</h2> 
-    <div className="con">
-    <input
-        type="Long"
-        placeholder="cost"
-        value={cost}
-        onChange={(e) => setcost(e.target.value)}
-       
-    />
+    <h2>Edit Product</h2> {Username}
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={handleChange}
+                
+                />
+              <input
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={handleChange3}
+                /> 
+                <input
+                type="text"
+                placeholder="Type"
+                value={type}
+                onChange={handleChange2}
+                />
     
-    </div>
-   <button className="lob" onClick={drafttodatabase}>
-    Launch</button> 
+   
+   <button className="lob" onClick={handleRegister}>
+    Give Access</button> 
     </div>
     </div>
   )}

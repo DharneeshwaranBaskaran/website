@@ -60,14 +60,14 @@ function Menext({back,cart,rechome,star}) {
         const cartItem = {
           topic: imageData.topic,
           description: imageData.description,
-          cost: imageData.cost,
+          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, // Check the count value and set the cost accordingly
           count: count,
           username: localStorage.getItem("username"), 
           rating:imageData.rating,
           url:imageData.url,
           person:imageData.person,
-          seller:imageData.seller
-
+          seller:imageData.seller,
+          weekend:localStorage.getItem("weekend")
         };
 
         console.log(cartItem);
@@ -179,7 +179,7 @@ function Menext({back,cart,rechome,star}) {
                 const image = data.find(item => item.topic === (targetImageId));
                 if (image) {
                   setImageData(image); 
-                  console.log(image);
+                  // console.log(image.count);
                 } else {
                   console.error(`Image data for id ${targetImageId} not found.`);
                 }
@@ -264,7 +264,22 @@ function Menext({back,cart,rechome,star}) {
         .catch((error) => {
           console.error('Error fetching history items:', error);
         });
-
+        
+    };
+    const renderDiscountAmount = () => {
+      if (imageData.count > 0) {
+        return (
+          <h3 style={{ fontSize: '20px', color: '#222' }}>            
+            Actual Cost: ${imageData.cost}
+          </h3>
+        );
+      } else {
+        return (
+          <h3 style={{ fontSize: '20px', color: '#222' }}>
+            Discount Cost: ${imageData.cost * 0.9}
+          </h3>
+        );
+      }
     };
     return (
       <div style={{ backgroundColor:"#e5e5ff", minHeight: "100vh",overflowX: "hidden",overflowY: "hidden"}}>
@@ -340,14 +355,15 @@ function Menext({back,cart,rechome,star}) {
         
         <h1  style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>{imageData.topic} </h1>
         <h2 style={{ fontSize: '18px', color: '#333' }}>{imageData.description}</h2>  
-        <h3 style={{ fontSize: '20px', color: '#222' }}>${imageData.cost}</h3>   
+        {renderDiscountAmount()}
             {countButton}
             <Box>
             <div className='star-Rating'>
             <FaStar size={15} color="black" />{imageData.rating}
             </div>
             </Box> 
-            <br />
+            <br /> 
+            
             {addButton} 
             {purchase}
             <button onClick={toggleModal} className="lob"

@@ -18,8 +18,10 @@ function Start({toregister,tologin,startmen}){
         tologin(); 
         if(key==2)
         localStorage.setItem('type',"buyer");
+        else if(key==1)
+        localStorage.setItem('type',"seller"); 
         else
-        localStorage.setItem('type',"seller");
+        localStorage.setItem('type',"access");
     }
     const handletoregister=(key)=>{
         toregister();
@@ -80,7 +82,15 @@ function Start({toregister,tologin,startmen}){
                 Login</button>
                  </h2>
                  </div>
-        </div>
+        <div style={{textAlign:"center"}}>
+        <h2>Are You a Database Viewer?<br/>
+        <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(3)}>
+                Login</button>
+                 </h2>
+                 </div> 
+        </div> 
+        
+        
     )
 }
 export default Start;

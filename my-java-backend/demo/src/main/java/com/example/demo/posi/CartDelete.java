@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,26 +21,29 @@ public class CartDelete {
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
 
-    @DeleteMapping("/delete/{productName}/{Username}")
-    public ResponseEntity<String> deleteCartItem(@PathVariable String productName,@PathVariable String Username) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Define SQL query to delete a product from the cart table based on its name
-            String sql = "DELETE FROM cart WHERE topic = ? AND Username= ? AND state= ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, productName); 
-            preparedStatement.setString(2, Username);
-            preparedStatement.setBoolean(3, true);
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Product deleted successfully: " + productName);
-                return ResponseEntity.ok("Product deleted successfully: " + productName);
-            } else {
-                System.out.println("No product found with name: " + productName);
-                return ResponseEntity.badRequest().body("No product found with name: " + productName);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error deleting product");
+    @PutMapping("/update/{productName}/{Username}")
+public ResponseEntity<String> updateCartItemState(@PathVariable String productName, @PathVariable String Username) {
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        // Define SQL query to update the state of a product in the cart table based on its name and username
+        String sql = "UPDATE cart SET state = ? WHERE topic = ? AND Username = ? AND state = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1, false);
+        preparedStatement.setString(2, productName);
+        preparedStatement.setString(3, Username);
+        preparedStatement.setBoolean(4, true); // Only update if state is already true
+        int rowsAffected = preparedStatement.executeUpdate();
+
+        if (rowsAffected > 0) {
+            System.out.println("Product state updated successfully: " + productName);
+            return ResponseEntity.ok("Product state updated successfully: " + productName);
+        } else {
+            System.out.println("No product found with name: " + productName + " and username: " + Username + " or the state is not true.");
+            return ResponseEntity.badRequest().body("No product found with name: " + productName + " and username: " + Username + " or the state is not true.");
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println(e);
+        return ResponseEntity.status(500).body("Error updating product state");
+    }
     }
 }
