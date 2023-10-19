@@ -179,9 +179,11 @@ function LoginPage({ onLogin,backRegister }) {
       )}
     </div>
         <div style={errorStyle}>{error2}</div>
+        {localStorage.getItem('type') !== 'access' && (
         <div className="log"> 
             <p>Don't have a account:</p><button onClick={handlebackRegister} className="lob">Register</button>
-        </div>
+        </div> 
+        )}
         </div>
       </div>
     </div>

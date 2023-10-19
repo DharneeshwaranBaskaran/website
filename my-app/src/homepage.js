@@ -1,9 +1,7 @@
 import React, {useRef,useEffect, useState } from "react";
 import ReactPlayer from 'react-player'; 
 import Video from "./sam.mp4";
-
 import CustomCard from "./customcard";
-// import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -11,14 +9,22 @@ const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function HomePage({click,tocart,reco,draft,addata,access}) {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
-  const [Data,setData]=useState([]);
-  const [person,setPerson]=useState([]);
+  const [Data,setData]=useState([]);  
+  const [data,setdata]=useState([]);  
+  const [pro,setpro]=useState([]);
   const username = localStorage.getItem('username'); 
   const [selectedPerson, setSelectedPerson] = useState(''); 
   let type=localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortingCriteria, setSortingCriteria] = useState("");
-  const [sortedData, setSortedData] = useState([]);
+  const [sortingCriteria, setSortingCriteria] = useState(""); 
+  
+  const [accsortingCriteria, setAccSortingCriteria] = useState("");
+  const [sortedData, setSortedData] = useState([]); 
+  const [sorted,setsorted] = useState([]); 
+  const [patch,setpatch]=useState([]); 
+  const [prov,setprov]=useState('');
+  const [typ,settye]=useState('');
+
   let count=0;
     const redirecttocart=()=>{
        tocart(); 
@@ -57,7 +63,33 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
         .catch((error) => {
           console.error('Error fetching cart items:', error);
         });
-    },[username]);
+    },[username]); 
+    
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/access/${username}`)
+        .then((response) => {
+          setdata(response.data); 
+          setprov(response.data[0]?.provider); 
+          settye(response.data[0]?.type); 
+          console.log(response.data[0].type);
+          
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        });
+    },[username]); 
+    
+    useEffect(() => {
+      if (prov) {
+      axios.get(`http://localhost:8080/api/history/view/${prov}`)
+        .then((response) => {
+          setpro(response.data); 
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        }); 
+      } 
+    },[prov]);
     const uniqueItems = Items.filter((item, index, self) =>
     index === self.findIndex((t) => t.topic === item.topic)
     );  
@@ -80,8 +112,6 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <button onClick={redirecttoadd}>Draft</button>
           );
       }
-  
-
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
       localStorage.setItem("myRef",1);
@@ -122,22 +152,31 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
       window.location.reload()
       enqueueSnackbar("Logout Successful");
     }
-  };
+  }; 
+  const handlelogout =()=>{
+      localStorage.clear();
+      window.location.reload()
+      enqueueSnackbar("Logout Successful");
+  }
   const handleSortingChange = (event) => {
     setSortingCriteria(event.target.value);
     count=count+1;
-    
   };
-  
-  const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
-    const filterdata=Data.filter(item => {
-      const lowerCaseTopic = item.topic.toLowerCase();
-      const lowerCaseCategory = item.person.toLowerCase();
-      const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
-      return matchesSearchQuery && matchesCategory;
-    });  
-    let patch=filteredData && filterdata;
+  const handleSortingChange1 = (event) => {
+    setAccSortingCriteria(event.target.value);
+    count=count+1;
+  };
+    useEffect(()=>{
+      const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
+      const filterdata=Data.filter(item => {
+        const lowerCaseTopic = item.topic.toLowerCase();
+        const lowerCaseCategory = item.person.toLowerCase();
+        const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
+        const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
+        return matchesSearchQuery && matchesCategory;
+      });   
+      setpatch(filteredData && filterdata);
+    },[Data])
     useEffect(() => {
       const sorted = [...(patch)].sort((a, b) => {
         if (sortingCriteria === "cost") {
@@ -153,8 +192,43 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
         }
       });
       setSortedData(sorted);
-    }, [patch, sortingCriteria]);
+    }, [sortingCriteria,patch])
     
+    useEffect(()=>{
+      const sorted=[...(pro)].sort((a,b)=>{
+        if(typ=="cost"){
+          if(accsortingCriteria==="des"){
+            return b.cost - a.cost;
+          }else if(accsortingCriteria==="ass"){
+            return a.cost - b.cost;
+          }
+          else{
+            return 0; // Default to no sorting
+            }
+        }
+        else if(typ=="count"){
+          if(accsortingCriteria==="des"){
+            return b.count - a.count;
+          }else if(accsortingCriteria==="ass"){
+            return a.count - b.count;
+          }
+          else{
+            return 0; // Default to no sorting
+            }
+        }
+        else{
+          if(accsortingCriteria==="des"){
+            return (b.cost)*(b.count) - (a.cost)*(a.count);
+          }else if(accsortingCriteria==="ass"){
+            return (a.cost)*(a.count) - (b.cost)*(b.count);
+          }
+          else{
+            return 0; // Default to no sorting
+            }
+        }
+      })
+      setsorted(sorted)
+    },[accsortingCriteria,pro])
     return (
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button">
@@ -217,7 +291,9 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <option value="Logout">Logout</option>
             </select>
             )}
-            
+             {localStorage.getItem('type') === 'access' && (  
+              <button onClick={handlelogout}>Logout</button>
+             )} 
           </div>
         {localStorage.getItem('type') === 'buyer' && ( 
           <>
@@ -302,7 +378,40 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
       </table>
 
         </>
-          )}
+          )} 
+          
+          {localStorage.getItem('type') === 'access' && (
+       <> 
+        <select
+          value={accsortingCriteria}
+          onChange={handleSortingChange1}
+          style={{ height: '35px',backgroundColor: "#6666ff",borderRadius:"5px"
+            ,marginRight:"5px",color: "white",marginLeft:"1100px"}}
+        > <option value="">Sort</option>
+          <option value="ass">Ascending</option>
+          <option value="des">Descending </option>
+          
+        </select> 
+        <br/>
+        <br/>
+      <table className="purchase-history-table">
+          <thead>
+           <tr>
+            <th>Topic</th>
+            <th>{typ}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(sorted).map((item, index) => (
+            <tr key={index}>
+              <td>{item.topic}</td> 
+              <td>{typ === 'cost' ? item.cost : typ === 'count' ? item.count:item.count*item.cost}</td>        
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </>
+      )}
         </div>
        
       </div>

@@ -3,6 +3,9 @@ package com.example.demo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.Access.access;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -72,7 +75,7 @@ private void sendEmail(String toEmail, String username, String password) {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-        message.setSubject("Registration Successful");
+        message.setSubject("Reset Password");
         message.setText("Dear User,\n\nYour Reset is successful!\n\nUsername: " + username + "\nPassword: " + password);
 
         // Send the message
@@ -113,6 +116,35 @@ private void sendEmail(String toEmail, String username, String password) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         
 }
+@PostMapping("/pass/access")  
+    public ResponseEntity<String> registerAccess(@RequestBody access request) {
+        String username = request.getUsername();
+        String email = request.getEmail();
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT password FROM access WHERE username = ? AND email = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, email);
+         ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                // Password found in the database
+                System.out.println(password);
+                password = resultSet.getString("password");
+                sendEmail(email,username, password);
+                return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
+            }
+            else{
+                System.out.println(username);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); 
 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(email);
+            // Handle any SQL-related errors here
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        
+}
 }
 
