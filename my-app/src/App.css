@@ -441,3 +441,16 @@ align-items: center;
   font-size: 12px; /* Adjust the font size as needed */
   z-index: 1; /* Ensure the label is above the card image */
 }
+.registration-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.individual-registration, .company-registration {
+  flex-basis: 50%; /* Adjust this value to control the width of each part */
+}
+
+/* Style the buttons within the individual and company parts */
+.individual-registration button, .company-registration button {
+  margin: 5px;
+}

@@ -68,7 +68,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 }        
                 console.log(selectedValue)
             }
-            else{ 
+            else if(selectedValue=="seller"){ 
                 if (!username || !password || !conpassword || !email || !name || !num || !comaddress || !company) {
                     enqueueSnackbar("Please fill in all required fields", { variant: "error" });
                     return;
@@ -95,7 +95,34 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             }        
             console.log(selectedValue)
               }
+            else{
+                if (!username || !password || !conpassword || !email || !num || !comaddress || !company) {
+                    enqueueSnackbar("Please fill in all required fields", { variant: "error" });
+                    return;
+                }
+                const response = await fetch(`http://localhost:8080/api/register/${selectedValue}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({name,num,company,username, password,conpassword,email,address,comaddress}),
+                credentials: 'include',
+              });
+              if (response.ok) {
+                enqueueSnackbar("Registration Successful", { variant: "success" });
                 
+                console.log(response); 
+                console.log(username,password);
+                onRegister();
+            } else if (response.status === 409) {
+                const errorData = await response.json();
+                enqueueSnackbar(errorData.error, { variant: "error" });
+            } else {
+                enqueueSnackbar("Registration Failed", { variant: "error" });
+            }        
+            console.log(selectedValue)
+              }
+              
               
         };
         
@@ -258,14 +285,16 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
           };
     return ( 
         <div style={{ 
-          backgroundImage: `url(${backpic})` 
+          backgroundImage: `url(${backpic})` ,minHeight: "110vh"
         }}>
             <div className="app">
                 <div className="login-page">
                 <h2>Register</h2> 
                 <div className="con">
-                {localStorage.getItem('type') === 'seller' && (
+                {localStorage.getItem('type') !== 'buyer' && (
                     <>
+                    {localStorage.getItem('type') !== 'company' && ( 
+                        <>
                 <input
                 type="text"
                 placeholder="Name"
@@ -273,7 +302,9 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 style={inputStyle4}
                 onChange={handleChange5}               
                 />
-                <div style={errorStyle}>{error4}</div>
+                <div style={errorStyle}>{error4}</div> 
+                </>
+                    )}
                 <input
                 type="text"
                 placeholder="Contact Number"
@@ -327,7 +358,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 onChange={handleChange3}
                 style={inputStyle3}
                 />
-                {localStorage.getItem('type') === 'seller' && (
+                {localStorage.getItem('type') !== 'buyer' && (
                 <input
                 type="text"
                 placeholder="Company Address"
@@ -336,6 +367,8 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 onChange={handleChange8}           
                 />
                 )}
+                 {localStorage.getItem('type') !== 'company' && ( 
+                    <>
                 <div style={errorStyle}>{error3}</div>
                 <input
                 type="text"
@@ -343,7 +376,8 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 value={address}
                 onChange={handleChange4}              
                 />
-                
+                </>
+                 )}
                 </div>
                <button onClick={handleRegister} className="lob">
                 Register</button> 

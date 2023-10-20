@@ -19,7 +19,13 @@ function Start({toregister,tologin,startmen}){
         if(key==2)
         localStorage.setItem('type',"buyer");
         else if(key==1)
-        localStorage.setItem('type',"seller"); 
+        localStorage.setItem('type',"seller");
+        else if(key==0){
+        localStorage.setItem('type',"company");  
+        }
+        else if(key==4){
+          localStorage.setItem('type',"companyaccess"); 
+        }
         else
         localStorage.setItem('type',"access");
     }
@@ -27,6 +33,9 @@ function Start({toregister,tologin,startmen}){
         toregister();
         if(key==2)
         localStorage.setItem('type',"buyer");
+        else if(key==0){
+        localStorage.setItem('type',"company");  
+        }
         else
         localStorage.setItem('type',"seller");
     }
@@ -50,7 +59,7 @@ function Start({toregister,tologin,startmen}){
       )
       : [];
     return (
-        <div style={{ backgroundImage: `url(${backpic})` , minHeight: "980vh" }}> 
+        <div style={{ backgroundImage: `url(${backpic})` , minHeight: "1080vh" }}> 
         <div className="logout-button">
           <button onClick={() =>handletoregister(2) }>Register</button>
            <button onClick={() =>handletologin(2)}>Login</button>       
@@ -73,24 +82,62 @@ function Start({toregister,tologin,startmen}){
         <div className="video-container">
           <ReactPlayer ref={playerRef} url={VIDEO_PATH} controls={true} /> 
         </div>
-        <div style={{textAlign:"center"}}>
+        <div style={{ textAlign: "center" }}> 
+        
         <h2>Want To Sell Your Product In Our Website: <br/>
-         
+        {/* <div>
+           <h4>As Individual:</h4>
         <button className="lob" onClick={() => handletoregister(1)}>
                 Register</button>
         <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(1)}>
                 Login</button>
-                 </h2>
+                </div>
+                <div>       
+                 <h4>As Company:</h4>
+        <button className="lob" onClick={() => handletoregister(0)}>
+                Register</button>
+        <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(0)}>
+                Login</button> 
+                </div>   */}
+                 <div class="registration-container">
+                  <div class="individual-registration">
+                    <h4>As Individual:</h4>
+                    <button className="lob" onClick={() => handletoregister(1)}>Register</button>
+                    <button className="lob" onClick={() => handletologin(1)}>Login</button>
+                  </div>
+                  <div class="company-registration">
+                    <h4>As Company:</h4>
+                    <button className="lob" onClick={() => handletoregister(0)}>Register</button>
+                    <button className="lob" onClick={() => handletologin(0)}>Login</button>
+                  </div>
+                </div>
+                 </h2> 
                  </div>
-        <div style={{textAlign:"center"}}>
+        {/* <div style={{textAlign:"center"}}>
         <h2>Are You a Database Viewer?<br/>
-        <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(3)}>
+        <h4>Individual:</h4>
+        <button className="lob" style={{marginLeft: '0px'}}  onClick={() => handletologin(3)}>
+                Login</button>
+                <h4>Company:</h4>
+        <button className="lob" style={{marginLeft: '0px'}}  onClick={() => handletologin(4)}>
                 Login</button>
                  </h2>
-                 </div> 
-        </div> 
-        
-        
+                 </div>  */}
+                 <div style={{textAlign:"center"}}>
+                  <h2>Are You a Database Viewer?</h2>
+                  <div class="registration-container">
+                  <div class="individual-registration">
+                      <h4>Individual:</h4>
+                      <button className="lob" style={{ marginLeft: '0px' }} onClick={() => handletologin(3)}>Login</button>
+                    </div>
+                    <div class="company-registration">
+                      <h4>Company:</h4>
+                      <button className="lob" style={{ marginLeft: '0px' }} onClick={() => handletologin(4)}>Login</button>
+                    </div>
+                  </div>
+                </div>
+
+        </div>     
     )
 }
 export default Start;

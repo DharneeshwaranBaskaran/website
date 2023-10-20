@@ -14,10 +14,10 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
   const [pro,setpro]=useState([]);
   const username = localStorage.getItem('username'); 
   const [selectedPerson, setSelectedPerson] = useState(''); 
-  let type=localStorage.getItem('type');
+  let typeo=localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortingCriteria, setSortingCriteria] = useState(""); 
-  
+  const [personSortingCriteria, setPersonSortingCriteria] = useState('');
   const [accsortingCriteria, setAccSortingCriteria] = useState("");
   const [sortedData, setSortedData] = useState([]); 
   const [sorted,setsorted] = useState([]); 
@@ -66,7 +66,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     },[username]); 
     
     useEffect(() => {
-      axios.get(`http://localhost:8080/api/access/${username}`)
+      axios.get(`http://localhost:8080/api/${typeo}/${username}`)
         .then((response) => {
           setdata(response.data); 
           setprov(response.data[0]?.provider); 
@@ -96,7 +96,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     let backButton = null;
     let addButton = null;
     let draftButton = null;
-      if (type=="buyer") { 
+      if (typeo=="buyer") { 
         backButton = (
           <button onClick={redirecttocart}>View Cart</button>
          );
@@ -166,17 +166,23 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     setAccSortingCriteria(event.target.value);
     count=count+1;
   };
+  const filterData = (data, query) => {
+    return data.filter((item) =>
+      item.topic.toLowerCase().includes(query.toLowerCase())
+    );
+  };
     useEffect(()=>{
-      const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
-      const filterdata=Data.filter(item => {
-        const lowerCaseTopic = item.topic.toLowerCase();
-        const lowerCaseCategory = item.person.toLowerCase();
-        const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
-        return matchesSearchQuery && matchesCategory;
-      });   
-      setpatch(filteredData && filterdata);
-    },[Data])
+      // const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
+      // const filterdata=Data.filter(item => {
+      //   const lowerCaseTopic = item.topic.toLowerCase();
+      //   const lowerCaseCategory = item.person.toLowerCase();
+      //   const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
+      //   const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
+      //   return matchesSearchQuery && matchesCategory;
+      // });   
+      // setpatch(filteredData && filterdata);
+      setpatch(filterData(Data, searchQuery));
+    },[Data,searchQuery])
     useEffect(() => {
       const sorted = [...(patch)].sort((a, b) => {
         if (sortingCriteria === "cost") {
@@ -238,7 +244,6 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
           
       
     <select 
-            // value={selectedCategory} 
             onChange={handleChange} 
             style={{ backgroundColor: "#6666ff", color: "white", 
             border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
@@ -249,7 +254,6 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             </select>
     
         <select 
-        // value={selectedCategory} 
         onChange={handleCategoryChange} 
          style={{ backgroundColor: "#6666ff", color: "white", 
          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
@@ -261,7 +265,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
           </select>
           </>
         )}
-            {localStorage.getItem('type') === 'seller' && (
+            {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
             <>
             
             <select
@@ -291,7 +295,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <option value="Logout">Logout</option>
             </select>
             )}
-             {localStorage.getItem('type') === 'access' && (  
+             {(localStorage.getItem('type') === 'access'||localStorage.getItem('type') === 'companyaccess') && (  
               <button onClick={handlelogout}>Logout</button>
              )} 
           </div>
@@ -322,7 +326,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
               <source src={Video} type="video/mp4" />
             </video>
           </center> */}
-          {localStorage.getItem('type') === 'seller' && (
+          {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
       <>
          <h2 style={{marginLeft:"10px"}}>SOLD HISTORY:</h2> 
          <div className="search-container">
@@ -343,7 +347,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
           <option value="count">By Count</option>
           <option value="revenue">By Revenue</option>
         </select>
-        <select 
+        {/* <select 
             style={{ height: '35px',backgroundColor: "#6666ff",borderRadius:"5px"
             ,marginRight:"5px",color: "white",marginLeft:"10px"}}
             value={selectedPerson}
@@ -353,7 +357,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <option value="men">Men</option>
             <option value="women">Women</option>
             <option value="kid">Kids</option>
-          </select>
+          </select> */}
         </div>
         
          <table className="purchase-history-table">
@@ -380,7 +384,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
         </>
           )} 
           
-          {localStorage.getItem('type') === 'access' && (
+          {(localStorage.getItem('type') === 'access'||localStorage.getItem('type') === 'companyaccess') && (
        <> 
         <select
           value={accsortingCriteria}

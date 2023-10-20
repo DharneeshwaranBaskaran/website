@@ -10,7 +10,8 @@ import Payment from "./payment";
 import { SnackbarProvider } from "notistack";  
 import Add from "./add";
 import History from "./history";
-import Start from "./start";
+import Start from "./start";  
+import Edit from "./edit";
 function App() {
   const [istart,setistart]=useState(false);
   const [isAuthenticated, setisAuthenticated] = useState(false);
@@ -20,7 +21,8 @@ function App() {
   const [isCart,setisCart]=useState(false);  
   const [isPay,setisPay]=useState(false);
   const [isHistory,setisHistory]=useState(false);
-  const [isBalance,setisBalance]=useState(false);
+  const [isBalance,setisBalance]=useState(false); 
+  const [isedit,setisedit]=useState(false);
   const handlebacktohome=()=>{
     setisCart(false);
     setMend(false);
@@ -152,8 +154,13 @@ function App() {
     setisRegistered(true);
   }
     const handleEdit=()=>{  
-    setisHistory(false);
-    } 
+    setisedit(true); 
+    setisBalance(true);
+    }  
+    const Editback=()=>{
+      setisedit(false); 
+      setisBalance(false);
+    }
     const payhome=()=>{
       setisCart(true);
     setMend(true);
@@ -185,8 +192,12 @@ function App() {
               {!isHistory?
                   <Payment full={handlebacktohomefrompay}/>
                   :<>{!isBalance?
-                       <History his={handlebacktohomefromhis} histocart={HistorytoCart} edit={handleEdit}/>:
-                          <Add  backpay={backtohome}  backcart={backtocart} dtod={drafttodata}/>}
+                       <History his={handlebacktohomefromhis} histocart={HistorytoCart} edit={handleEdit}/>
+                       :<>{!isedit?
+                         <Add  backpay={backtohome}  backcart={backtocart} dtod={drafttodata}/>:
+                            <Edit editback={Editback}/>
+                            }</>
+                          }
                           </> 
                         }
                   </>

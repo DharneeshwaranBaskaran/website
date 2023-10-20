@@ -158,7 +158,7 @@ else{
         </tbody>
       </table>
       {backButton}
-      {localStorage.getItem('type') =="seller" && (
+      {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
         <>
         <h2>PRODUCTS:</h2>
         <table className="purchase-history-table">

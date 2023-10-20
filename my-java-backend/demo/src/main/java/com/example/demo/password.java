@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.Access.access;
+import com.example.demo.Companyaccess.companyaccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -122,6 +123,36 @@ private void sendEmail(String toEmail, String username, String password) {
         String email = request.getEmail();
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "SELECT password FROM access WHERE username = ? AND email = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, email);
+         ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                // Password found in the database
+                System.out.println(password);
+                password = resultSet.getString("password");
+                sendEmail(email,username, password);
+                return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
+            }
+            else{
+                System.out.println(username);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); 
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(email);
+            // Handle any SQL-related errors here
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        
+} 
+@PostMapping("/pass/companyaccess")  
+    public ResponseEntity<String> registerCompanyAccess(@RequestBody companyaccess request) {
+        String username = request.getUsername();
+        String email = request.getEmail();
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT password FROM companyaccess WHERE username = ? AND email = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, email);

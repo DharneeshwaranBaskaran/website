@@ -66,9 +66,9 @@ function Add({backpay,backcart,dtod}) {
     }; 
     
     
-    if (localStorage.getItem('type')=="seller") { 
+    // if (localStorage.getItem('type')=="seller") { 
       
-        }
+    //     }
         const addBalance=()=>{ 
           const amountToAdd = parseFloat(inputValue);
 
@@ -134,7 +134,7 @@ function Add({backpay,backcart,dtod}) {
     </div>
     </>
     )}
-    {localStorage.getItem('type') =="seller" && (
+    {localStorage.getItem('type') !=="buyer" && (
         <div className='app'>
         <div className="login-page" style={{backgroundColor:"white"}}> 
                 <h2>LAUNCH PRODUCT</h2> 

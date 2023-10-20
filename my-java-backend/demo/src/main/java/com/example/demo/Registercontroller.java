@@ -104,7 +104,51 @@ public class Registercontroller {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
             }
     }
-    
+    @PostMapping("/register/company")    
+    public ResponseEntity<String> logincompany(@RequestBody company request) {
+            String username = request.getUsername();
+            String password = request.getPassword();
+            
+            String email=request.getEmail();  
+            
+            Long num=request.getNum();
+            String comaddress=request.getComaddress(); 
+            String company=request.getCompany();
+           
+            
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                String checkUsernameQuery = "SELECT * FROM company WHERE username = ?";
+                PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
+                checkUsernameStatement.setString(1, username);
+                if (checkUsernameStatement.executeQuery().next()) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
+                }
+                String sql = "INSERT INTO company (username, password,email,num,comaddress,company) VALUES (?,?,?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, username);
+                preparedStatement.setString(2, password); 
+               
+                preparedStatement.setString(3, email);  
+                
+                preparedStatement.setLong(4, num);
+                preparedStatement.setString(5, comaddress);
+                preparedStatement.setString(6, company);
+                
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("Data inserted successfully.");
+                    return ResponseEntity.ok("Registered successful");
+                    
+                } else {
+                    System.out.println("Data insertion failed.");
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Data Insertion failed\"}");
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+            }
+    }
     public static String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder randomString = new StringBuilder();

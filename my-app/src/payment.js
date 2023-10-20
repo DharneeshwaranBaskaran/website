@@ -25,7 +25,11 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         // console.error('Error fetching data:', error);
       });
   }, [Username]);
-  const handleRegister = async (event) => {
+  
+    const selectedValue=localStorage.getItem("type");
+ 
+  const handleRegister = async (event) => { 
+        if(selectedValue=="seller"){
         const response = await fetch(`http://localhost:8080/api/register/access`, {
           method: 'POST',
           headers: {
@@ -46,7 +50,29 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         } else {
             enqueueSnackbar("Registration Failed", { variant: "error" });
         }        
-        
+      }
+      else{
+        const response = await fetch(`http://localhost:8080/api/register/companyaccess`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username,email,type,provider:Username}),
+          credentials: 'include',
+        });
+        if (response.ok) {
+            enqueueSnackbar("Access Given Successfully", { variant: "success" });
+            full();
+            console.log(response); 
+            
+            
+        } else if (response.status === 409) {
+            const errorData = await response.json();
+            enqueueSnackbar(errorData.error, { variant: "error" });
+        } else {
+            enqueueSnackbar("Registration Failed", { variant: "error" });
+        }        
+      }
   }
   const handleChange3 = (e) => {
     const value = e.target.value;
@@ -78,10 +104,10 @@ return(
    
       </div>
   )}
-  {localStorage.getItem('type') === 'seller' && ( 
+  {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && ( 
     <div className="app">
     <div className="login-page" style={{backgroundColor:"white"}}> 
-    <h2>Edit Product</h2> {Username}
+    <h2>Give Access</h2> {Username}
               <input
                 type="text"
                 placeholder="Username"

@@ -53,14 +53,26 @@ public class HistoryCartRetained {
                         if (resultSet1.next()) {
                             lastId = resultSet1.getInt(1);
                         }
-                        
+                        String checkHistorySql = "SELECT * FROM history WHERE topic = ? AND description = ?";
+                        PreparedStatement checkHistoryStatement = connection.prepareStatement(checkHistorySql);
+                        checkHistoryStatement.setString(1, resultSet.getString("topic"));
+                        checkHistoryStatement.setString(2, resultSet.getString("description"));
+                        ResultSet historyResultSet = checkHistoryStatement.executeQuery();
+                    
+                        if (historyResultSet.next()) {
+                            // Matching record found in history, set cost without modification
+                            insertStatement.setDouble(3, resultSet.getDouble("cost"));
+                        } else {
+                            // No matching record found, set cost with modification
+                            insertStatement.setDouble(3, (resultSet.getDouble("cost")) * 10 / 9);
+                        }
                         // Step 2: Increment the last ID to get the new ID
                         int newId = lastId + 1;
                         String itemName = resultSet.getString("topic");
                         int itemCount = resultSet.getInt("count");
                         insertStatement.setString(1, resultSet.getString("topic"));
                         insertStatement.setString(2, resultSet.getString("description"));
-                        insertStatement.setDouble(3, (resultSet.getDouble("cost"))*10/9);
+                       // insertStatement.setDouble(3, (resultSet.getDouble("cost"))*10/9);
                         insertStatement.setInt(4, resultSet.getInt("count"));
                         insertStatement.setString(5, resultSet.getString("username"));
                         insertStatement.setBoolean(6, resultSet.getBoolean("state"));

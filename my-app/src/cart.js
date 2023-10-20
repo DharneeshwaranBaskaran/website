@@ -232,7 +232,7 @@ return (
     </div>
     </>
     )}
-    {localStorage.getItem('type') === 'seller' && (
+    {localStorage.getItem('type') !== 'buyer' && (
       <>
     <table className="purchase-history-table">
         <thead>
