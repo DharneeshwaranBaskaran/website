@@ -14,6 +14,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
     const [password, setPassword] = useState(''); 
     const [conpassword, setConPassword] = useState(''); 
     const [address,setAddress]=useState('');
+    const [website,setWebsite]=useState('');
     const [comaddress,setcomAddress]=useState('');
     const [company,setCompany]=useState('');
     const [num,setnum]=useState(''); 
@@ -96,7 +97,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             console.log(selectedValue)
               }
             else{
-                if (!username || !password || !conpassword || !email || !num || !comaddress || !company) {
+                if (!username || !password || !conpassword || !email || !num || !comaddress || !company ||!website) {
                     enqueueSnackbar("Please fill in all required fields", { variant: "error" });
                     return;
                 }
@@ -105,7 +106,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({name,num,company,username, password,conpassword,email,address,comaddress}),
+                body: JSON.stringify({num,company,username, password,conpassword,email,comaddress,website}),
                 credentials: 'include',
               });
               if (response.ok) {
@@ -257,6 +258,10 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             const value = e.target.value;
             setcomAddress(value);
            };
+           const handleChange9 = (e) => {
+            const value = e.target.value;
+            setWebsite(value);
+           };
            const redirectinglogin =()=>{
             redirectlogin();
         }
@@ -350,7 +355,16 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 style={inputStyle2}
                 />
                 <div style={errorStyle}>{error2}</div>
-
+                {localStorage.getItem('type') !== 'buyer' && (
+                <input
+                type="text"
+                placeholder="Company Email"
+                value={email}
+                onChange={handleChange3}
+                style={inputStyle3}
+                />
+                )}
+                {localStorage.getItem('type') === 'buyer' && (
                 <input
                 type="text"
                 placeholder="Email"
@@ -358,6 +372,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 onChange={handleChange3}
                 style={inputStyle3}
                 />
+                )}
                 {localStorage.getItem('type') !== 'buyer' && (
                 <input
                 type="text"
@@ -375,6 +390,17 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 placeholder="Personal Address"
                 value={address}
                 onChange={handleChange4}              
+                />
+                </>
+                 )} 
+                 {localStorage.getItem('type') === 'company' && ( 
+                    <>
+               
+                <input
+                type="text"
+                placeholder="Website"
+                value={website}
+                onChange={handleChange9}              
                 />
                 </>
                  )}

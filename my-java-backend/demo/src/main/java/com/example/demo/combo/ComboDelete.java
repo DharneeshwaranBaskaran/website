@@ -38,6 +38,7 @@ public class ComboDelete {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println(e);
             return ResponseEntity.status(500).body("Error deleting product");
         }
     }

@@ -10,11 +10,14 @@ function Men({menex,backhome}) {
   const { enqueueSnackbar } = useSnackbar();
     let num=1;
     const [selectedCategory, setSelectedCategory] = useState(''); 
-    
+    const [showModal, setShowModal] = useState(false);
     let per="";
     let fil1="";
     let fil2="";
     let fil3="";
+    const toggleModal = () => {
+      setShowModal(!showModal);
+    };
     const target = localStorage.getItem('myRef');
     const [data, setData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +65,7 @@ function Men({menex,backhome}) {
           });
   }, [per]);
     
-   
+    const f=data.filter(item =>item.count == 0);
     const filteredData = data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
     const filterdata=data.filter(item => {
       const lowerCaseTopic = item.topic.toLowerCase();
@@ -87,6 +90,7 @@ function Men({menex,backhome}) {
             <MenuItem value={fil3}>{fil3}</MenuItem>
           </Select>
             <button onClick={handlebackhome}>Back</button>
+            <button onClick={toggleModal}>Offer Products</button>
           </div>
           
           <div className="search-container">
@@ -101,7 +105,18 @@ function Men({menex,backhome}) {
         </div> 
         
         <div className='class-contain'>
-          
+        {showModal &&(<>
+        {(filteredData && filterdata && f).map((item, index)  => (
+          <CustomCard
+            key={index}
+            item={item}
+            handleView={(itemName) => handlemenex(itemName)}
+            showButton={true}
+          />
+        ))}
+        </>
+        )}
+          {!showModal &&(<>
         {(filteredData && filterdata).map((item, index)  => (
           <CustomCard
             key={index}
@@ -110,7 +125,8 @@ function Men({menex,backhome}) {
             showButton={true}
           />
         ))}
-        
+        </>
+        )}
       </div>
       <br/>   
     </div>    

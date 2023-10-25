@@ -31,12 +31,12 @@ public class accessinsert {
     String type=request.getType(); 
     String password=generateRandomString(6);
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        // String checkUsernameQuery = "SELECT * FROM users WHERE email = ?";
-        //         PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
-        //         checkUsernameStatement.setString(1, email);
-        //         if (checkUsernameStatement.executeQuery().next()) {
-        //             return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
-        //         }
+        String checkUsernameQuery = "SELECT * FROM access WHERE username = ?";
+        PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
+        checkUsernameStatement.setString(1, username);
+        if (checkUsernameStatement.executeQuery().next()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
+        }
         String sql = "INSERT INTO access (username,password,type,email,provider) VALUES (?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username);

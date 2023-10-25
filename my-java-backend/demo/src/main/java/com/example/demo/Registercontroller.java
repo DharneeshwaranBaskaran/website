@@ -114,7 +114,7 @@ public class Registercontroller {
             Long num=request.getNum();
             String comaddress=request.getComaddress(); 
             String company=request.getCompany();
-           
+            String website=request.getWebsite();
             
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String checkUsernameQuery = "SELECT * FROM company WHERE username = ?";
@@ -123,7 +123,7 @@ public class Registercontroller {
                 if (checkUsernameStatement.executeQuery().next()) {
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
                 }
-                String sql = "INSERT INTO company (username, password,email,num,comaddress,company) VALUES (?,?,?,?,?,?)";
+                String sql = "INSERT INTO company (username, password,email,num,comaddress,company,website) VALUES (?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(sql);
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password); 
@@ -132,7 +132,9 @@ public class Registercontroller {
                 
                 preparedStatement.setLong(4, num);
                 preparedStatement.setString(5, comaddress);
-                preparedStatement.setString(6, company);
+                preparedStatement.setString(6, company); 
+                preparedStatement.setString(7, website); 
+                
                 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {

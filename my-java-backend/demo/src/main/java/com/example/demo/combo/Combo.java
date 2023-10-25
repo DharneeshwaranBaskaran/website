@@ -1,14 +1,16 @@
 package com.example.demo.combo;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+import com.example.demo.seller;
 import com.example.demo.Comment;
 import com.example.demo.User;
 import com.example.demo.History.HistoryItem;
@@ -39,14 +41,20 @@ public class Combo {
     private String person;  
     
     private Boolean state; 
-    private String seller; 
+     @ManyToOne
+    private seller seller;
     private int count;
-    @OneToMany(mappedBy = "combo")
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistoryItem> historyItems;
-
-    @OneToMany(mappedBy = "combo")
+    
+    @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
-    // Constructors, getters, and setters
+
+    public void setSeller(String string) {
+    }
+
+    // public void setSeller(String string) {
+    // }
     
     
     

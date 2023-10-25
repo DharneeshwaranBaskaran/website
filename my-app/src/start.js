@@ -85,20 +85,7 @@ function Start({toregister,tologin,startmen}){
         <div style={{ textAlign: "center" }}> 
         
         <h2>Want To Sell Your Product In Our Website: <br/>
-        {/* <div>
-           <h4>As Individual:</h4>
-        <button className="lob" onClick={() => handletoregister(1)}>
-                Register</button>
-        <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(1)}>
-                Login</button>
-                </div>
-                <div>       
-                 <h4>As Company:</h4>
-        <button className="lob" onClick={() => handletoregister(0)}>
-                Register</button>
-        <button className="lob" style={{marginLeft: '25px'}}  onClick={() => handletologin(0)}>
-                Login</button> 
-                </div>   */}
+       
                  <div class="registration-container">
                   <div class="individual-registration">
                     <h4>As Individual:</h4>
@@ -113,18 +100,9 @@ function Start({toregister,tologin,startmen}){
                 </div>
                  </h2> 
                  </div>
-        {/* <div style={{textAlign:"center"}}>
-        <h2>Are You a Database Viewer?<br/>
-        <h4>Individual:</h4>
-        <button className="lob" style={{marginLeft: '0px'}}  onClick={() => handletologin(3)}>
-                Login</button>
-                <h4>Company:</h4>
-        <button className="lob" style={{marginLeft: '0px'}}  onClick={() => handletologin(4)}>
-                Login</button>
-                 </h2>
-                 </div>  */}
+        
                  <div style={{textAlign:"center"}}>
-                  <h2>Are You a Database Viewer?</h2>
+                  <h2>Are You a Admin?</h2>
                   <div class="registration-container">
                   <div class="individual-registration">
                       <h4>Individual:</h4>

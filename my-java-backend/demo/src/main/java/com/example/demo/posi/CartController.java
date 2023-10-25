@@ -100,7 +100,8 @@ public class CartController {
                 return ResponseEntity.badRequest().body("Combo not found for the given topic.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
+            System.out.println(e);
             return ResponseEntity.badRequest().body("Data insertion failed");
         }
     }

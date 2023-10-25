@@ -117,7 +117,7 @@ function Menext({back,cart,rechome,star}) {
                     }
                 })
                 .catch(error => {
-                   
+                   enqueueSnackbar(error);
                 });
     
           existingCartItems.push(cartItem);

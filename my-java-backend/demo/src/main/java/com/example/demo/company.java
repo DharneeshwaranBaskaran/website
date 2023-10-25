@@ -19,11 +19,10 @@ public class company {
     private String username;  
     private String password;  
     private String email;
-   
     private String comaddress;
-  
     private String company;
     private Long num;
+    private String website;
 
     // Constructors, getters, and setters
 }

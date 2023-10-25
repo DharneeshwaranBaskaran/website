@@ -35,8 +35,20 @@ function Add({backpay,backcart,dtod}) {
       }); 
       
       if (response.ok ) {  
-          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-          backpay();   
+         
+          const response1 = await fetch('http://localhost:8080/api/mail', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
+            credentials: 'include',
+          });  
+          if(response1.ok){
+            enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+            backpay();   
+          }
+          
           }
       else if (response.status === 409) {
               const errorData = await response.json();
@@ -54,8 +66,19 @@ function Add({backpay,backcart,dtod}) {
       }); 
       
       if (response.ok ) {
-        enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-        backpay();
+        
+        const response1 = await fetch('http://localhost:8080/api/mail', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
+          credentials: 'include',
+        });  
+        if(response1.ok){
+          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+          backpay();   
+        }
         
           }
       else if (response.status === 409) {
