@@ -1,8 +1,10 @@
 import React, { useState,useEffect } from "react";
 import { useSnackbar } from "notistack";
 import axios from 'axios';
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function Payment({full}) {
-
+  const navigate = useNavigate();
 let Username=localStorage.getItem('username');
 const [Balance,setBalance]=useState(0);
 const { enqueueSnackbar } = useSnackbar();
@@ -10,9 +12,10 @@ const [cost,setcost]=useState();
 const [email,setEmail]=useState('');
 const [username, setUsername] = useState('');
 const [type,setType]=useState('');
+const typeo=localStorage.getItem('type');
 const handlebacktohomefrompay=()=>{
   enqueueSnackbar("Redirecting to homepage",{variant:"default"});
-  full();
+  navigate(`/${typeo}/homepage`);
 }
 
 useEffect(() => {
@@ -40,7 +43,7 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         });
         if (response.ok) {
             enqueueSnackbar("Access Given Successfully", { variant: "success" });
-            full();
+            navigate(`/${typeo}/homepage`);
             console.log(response); 
             
             
@@ -62,7 +65,7 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         });
         if (response.ok) {
             enqueueSnackbar("Access Given Successfully", { variant: "success" });
-            full();
+            navigate(`/${typeo}/homepage`);
             console.log(response); 
             
             

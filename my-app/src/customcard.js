@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardMedia, Button, Typography,CardActions } from "@mui/material";
 import { FaStar } from 'react-icons/fa';
-
+import './App.css'; 
 function CustomCard({ item, handleView ,showButton}) {
   if (item.count == 0) { 
     

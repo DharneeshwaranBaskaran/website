@@ -1,7 +1,10 @@
 import React, { useState,useEffect } from "react";
 import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function Add({backpay,backcart,dtod}) {  
+  const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("");
     const [Balance,setBalance]=useState(0);
     const [cat,setcat]=useState('');
@@ -12,15 +15,16 @@ function Add({backpay,backcart,dtod}) {
     const [topic,settopic]=useState('');
     const [person,setperson]=useState('');
     let Username=localStorage.getItem('username');
+    const type=localStorage.getItem('type');
     const backtohomebal=()=>{
-        backpay();
+      navigate(`/${type}/homepage`);
         enqueueSnackbar("Back to Home",{variant:"default"});
     }
-    const drafttodata=()=>{
-      dtod();
-    }
+    // const drafttodata=()=>{
+    //   dtod();
+    // }
     const backtocart=()=>{
-      backcart(); 
+      navigate(`/${type}/cart`);
       enqueueSnackbar("Back to Cart",{variant:"default"});
     }
     
@@ -35,7 +39,8 @@ function Add({backpay,backcart,dtod}) {
       }); 
       
       if (response.ok ) {  
-         
+        enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+        navigate(`/${type}/homepage`);
           const response1 = await fetch('http://localhost:8080/api/mail', {
             method: 'POST',
             headers: {
@@ -44,11 +49,6 @@ function Add({backpay,backcart,dtod}) {
             body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
             credentials: 'include',
           });  
-          if(response1.ok){
-            enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-            backpay();   
-          }
-          
           }
       else if (response.status === 409) {
               const errorData = await response.json();
@@ -66,7 +66,8 @@ function Add({backpay,backcart,dtod}) {
       }); 
       
       if (response.ok ) {
-        
+         enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
+         navigate(`/${type}/homepage`);
         const response1 = await fetch('http://localhost:8080/api/mail', {
           method: 'POST',
           headers: {
@@ -74,11 +75,7 @@ function Add({backpay,backcart,dtod}) {
           },
           body: JSON.stringify({ cat,cost,description,rating,url,topic,person,seller:Username}),
           credentials: 'include',
-        });  
-        if(response1.ok){
-          enqueueSnackbar("Data Added Sucessfully",{ variant:"success" });  
-          backpay();   
-        }
+        }); 
         
           }
       else if (response.status === 409) {
@@ -88,10 +85,7 @@ function Add({backpay,backcart,dtod}) {
 
     }; 
     
-    
-    // if (localStorage.getItem('type')=="seller") { 
-      
-    //     }
+
         const addBalance=()=>{ 
           const amountToAdd = parseFloat(inputValue);
 
@@ -105,8 +99,7 @@ function Add({backpay,backcart,dtod}) {
               'Content-Type': 'application/json',
             },
           })
-          
-        backcart();  
+          navigate(`/${type}/cart`);
         enqueueSnackbar(`Balance Updated to ${newBalance}`,{variant:"success"});
         enqueueSnackbar("Back to Cart",{variant:"default"});
         }

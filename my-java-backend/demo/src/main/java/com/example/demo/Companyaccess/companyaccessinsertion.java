@@ -8,6 +8,7 @@ import com.example.demo.LoginRequest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import javax.mail.*;
@@ -38,14 +39,21 @@ public class companyaccessinsertion {
         if (checkUsernameStatement.executeQuery().next()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
         }
-        String sql = "INSERT INTO companyaccess (username,password,type,email,provider) VALUES (?,?,?,?,?)";
+        String findProviderIdQuery = "SELECT id FROM company WHERE username = ?";
+        PreparedStatement findProviderIdStatement = connection.prepareStatement(findProviderIdQuery);
+        findProviderIdStatement.setString(1, Provider);
+
+        ResultSet resultSet = findProviderIdStatement.executeQuery();
+        if (resultSet.next()) {
+            long providerId = resultSet.getLong("id");
+        String sql = "INSERT INTO companyaccess (username,password,type,email,provider,company_id) VALUES (?,?,?,?,?,?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username);
         preparedStatement.setString(2, password); 
         preparedStatement.setString(3, type);
         preparedStatement.setString(4, email);
         preparedStatement.setString(5, Provider);
-     
+        preparedStatement.setLong(6, providerId);
         int rowsAffected = preparedStatement.executeUpdate();
         if (rowsAffected > 0) {
             System.out.println("Data inserted successfully.");
@@ -56,12 +64,13 @@ public class companyaccessinsertion {
             System.out.println("Data insertion failed.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
         }
-    } catch (SQLException e) {
+    }} catch (SQLException e) {
             e.printStackTrace();
             String errorMessage = "An error occurred: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"" + errorMessage + "\"}");
-        } 
+        }
+    return null; 
     }
     public static String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

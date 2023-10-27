@@ -5,8 +5,11 @@ import CustomCard from "./customcard";
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import { useNavigate } from 'react-router-dom';
+import './App.css'; 
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function HomePage({click,tocart,reco,draft,addata,access}) {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);  
@@ -24,24 +27,28 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
   const [patch,setpatch]=useState([]); 
   const [prov,setprov]=useState('');
   const [typ,settye]=useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef();
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]; // Get the first selected file
+
+  if (file && file.type.startsWith('image/')) {
+    setSelectedFile(file); // Set the selected image file
+  } else {
+    console.error('Selected file is not a valid image.');
+  }
+  };
 
   let count=0;
-    const redirecttocart=()=>{
-       tocart(); 
-       enqueueSnackbar("Redirecting to cart",{ variant:"default"});
-    }; 
-    const redirecttodraft=()=>{
-      draft();
-    }
-    const redirecttoadd=()=>{
-      addata();
-    }
+   
    
     const handleRecommendation = (id)=>{
       
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"true");
-      reco();
+      // reco();
+      
+      navigate(`/${typeo}/menext`);
     }
     // const playerRef = useRef(null); 
     
@@ -93,25 +100,25 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     const uniqueItems = Items.filter((item, index, self) =>
     index === self.findIndex((t) => t.topic === item.topic)
     );  
-    let backButton = null;
-    let addButton = null;
-    let draftButton = null;
-      if (typeo=="buyer") { 
-        backButton = (
-          <button onClick={redirecttocart}>View Cart</button>
-         );
-          }
-         else{
-          backButton=(
-            <button onClick={redirecttocart}>Cart Details</button>
-          );
-          addButton=(
-            <button onClick={redirecttodraft}>ADD & REMOVE</button>
-          );
-          draftButton=(
-            <button onClick={redirecttoadd}>Draft</button>
-          );
-      }
+    // let backButton = null;
+    // let addButton = null;
+    // let draftButton = null;
+    //   if (typeo=="buyer") { 
+    //     backButton = (
+    //       <button onClick={redirecttocart}>View Cart</button>
+    //      );
+    //       }
+    //      else{
+    //       backButton=(
+    //         <button onClick={redirecttocart}>Cart Details</button>
+    //       );
+    //       addButton=(
+    //         <button onClick={redirecttodraft}>ADD & REMOVE</button>
+    //       );
+    //       draftButton=(
+    //         <button onClick={redirecttoadd}>Draft</button>
+    //       );
+    //   }
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
       localStorage.setItem("myRef",1);
@@ -123,8 +130,9 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
       localStorage.setItem("myRef",3);
     }
     console.log(event.target.value); 
-    
-    click();
+     
+    navigate(`/${typeo}/men`);
+    // click();
   };
   const handleChange = (event) => {  
     if(event.target.value=="No"){
@@ -137,26 +145,36 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
   const [selectedAction, setSelectedAction] = useState(""); // Default action
   const handleActionChange = (event) => {
     if(event.target.value=="Back"){
-      tocart(); 
+      // tocart(); 
+      
+      navigate(`/${typeo}/cart`);
       enqueueSnackbar("Redirecting to cart",{ variant:"default"});
     }
     else if(event.target.value=="Add")
-    draft();
+    
+    navigate(`/${typeo}/history`);
     else if(event.target.value=="Draft"){
-      addata();
+      
+      navigate(`/${typeo}/add`);
     }else if(event.target.value=="Access"){
-     access();
+    //  access();
+    
+    navigate(`/${typeo}/payment`);
     }
     else{
+      navigate("/start"); 
       localStorage.clear();
       window.location.reload()
       enqueueSnackbar("Logout Successful");
+      
     }
   }; 
   const handlelogout =()=>{
+    navigate("/start"); 
       localStorage.clear();
       window.location.reload()
       enqueueSnackbar("Logout Successful");
+      
   }
   const handleSortingChange = (event) => {
     setSortingCriteria(event.target.value);
@@ -199,7 +217,9 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
       });
       setSortedData(sorted);
     }, [sortingCriteria,patch])
-    
+    const handleRemoveImage = () => {
+      setSelectedFile(null); // Set the selected image to null to remove it
+    };
     useEffect(()=>{
       const sorted=[...(pro)].sort((a,b)=>{
         if(typ=="cost"){
@@ -283,7 +303,8 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             </select>
             </>
             )}
-            {localStorage.getItem('type') === 'buyer' && (
+            {localStorage.getItem('type') === 'buyer' && ( 
+              <>
             <select
             value={selectedAction}
             onChange={handleActionChange}
@@ -293,13 +314,30 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <option>Menu</option>
             <option value="Back">Cart</option>
             <option value="Logout">Logout</option>
-            </select>
+            </select> 
+            <div>
+            <input
+      type="file"
+      accept="image/*" // Specify the accepted file types
+      onChange={handleFileChange}
+      style={{ display: "none" }}
+      ref={fileInputRef}
+    />
+    <button onClick={() => fileInputRef.current.click()}>Select Image</button>
+    <button onClick={handleRemoveImage} >Remove Image</button>
+          </div> 
+          </>
             )}
              {(localStorage.getItem('type') === 'access'||localStorage.getItem('type') === 'companyaccess') && (  
               <button onClick={handlelogout}>Logout</button>
              )} 
           </div>
-        {localStorage.getItem('type') === 'buyer' && ( 
+        {localStorage.getItem('type') === 'buyer' && (  
+          <>
+          {/* <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" /> */}
+          {selectedFile && selectedFile.type.startsWith('image/') && (
+      <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" style={{ height: '50px' ,marginLeft:'100px'}}  />
+      )}
           <>
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
@@ -318,6 +356,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
        </>
             )}
        </> 
+       </>
       )}
           
         <div>

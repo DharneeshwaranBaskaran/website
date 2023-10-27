@@ -4,11 +4,13 @@ import { FaStar } from 'react-icons/fa';
 import ReactImageMagnify from "react-image-magnify";
 import { useSnackbar } from "notistack";
 import axios from 'axios';
-
+import './App.css'; 
 import { FiVideo, FiImage } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import ReactPlayer from 'react-player'; 
 function Menext({back,cart,rechome,star}) {
-
+  
+  const navigate = useNavigate();
     const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
     const videoId = videoUrl.split('v=')[1];
     const [showModal, setShowModal] = useState(false);
@@ -32,19 +34,21 @@ function Menext({back,cart,rechome,star}) {
     let Username=localStorage.getItem("username");
     let type=localStorage.getItem('type');
     const handleback=()=>{
-        back();
+      
+      navigate(`/${type}/men`);
     } 
     const tostart=()=>{
-       star();  
+      
+      navigate(`/${type}/register`);
        
        localStorage.setItem('type',"buyer"); 
        enqueueSnackbar("Register",{ variant:"default" });
     }
     const viewcart=()=>{
-      cart();
+      navigate(`/${type}/cart`);
     }
     const handlebackfromrec=()=>{
-      rechome();
+      navigate(`/${type}/homepage`); 
     }
     useEffect(() => {
       axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
@@ -54,7 +58,14 @@ function Menext({back,cart,rechome,star}) {
         .catch((error) => {
           console.error('Error fetching cart items:', error);
         });
-    }, [Username]);
+    }, [Username]); 
+    let weekends="";
+    if(localStorage.getItem("weekend")=="Yes"){
+      weekends="Yes";
+    }
+    else{
+      weekends="No";
+    }
     const handlecart = () => {
       if (count > 0) {
         const cartItem = {
@@ -67,7 +78,7 @@ function Menext({back,cart,rechome,star}) {
           url:imageData.url,
           person:imageData.person,
           seller:imageData.seller,
-          weekend:localStorage.getItem("weekend")
+          weekend:weekends
         };
 
         console.log(cartItem);
@@ -87,7 +98,7 @@ function Menext({back,cart,rechome,star}) {
                         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`, { variant:"success"}); 
                         console.log(cartItem);
                         setCount(0);
-                        cart();
+                        navigate(`/${type}/cart`);
                     } else {
                         
                     }
@@ -111,7 +122,7 @@ function Menext({back,cart,rechome,star}) {
                         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`, { variant:"success" }); 
                         console.log(cartItem);
                         setCount(0);
-                        cart();
+                        navigate(`/${type}/cart`);
                     } else {
                        
                     }
@@ -125,7 +136,7 @@ function Menext({back,cart,rechome,star}) {
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems)); 
  
         setCount(0);
-        cart(); 
+        navigate(`/${type}/cart`);  
         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`,{ variant:"success" });
       
         const username = localStorage.getItem('username');

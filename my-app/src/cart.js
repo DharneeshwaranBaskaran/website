@@ -1,6 +1,8 @@
 import React, { useState,useEffect } from "react";
 import { useSnackbar } from "notistack";
 import axios from 'axios';
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function Cart({backtohome,pay,history,balance}) {
 const { enqueueSnackbar } = useSnackbar();
  
@@ -12,8 +14,10 @@ let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
 const [Data,setData]=useState([]);
 const [searchQuery, setSearchQuery] = useState('');
-const handlebacktohome=()=>{
-  backtohome();
+const navigate = useNavigate(); 
+const type=localStorage.getItem("type")
+const handlebacktohome=()=>{ 
+  navigate(`/${type}/homepage`);
   enqueueSnackbar("Redirecting to homepage",{ variant:"default"});
 }
 useEffect(() => {
@@ -55,7 +59,7 @@ const handlePaymentandretain=()=>{
           })
 
           
-    pay(); 
+          navigate(`/${type}/payment`);
     enqueueSnackbar("Payment Sucessful",{variant:"success"}); 
     enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
   }
@@ -88,7 +92,7 @@ const handlePayment=()=>{
             },
           })
 
-    pay(); 
+          navigate(`/${type}/payment`); 
     enqueueSnackbar("Payment Successful",{ variant:"success" });
     enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
   } 
@@ -96,13 +100,79 @@ const handlePayment=()=>{
     enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
   } 
 }  
+const handlePayment1=()=>{
+  let total = 0;
+  for (const item of Items) {
+    total += item.cost * item.count;
+  }
+  if(total>100){
+    total=total*9/10;
+  }
+  if(Items.length === 0)
+  enqueueSnackbar("Your cart is empty",{ variant:"info" });
+  else if(Balance>total){
+    const newBalance = Balance - (total*9/10)-10;
+      axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
+          .then((response) => {
+              console.log(response.data);
+          })
+          .catch((error) => {
+              console.error('Error transferring data:', error);
+          });
+          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+
+          navigate(`/${type}/payment`);
+    enqueueSnackbar("Payment Successful",{ variant:"success" });
+    enqueueSnackbar(( total*1/10)+" Is the Loyalty points Added to balance");
+  } 
+  else{
+    enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
+  } 
+}  
+const handlePayment2=()=>{
+  let total = 0;
+  for (const item of Items) {
+    total += item.cost * item.count;
+  }
+  if(total>100){
+    total=total*9/10;
+  }
+  if(Items.length === 0 )
+  enqueueSnackbar("Your cart is empty",{ variant:"info" });
+  else if(total<50){
+    // const newBalance = Balance - (total*9/10)-10;
+      axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
+          .then((response) => {
+              console.log(response.data);
+          })
+          .catch((error) => {
+              console.error('Error transferring data:', error);
+          });
+          // axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          // })
+
+          navigate(`/${type}/payment`);
+    enqueueSnackbar("Purchase Successful",{ variant:"success" });
+    
+  } 
+  else{
+    enqueueSnackbar("The total should be less than $50 for payment later",{ variant:"warning"});
+  } 
+}  
 const handlehistory=()=>{
-  history(); 
+  navigate(`/${type}/history`); 
   enqueueSnackbar("Redirecting to History page",{variant:"default"});
 }
 
 const updateBalance = () => {
-  balance();
+  navigate(`/${type}/add`);
 }
 
 const calculateTotal = (cartItems) => {
@@ -141,7 +211,7 @@ const removeItemFromCart = (topic) => {
       .catch((error) => {
         console.log(error);
       }); 
-      backtohome(); 
+      navigate(`/${type}/homepage`); 
       enqueueSnackbar(topic+"removed from cart");
   };
   
@@ -225,6 +295,8 @@ return (
       <div className="cart-item-count">Available Balance:${Balance}</div>
       <div className="cart-buttons">
       {/* <button className="cart-button" onClick={handleloyalty}>Add Loyalty Points</button>  */}
+      <button className="cart-button" onClick={handlePayment2}>Buy Now pay Later</button>
+        <button className="cart-button" onClick={handlePayment1}>Express Delivery</button>
         <button className="cart-button" onClick={handlePaymentandretain}>Pay And Retain</button> 
         <button className="cart-button" onClick={handlePayment}>Pay</button>  
         <button onClick={updateBalance} className="cart-button">Add Balance</button>
@@ -256,6 +328,9 @@ return (
       </table>  
         </>)}
         
+    <p style={{marginLeft:20}}>*$10 Extra for Express Delivery</p>
+    <p style={{marginLeft:20}}>*Products will be delivered within 24 hours in Express Delivery</p>   
+    <p style={{marginLeft:20}}>*The total should be less than $50 for payment later</p> 
     </div>
   )
 }

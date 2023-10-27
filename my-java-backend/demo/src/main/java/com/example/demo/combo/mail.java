@@ -33,7 +33,8 @@ public class mail {
         String seller=request.getSeller();  
         String email=getSellerEmail(seller);
         if (email == null) {
-            // Handle the case where the seller is not found
+            // Handle the case where the seller is not found 
+            
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found");
         }else{
             sendEmail(email,topic,cost,seller);
@@ -53,6 +54,7 @@ public class mail {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println(e);
             // Handle any exceptions
         }
         return null; // Return null if the seller is not found

@@ -1,9 +1,13 @@
 import React, {useRef,useEffect, useState } from "react"; 
 import { useSnackbar } from "notistack";
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function Edit({editback}) { 
 const [cost,setcost] = useState(''); 
-const id=localStorage.getItem('edit'); 
+const id=localStorage.getItem('edit');  
+const type=localStorage.getItem('type');
 const { enqueueSnackbar } = useSnackbar();
+const navigate = useNavigate();
 const handleChange5 = (e) => {
     const value = e.target.value;
     setcost(value);
@@ -20,7 +24,7 @@ const handleedit = async (event) => {
                 if (response.ok) {
                     enqueueSnackbar("Registration Successful", { variant: "success" });    
                     console.log(response);  
-                    editback();
+                    navigate(`/${type}/homepage`); 
                     
                 } else if (response.status === 409) {
                     const errorData = await response.json();
@@ -30,7 +34,7 @@ const handleedit = async (event) => {
                 }        
 }
 const back=()=>{
-    editback();
+    navigate(`/${type}/homepage`);
 }
 return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>

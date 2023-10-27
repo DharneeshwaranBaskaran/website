@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { LoginSocialGoogle } from "reactjs-social-login";
 import backpic from "./images/backpic.jpg";
+import './App.css'; 
 import { useSnackbar } from "notistack";
-function RegisterPage({ onRegister ,redirectlogin,google}) {
+import { useNavigate } from 'react-router-dom';
+
+function RegisterPage({ onRegister ,redirectlogin,google}) { 
+    const type=localStorage.getItem("type");
+    const navigate = useNavigate();
     const [validUsername, setValidUsername] = useState(false);
     const [validPassword, setValidPassword] = useState(false);
     const [validConPassword, setValidConPassword] = useState(false);
@@ -60,7 +65,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                     
                     console.log(response); 
                     console.log(username,password);
-                    onRegister();
+                    navigate(`/${type}/login`);
                 } else if (response.status === 409) {
                     const errorData = await response.json();
                     enqueueSnackbar(errorData.error, { variant: "error" });
@@ -87,7 +92,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 
                 console.log(response); 
                 console.log(username,password);
-                onRegister();
+                navigate(`/${type}/login`);
             } else if (response.status === 409) {
                 const errorData = await response.json();
                 enqueueSnackbar(errorData.error, { variant: "error" });
@@ -114,7 +119,7 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                 
                 console.log(response); 
                 console.log(username,password);
-                onRegister();
+                navigate(`/${type}/login`);
             } else if (response.status === 409) {
                 const errorData = await response.json();
                 enqueueSnackbar(errorData.error, { variant: "error" });
@@ -263,7 +268,8 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
             setWebsite(value);
            };
            const redirectinglogin =()=>{
-            redirectlogin();
+            // redirectlogin();
+            navigate(`/${type}/login`);
         }
         
         const inputStyle = {
@@ -447,7 +453,8 @@ function RegisterPage({ onRegister ,redirectlogin,google}) {
                                 console.log(data.username); 
                               
                                 //localStorage.setItem('type',"buyer");
-                                google(); 
+                                //  
+                                navigate(`/${type}/homepage`);
                             })
                             .catch(error => {
                                 console.error(error);

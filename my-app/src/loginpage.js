@@ -1,6 +1,8 @@
 import React, {  useState } from "react";
 import backpic from "./images/backpic.jpg";
 import { useSnackbar } from "notistack";
+import { useNavigate } from 'react-router-dom';
+import './App.css'; 
 function LoginPage({ onLogin,backRegister }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState(''); 
@@ -11,8 +13,8 @@ function LoginPage({ onLogin,backRegister }) {
     const [error2, setError2] = useState('');
     const { enqueueSnackbar } = useSnackbar();
     let link="";
-    const user = localStorage.getItem('type'); 
-    
+    const type = localStorage.getItem('type'); 
+    const navigate = useNavigate();
       const [showModal, setShowModal] = useState(false);
       // const [formData, setFormData] = useState({
       //   name: '',
@@ -74,7 +76,8 @@ function LoginPage({ onLogin,backRegister }) {
             // console.log(jwtToken);
             localStorage.setItem('username', username);             
             console.log(username);
-            onLogin();
+            
+            navigate(`/${type}/homepage`);
             enqueueSnackbar("Login successfully",{ variant: "success" });
           }
           else{
@@ -113,7 +116,9 @@ function LoginPage({ onLogin,backRegister }) {
         }
       };
     const handlebackRegister=()=>{
-        backRegister();
+        // backRegister();
+        
+        navigate(`/${type}/register`);
       }
       const errorStyle = {
         color: 'red',

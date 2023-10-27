@@ -1,221 +1,42 @@
 import React, { useEffect, useState } from "react";
 import './App.css'; 
-import LoginPage from "./loginpage";
 import HomePage from "./homepage";
 import Men from "./men";
 import Menext from "./menext";
-import RegisterPage from "./register";
 import Cart from "./cart";
 import Payment from "./payment";
-import { SnackbarProvider } from "notistack";  
 import Add from "./add";
 import History from "./history";
 import Start from "./start";  
 import Edit from "./edit";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
+import LoginPage from './loginpage';
+import RegisterPage from './register';
+
 function App() {
-  const [istart,setistart]=useState(false);
-  const [isAuthenticated, setisAuthenticated] = useState(false);
-  const [redirectToAnotherPage, setRedirectToAnotherPage] = useState(false); 
-  const [mend,setMend]=useState(false);
-  const [isRegistered,setisRegistered]=useState(false);
-  const [isCart,setisCart]=useState(false);  
-  const [isPay,setisPay]=useState(false);
-  const [isHistory,setisHistory]=useState(false);
-  const [isBalance,setisBalance]=useState(false); 
-  const [isedit,setisedit]=useState(false);
-  const handlebacktohome=()=>{
-    setisCart(false);
-    setMend(false);
-    setRedirectToAnotherPage(false);
-  }  
-  const handletomenex=()=>{
-    setistart(true); 
-    setisRegistered(true);
-    setisAuthenticated(true);
-    setRedirectToAnotherPage(true);
-    setMend(true);
-  }
-  const tostart=()=>{
-    setisRegistered(false);
-    setisAuthenticated(false);
-    setRedirectToAnotherPage(false);
-    setMend(false);
-  }
-  const redirecttodraft=()=>{
-    setisCart(true);
-    setMend(true);
-    setRedirectToAnotherPage(true); 
-    setisPay(true);
-    setisHistory(true);
-  }
-  const handlebacktohomefromhis =()=>{
-    setisCart(false);
-    setMend(false);
-    setRedirectToAnotherPage(false); 
-    setisPay(false);
-    setisHistory(false);
-  }
-  const redirecttoadd=()=>{
-    setisBalance(true); 
-    setisHistory(true);
-    setisCart(true);
-    setMend(true);
-    setRedirectToAnotherPage(true); 
-    setisPay(true);
-  }
-  const backtohome =()=>{
-    setisBalance(false); 
-    setisHistory(false);
-    setisCart(false);
-    setMend(false);
-    setRedirectToAnotherPage(false); 
-    setisPay(false);
-  }
-  const handlehistory =()=>{
-    setisPay(true);
-    setisHistory(true);
-  }
-  const HistorytoCart =()=>{
-    setisPay(false);
-    setisHistory(false);
-  }
-  const updateBalance =()=>{
-    setisPay(true);
-    setisHistory(true);
-    setisBalance(true);
-  }
-  const handlegoogle=()=>{
-    setisAuthenticated(true);
-    setisRegistered(true);
-  }
-  const homelogout=()=>{
-    setisAuthenticated(false);
-  }
-  const handlebacktohomefrompay=()=>{
-    setisCart(false);
-    setMend(false);
-    setRedirectToAnotherPage(false); 
-    setisPay(false);
-  }
-  const redirecttocart=()=>{
-    setisCart(true);
-    setMend(true);
-    setRedirectToAnotherPage(true);
-  }
-  const handlecart=()=>{
-    setisCart(true);
-  }
-  const handlepayment=()=>{
-    setisPay(true);
-  }
-  const handleRedirect = () => {
-    setRedirectToAnotherPage(true);
-  }; 
-  const handleRecommendation = () => {
-    setRedirectToAnotherPage(true);
-    setMend(true);
-  };
-  const handlebackRegister=()=>{
-    setisRegistered(false);
-  }
-  const handleback = () => {
-    setMend(false);
-  };
-  const handleLogin = () => {
-    setisAuthenticated(true);
-  };
-  const handlemenex=()=>{
-    setMend(true);
-  }
-  const handlebackhome=()=>{
-    setRedirectToAnotherPage(false);
-  }
-  const handleRegister=()=>{
-    setisRegistered(true);
-  }
-  const backtocart=()=>{
-    setisPay(false);
-    setisHistory(false);
-    setisBalance(false);
-  }
-  const handlebackfromrec=()=>{
-    setRedirectToAnotherPage(false);
-    setMend(false);
-  }
-  const drafttodata=()=>{
-    setisBalance(false); 
-    setisHistory(false);
-  }
-  const handletoregister=()=>{
-    setistart(true);
-  }
-  const handletologin=()=>{
-    setistart(true); 
-    setisRegistered(true);
-  }
-    const handleEdit=()=>{  
-    setisedit(true); 
-    setisBalance(true);
-    }  
-    const Editback=()=>{
-      setisedit(false); 
-      setisBalance(false);
-    }
-    const payhome=()=>{
-      setisCart(true);
-    setMend(true);
-    setRedirectToAnotherPage(true); 
-    setisPay(true);
-    }
+  let type=localStorage.getItem('type');
   return (
-    <SnackbarProvider maxSnack={3}>
-     <div>  
-      {!istart?
-      <Start toregister={handletoregister} tologin={handletologin} startmen={handletomenex}/>:
-      <>
-      {!isRegistered?
-      <RegisterPage onRegister={handleRegister} redirectlogin={handleRegister} google={handlegoogle}/>:
-      <>
-      {!isAuthenticated ?
-      <LoginPage onLogin={handleLogin} backRegister={handlebackRegister} />
-      :<>
-      {!redirectToAnotherPage?
-        <HomePage access={payhome} click={handleRedirect} addata={redirecttoadd} draft={redirecttodraft} homelog={homelogout}tocart={redirecttocart} reco={handleRecommendation}/>
-        : <>
-        {!mend?
-           <Men menex={handlemenex} backhome={handlebackhome}/>
-           :<>
-           {!isCart?
-           <Menext back={handleback} cart={handlecart} rechome={handlebackfromrec} star={tostart}/>:<>
-            {!isPay?
-            <Cart backtohome={handlebacktohome} pay={handlepayment} history={handlehistory} balance={updateBalance}/>:<>
-              {!isHistory?
-                  <Payment full={handlebacktohomefrompay}/>
-                  :<>{!isBalance?
-                       <History his={handlebacktohomefromhis} histocart={HistorytoCart} edit={handleEdit}/>
-                       :<>{!isedit?
-                         <Add  backpay={backtohome}  backcart={backtocart} dtod={drafttodata}/>:
-                            <Edit editback={Editback}/>
-                            }</>
-                          }
-                          </> 
-                        }
-                  </>
-                  }
-               </>
-            }
-          </>
-           }
-        </>
-        }
-       </>
-       }  
-       </> 
-      }   
-      </> 
-    }   
-    </div>
-    </SnackbarProvider>
+  <div >
+  <SnackbarProvider>
+    <Router>
+      <Routes>
+      
+        <Route path="/start" element={<Start />} />
+        <Route path={`/${type}/register`} element={<RegisterPage />} />
+        <Route path={`/${type}/login`} element={<LoginPage />} /> 
+        <Route path={`/${type}/homepage`} element={<HomePage />}/> 
+        <Route path={`/${type}/men`} element={<Men />}/>
+        <Route path={`/${type}/menext`} element={<Menext />}/> 
+        <Route path={`/${type}/cart`} element={<Cart />}/> 
+        <Route path={`/${type}/payment`} element={<Payment/>}/>
+        <Route path={`/${type}/history`} element={<History/>}/>
+        <Route path={`/${type}/add`}element={<Add/>}/>
+        <Route path={`/${type}/edit`} element={<Edit/>}/>
+      </Routes>
+    </Router>
+  </SnackbarProvider>
+</div>
   );
 }
 export default App;

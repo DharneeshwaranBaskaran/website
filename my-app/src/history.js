@@ -1,8 +1,10 @@
 import React, { useState,useEffect } from "react";
 import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function History({ his,histocart,edit}) {
-    
+  const navigate = useNavigate();
     const [Data,setData]=useState([]);
     const [Items, setItems] = useState([]);
     const [Draft,setDraft]= useState([]);
@@ -10,7 +12,7 @@ function History({ his,histocart,edit}) {
     let type=localStorage.getItem('type'); 
     const [searchQuery, setSearchQuery] = useState('');
   const handlebacktohomefromhis = () => {
-    his(); 
+    navigate(`/${type}/homepage`);
     enqueueSnackbar('Redirecting To Home Page',{variant:"default"})
   }
   const handleHistoryClear = () => {  
@@ -25,7 +27,7 @@ else{
           .catch((error) => {
               console.error('Error transferring data:', error);
           }); 
-          histocart();  
+          navigate(`/${type}/cart`);
           enqueueSnackbar("History Has Been Cleared",{variant:"success"});
           enqueueSnackbar("Redirecting to Cart",{variant:"default"});
   }
@@ -96,7 +98,7 @@ else{
       };
       const handleEdit=(id)=>{ 
         localStorage.setItem('edit',id)
-        edit();
+        navigate(`/${type}/edit`);
       }
       // Filter items based on the search query
       const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -106,7 +108,7 @@ else{
                   console.log(response.data);
                   console.log(response.status);
                   enqueueSnackbar(response.data);
-                  his(); 
+                  navigate(`/${type}/homepage`);
                   
               })
               .catch((error) => {

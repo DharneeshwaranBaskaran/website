@@ -1,21 +1,27 @@
-import React, {useRef,useEffect, useState } from "react";
+import React, {useRef,useEffect, useState} from "react";
 import backpic from "./images/backpic.jpg";
 import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
 import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import ReactPlayer from 'react-player'; 
 import CustomCard from "./customcard";
+import { useNavigate } from 'react-router-dom';
+import './App.css'; 
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
-function Start({toregister,tologin,startmen}){ 
+function Start({}){ 
+  const [type, setType] = useState(localStorage.getItem('type'));
+    const navigate = useNavigate();
+    
     const [data,setData]=useState([]); 
     const handletomenex=(id)=>{
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"");
       localStorage.setItem('value',"");
-      startmen();
+      
+      navigate(`/${type}/menext`);
     }
     const handletologin=(key)=>{
-        tologin(); 
+       
         if(key==2)
         localStorage.setItem('type',"buyer");
         else if(key==1)
@@ -26,22 +32,27 @@ function Start({toregister,tologin,startmen}){
         else if(key==4){
           localStorage.setItem('type',"companyaccess"); 
         }
-        else
-        localStorage.setItem('type',"access");
+        else{
+        localStorage.setItem('type',"access"); 
+        }
+        navigate(`/${localStorage.getItem('type')}/login`);
+        window.location.reload();
     }
     const handletoregister=(key)=>{
-        toregister();
+        
         if(key==2)
         localStorage.setItem('type',"buyer");
         else if(key==0){
         localStorage.setItem('type',"company");  
         }
-        else
+        else{
         localStorage.setItem('type',"seller");
-    }
-  
+        }
+        navigate(`/${localStorage.getItem('type')}/register`);
+        window.location.reload();
+        
+    }  
     const playerRef = useRef(null);
-      
     useEffect(() => {
       axios.get(`http://localhost:8080/api/combodata`)
           .then((response) => {
@@ -51,8 +62,6 @@ function Start({toregister,tologin,startmen}){
               console.error('Error fetching history items:', error);
           });
   }, []);
-  
-  // Further down in your component
   const uniqueItems = Array.isArray(data)
       ? data.filter((item, index, self) =>
           index === self.findIndex((t) => t.topic === item.topic)

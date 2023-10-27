@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DissatisfiedSymbol from './DissatisfiedSymbol'; // Import your dissatisfied symbol component
 import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
 import { FaStar } from 'react-icons/fa'; 
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from "notistack";
 import CustomCard from './customcard';
+import './App.css'; 
+import { useNavigate } from 'react-router-dom';
 function Men({menex,backhome}) {
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
     let num=1;
     const [selectedCategory, setSelectedCategory] = useState(''); 
     const [showModal, setShowModal] = useState(false);
@@ -17,7 +21,8 @@ function Men({menex,backhome}) {
     let fil3="";
     const toggleModal = () => {
       setShowModal(!showModal);
-    };
+    }; 
+    const type=localStorage.getItem("type");
     const target = localStorage.getItem('myRef');
     const [data, setData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -27,10 +32,14 @@ function Men({menex,backhome}) {
       localStorage.setItem('rec',"");
       localStorage.removeItem('value'); 
       console.log(localStorage.getItem("count"));
-      menex();
+      // menex();
+      
+      navigate(`/${type}/menext`);
     }
     const handlebackhome=()=>{
-      backhome();
+      // backhome(); 
+      
+      navigate(`/${type}/homepage`);
     }
     
     if(target==1){
@@ -84,6 +93,7 @@ function Men({menex,backhome}) {
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
+            
             <MenuItem value="">All</MenuItem>
             <MenuItem value={fil1}>{fil1}</MenuItem>
             <MenuItem value={fil2}>{fil2}</MenuItem>
@@ -93,7 +103,7 @@ function Men({menex,backhome}) {
             <button onClick={toggleModal}>Offer Products</button>
           </div>
           
-          <div className="search-container">
+          {/* <div className="search-container">
           <input
           type="text"
           placeholder="Search..."
@@ -102,7 +112,7 @@ function Men({menex,backhome}) {
           className="search-bar"
         />
      
-        </div> 
+        </div>  */}
         
         <div className='class-contain'>
         {showModal &&(<>
@@ -116,16 +126,29 @@ function Men({menex,backhome}) {
         ))}
         </>
         )}
-          {!showModal &&(<>
-        {(filteredData && filterdata).map((item, index)  => (
+          {!showModal &&( <>
+      {filteredData && filterdata.length === 0 ? (
+        // Render the dissatisfied symbol 
+        <>
+        <DissatisfiedSymbol />
+        <br/>
+        <br/>
+        <h2>No products Found</h2>
+        
+        
+        </>
+      ) : (
+        // Render the CustomCard components
+        filterdata.map((item, index) => (
           <CustomCard
             key={index}
             item={item}
             handleView={(itemName) => handlemenex(itemName)}
             showButton={true}
           />
-        ))}
-        </>
+        ))
+      )}
+    </>
         )}
       </div>
       <br/>   
