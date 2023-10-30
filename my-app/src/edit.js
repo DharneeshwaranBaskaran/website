@@ -2,7 +2,7 @@ import React, {useRef,useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function Edit({editback}) { 
+function Edit() { 
 const [cost,setcost] = useState(''); 
 const id=localStorage.getItem('edit');  
 const type=localStorage.getItem('type');

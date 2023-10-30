@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.loginregister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
-
+import com.example.demo.Seller.seller;
 
 @RestController
 @RequestMapping("/api")

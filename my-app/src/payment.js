@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import axios from 'axios';
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function Payment({full}) {
+function Payment() {
   const navigate = useNavigate();
 let Username=localStorage.getItem('username');
 const [Balance,setBalance]=useState(0);

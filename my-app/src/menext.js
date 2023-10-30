@@ -8,7 +8,7 @@ import './App.css';
 import { FiVideo, FiImage } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import ReactPlayer from 'react-player'; 
-function Menext({back,cart,rechome,star}) {
+function Menext() {
   
   const navigate = useNavigate();
     const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';

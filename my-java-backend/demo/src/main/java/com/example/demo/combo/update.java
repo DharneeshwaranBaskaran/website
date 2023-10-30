@@ -3,7 +3,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.seller;
+import com.example.demo.Seller.*;
 import com.example.demo.Draft.Draftrequest;
 
 import java.sql.Connection;

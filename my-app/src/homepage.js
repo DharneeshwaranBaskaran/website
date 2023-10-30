@@ -6,32 +6,33 @@ import { FaStar } from 'react-icons/fa';
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
-import './App.css'; 
+import './App.css';  
+import LaterCard from "./Latercard";
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
-function HomePage({click,tocart,reco,draft,addata,access}) {
+function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
   const [pro,setpro]=useState([]);
+  const [cur,setcur]=useState([]);
+  const [Balance,setBalance]=useState(0); 
   const username = localStorage.getItem('username'); 
-  const [selectedPerson, setSelectedPerson] = useState(''); 
   let typeo=localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortingCriteria, setSortingCriteria] = useState(""); 
-  const [personSortingCriteria, setPersonSortingCriteria] = useState('');
   const [accsortingCriteria, setAccSortingCriteria] = useState("");
   const [sortedData, setSortedData] = useState([]); 
   const [sorted,setsorted] = useState([]); 
   const [patch,setpatch]=useState([]); 
   const [prov,setprov]=useState('');
   const [typ,settye]=useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); 
+  const [later,setLater]=useState('');
   const fileInputRef = useRef();
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Get the first selected file
-
   if (file && file.type.startsWith('image/')) {
     setSelectedFile(file); // Set the selected image file
   } else {
@@ -40,14 +41,22 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
   };
 
   let count=0;
-   
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/balance/${username}`)
+          .then((response) => {
+            const data = response.data;
+            
+            setBalance(data);
+          })
+          .catch((error) => {
+            console.error('Error fetching data:', error);
+          });
+          
+      }, [username]);  
    
     const handleRecommendation = (id)=>{
-      
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"true");
-      // reco();
-      
       navigate(`/${typeo}/menext`);
     }
     // const playerRef = useRef(null); 
@@ -100,25 +109,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     const uniqueItems = Items.filter((item, index, self) =>
     index === self.findIndex((t) => t.topic === item.topic)
     );  
-    // let backButton = null;
-    // let addButton = null;
-    // let draftButton = null;
-    //   if (typeo=="buyer") { 
-    //     backButton = (
-    //       <button onClick={redirecttocart}>View Cart</button>
-    //      );
-    //       }
-    //      else{
-    //       backButton=(
-    //         <button onClick={redirecttocart}>Cart Details</button>
-    //       );
-    //       addButton=(
-    //         <button onClick={redirecttodraft}>ADD & REMOVE</button>
-    //       );
-    //       draftButton=(
-    //         <button onClick={redirecttoadd}>Draft</button>
-    //       );
-    //   }
+  
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
       localStorage.setItem("myRef",1);
@@ -132,8 +123,48 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     console.log(event.target.value); 
      
     navigate(`/${typeo}/men`);
-    // click();
+
   };
+  const handlePay =(id)=>{ 
+    enqueueSnackbar("id:"+id);
+    console.log("id:"+id);
+    axios.get(`http://localhost:8080/api/paylater/getpaylat/${id}`)
+    .then((response) => {
+      const cur = response.data;
+      let total = 0;
+
+      if (cur.length > 0) {
+        total = cur[0].cost * cur[0].count;
+      }
+      enqueueSnackbar("total:$"+total);
+      if(Balance>total){
+      const newBalance = Balance - total; 
+      axios.post(`http://localhost:8080/api/paidlater/${username}/${id}`)
+          .then((response) => {
+              console.log(response.data);
+          })
+          .catch((error) => {
+              console.error('Error transferring data:', error);
+          });
+        axios.post(`http://localhost:8080/api/updateUserBalance/${username}`, newBalance, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          navigate(`/${typeo}/payment`); 
+          enqueueSnackbar("Payment Successful",{ variant:"success" });
+        }
+        else{
+    enqueueSnackbar("Insuficient Balance"+Balance+"  "+total,{ variant:"warning"});
+  }
+    })
+    .catch((error) => {
+      console.error('Error fetching cart items:', error); 
+      enqueueSnackbar('Error fetching cart items:', error);
+    });
+    
+  
+}
   const handleChange = (event) => {  
     if(event.target.value=="No"){
       localStorage.setItem("weekend","No");
@@ -145,7 +176,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
   const [selectedAction, setSelectedAction] = useState(""); // Default action
   const handleActionChange = (event) => {
     if(event.target.value=="Back"){
-      // tocart(); 
+       
       
       navigate(`/${typeo}/cart`);
       enqueueSnackbar("Redirecting to cart",{ variant:"default"});
@@ -154,11 +185,8 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
     
     navigate(`/${typeo}/history`);
     else if(event.target.value=="Draft"){
-      
-      navigate(`/${typeo}/add`);
+    navigate(`/${typeo}/add`);
     }else if(event.target.value=="Access"){
-    //  access();
-    
     navigate(`/${typeo}/payment`);
     }
     else{
@@ -255,15 +283,23 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
       })
       setsorted(sorted)
     },[accsortingCriteria,pro])
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/paylater/getpaylater/${username}`)
+        .then((response) => {
+          setLater(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        });
+    }, [username]);
+
     return (
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button">
-        <button >{username}</button>
+        <button>{username}</button>
         {localStorage.getItem('type') === 'buyer' && (
-          <>
-          
-      
-    <select 
+          <>  
+          <select 
             onChange={handleChange} 
             style={{ backgroundColor: "#6666ff", color: "white", 
             border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
@@ -271,23 +307,22 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
             <option>Weekend Delivery</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
-            </select>
+          </select>
     
-        <select 
-        onChange={handleCategoryChange} 
-         style={{ backgroundColor: "#6666ff", color: "white", 
-         border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
-            <option>Category</option>
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Kids">Kids</option>
-            
+          <select 
+          onChange={handleCategoryChange} 
+          style={{ backgroundColor: "#6666ff", color: "white", 
+          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
+              <option>Category</option>
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Kids">Kids</option>
+              
           </select>
           </>
         )}
             {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
             <>
-            
             <select
             value={selectedAction}
             onChange={handleActionChange}
@@ -334,11 +369,19 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
           </div>
         {localStorage.getItem('type') === 'buyer' && (  
           <>
-          {/* <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" /> */}
           {selectedFile && selectedFile.type.startsWith('image/') && (
       <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" style={{ height: '50px' ,marginLeft:'100px'}}  />
       )}
           <>
+          <div style={{width:"350px",marginLeft:"800px"}}> 
+          {later.length > 0 && (   
+            <>
+            {later.map((item, index) => (
+               <LaterCard key={index} item={item} handlePayClick={(itemid) =>handlePay(itemid)} />
+               
+            ))}
+            </>)}
+          </div>
         {uniqueItems.length > 0 && (
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
@@ -358,7 +401,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
        </> 
        </>
       )}
-          
+      
         <div>
           {/* <center>
             <video width="50%" height="50%" controls>
@@ -386,19 +429,7 @@ function HomePage({click,tocart,reco,draft,addata,access}) {
           <option value="count">By Count</option>
           <option value="revenue">By Revenue</option>
         </select>
-        {/* <select 
-            style={{ height: '35px',backgroundColor: "#6666ff",borderRadius:"5px"
-            ,marginRight:"5px",color: "white",marginLeft:"10px"}}
-            value={selectedPerson}
-            onChange={(e) => setSelectedPerson(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="kid">Kids</option>
-          </select> */}
         </div>
-        
          <table className="purchase-history-table">
           <thead>
            <tr>

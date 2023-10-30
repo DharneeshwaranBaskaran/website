@@ -3,12 +3,10 @@ import { useSnackbar } from "notistack";
 import axios from 'axios';
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function Cart({backtohome,pay,history,balance}) {
+function Cart() {
 const { enqueueSnackbar } = useSnackbar();
  
 const [Balance,setBalance]=useState(0); 
-
-// const [loyalty,setLoyalty]=useState(0);
 const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
@@ -145,19 +143,14 @@ const handlePayment2=()=>{
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
   else if(total<50){
     // const newBalance = Balance - (total*9/10)-10;
-      axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
+      axios.post(`http://localhost:8080/api/transferToHistorypaylater/${Username}`)
           .then((response) => {
               console.log(response.data);
           })
           .catch((error) => {
               console.error('Error transferring data:', error);
           });
-          // axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          // })
-
+          
           navigate(`/${type}/payment`);
     enqueueSnackbar("Purchase Successful",{ variant:"success" });
     
@@ -294,7 +287,6 @@ return (
       <div className="cart-total">After Discount: $ {calculateTotaldis(Items)}</div>
       <div className="cart-item-count">Available Balance:${Balance}</div>
       <div className="cart-buttons">
-      {/* <button className="cart-button" onClick={handleloyalty}>Add Loyalty Points</button>  */}
       <button className="cart-button" onClick={handlePayment2}>Buy Now pay Later</button>
         <button className="cart-button" onClick={handlePayment1}>Express Delivery</button>
         <button className="cart-button" onClick={handlePaymentandretain}>Pay And Retain</button> 

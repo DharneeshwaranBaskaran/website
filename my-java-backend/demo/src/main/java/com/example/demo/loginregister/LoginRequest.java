@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.loginregister;
 public class LoginRequest {
 
     private String username;

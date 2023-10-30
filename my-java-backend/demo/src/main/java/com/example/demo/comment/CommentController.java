@@ -1,4 +1,5 @@
-package com.example.demo;
+package com.example.demo.comment;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,37 +16,38 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.posi.CartItem;
 @RestController
 @RequestMapping("/api")
-public class sellerprint {
+@CrossOrigin(origins = "http://localhost:3000")
+public class CommentController {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @GetMapping("/getperson/{username}")
-     public ResponseEntity<List<SellerInfo>> getCartItemsForUsername(@PathVariable String username) {
+
+    @GetMapping("/comments/{topic}")
+    public ResponseEntity<List<Comment>> getCommentsForItem(@PathVariable String topic) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM seller WHERE username = ?";
+            String sql = "SELECT * FROM comment WHERE topic = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, topic);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<SellerInfo> sellerInfos = new ArrayList<>();
+            List<Comment> comments = new ArrayList<>();
 
-        while (resultSet.next()) {
-            SellerInfo sellerInfo = new SellerInfo();
-            sellerInfo.setUsername(username);
-            sellerInfo.setPerson(resultSet.getString("person"));
-            
-            
-            sellerInfos.add(sellerInfo);
+            while (resultSet.next()) {
+                Comment comment = new Comment();
+                comment.setId(resultSet.getLong("id"));
+                comment.setTopic(resultSet.getString("topic"));
+                comment.setComment(resultSet.getString("comment")); 
+                comment.setUsername(resultSet.getString("username"));
+                
+                comments.add(comment);
+            }
+
+            return ResponseEntity.ok(comments);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok(sellerInfos);
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
-
-}
-    

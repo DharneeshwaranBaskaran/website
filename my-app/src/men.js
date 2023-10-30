@@ -9,7 +9,7 @@ import { useSnackbar } from "notistack";
 import CustomCard from './customcard';
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function Men({menex,backhome}) {
+function Men() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
     let num=1;
@@ -103,7 +103,7 @@ function Men({menex,backhome}) {
             <button onClick={toggleModal}>Offer Products</button>
           </div>
           
-          {/* <div className="search-container">
+          <div className="search-container">
           <input
           type="text"
           placeholder="Search..."
@@ -112,7 +112,7 @@ function Men({menex,backhome}) {
           className="search-bar"
         />
      
-        </div>  */}
+        </div> 
         
         <div className='class-contain'>
         {showModal &&(<>

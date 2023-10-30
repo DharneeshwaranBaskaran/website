@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.Seller;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,18 +11,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor 
-@Table(name = "company")
-public class company {
+@Table(name = "seller")
+public class seller {   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;  
     private String password;  
     private String email;
+    private String address;
     private String comaddress;
+    private String name; 
     private String company;
     private Long num;
-    private String website;
 
     // Constructors, getters, and setters
 }

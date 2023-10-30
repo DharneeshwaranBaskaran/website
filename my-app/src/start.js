@@ -1,14 +1,12 @@
 import React, {useRef,useEffect, useState} from "react";
-import backpic from "./images/backpic.jpg";
-import { Button,Card, CardActions,CardContent,CardMedia,Rating,Typography,} from "@mui/material";
-import { FaStar } from 'react-icons/fa'; 
+import backpic from "./images/backpic.jpg"; 
 import axios from "axios";
 import ReactPlayer from 'react-player'; 
 import CustomCard from "./customcard";
 import { useNavigate } from 'react-router-dom';
 import './App.css'; 
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
-function Start({}){ 
+function Start(){ 
   const [type, setType] = useState(localStorage.getItem('type'));
     const navigate = useNavigate();
     

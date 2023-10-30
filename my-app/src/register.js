@@ -6,7 +6,7 @@ import './App.css';
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 
-function RegisterPage({ onRegister ,redirectlogin,google}) { 
+function RegisterPage() { 
     const type=localStorage.getItem("type");
     const navigate = useNavigate();
     const [validUsername, setValidUsername] = useState(false);

@@ -1,5 +1,4 @@
-package com.example.demo;
-
+package com.example.demo.Seller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,38 +15,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.posi.CartItem;
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
-public class CommentController {
+public class sellerprint {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-
-    @GetMapping("/comments/{topic}")
-    public ResponseEntity<List<Comment>> getCommentsForItem(@PathVariable String topic) {
+    @GetMapping("/getperson/{username}")
+     public ResponseEntity<List<SellerInfo>> getCartItemsForUsername(@PathVariable String username) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM comment WHERE topic = ?";
+            String sql = "SELECT * FROM seller WHERE username = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, topic);
+            preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            List<Comment> comments = new ArrayList<>();
+            List<SellerInfo> sellerInfos = new ArrayList<>();
 
-            while (resultSet.next()) {
-                Comment comment = new Comment();
-                comment.setId(resultSet.getLong("id"));
-                comment.setTopic(resultSet.getString("topic"));
-                comment.setComment(resultSet.getString("comment")); 
-                comment.setUsername(resultSet.getString("username"));
-                
-                comments.add(comment);
-            }
-
-            return ResponseEntity.ok(comments);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        while (resultSet.next()) {
+            SellerInfo sellerInfo = new SellerInfo();
+            sellerInfo.setUsername(username);
+            sellerInfo.setPerson(resultSet.getString("person"));
+            
+            
+            sellerInfos.add(sellerInfo);
         }
+        return ResponseEntity.ok(sellerInfos);
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
+
+}
+    

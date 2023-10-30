@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.loginregister;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

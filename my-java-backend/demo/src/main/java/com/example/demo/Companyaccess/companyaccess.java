@@ -8,7 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.example.demo.company;
+import com.example.demo.loginregister.company;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

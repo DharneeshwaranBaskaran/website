@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.loginregister;
 import java.util.List;
 
 import javax.persistence.CascadeType;

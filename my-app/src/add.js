@@ -3,7 +3,7 @@ import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function Add({backpay,backcart,dtod}) {  
+function Add() {  
   const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("");
     const [Balance,setBalance]=useState(0);

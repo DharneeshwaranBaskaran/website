@@ -3,7 +3,7 @@ import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
-function History({ his,histocart,edit}) {
+function History() {
   const navigate = useNavigate();
     const [Data,setData]=useState([]);
     const [Items, setItems] = useState([]);

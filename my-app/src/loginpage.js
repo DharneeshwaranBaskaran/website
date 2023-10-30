@@ -3,7 +3,7 @@ import backpic from "./images/backpic.jpg";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css'; 
-function LoginPage({ onLogin,backRegister }) {
+function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState(''); 
     const [username1, setUsername1] = useState('');
