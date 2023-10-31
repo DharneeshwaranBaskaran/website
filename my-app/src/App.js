@@ -13,7 +13,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import LoginPage from './loginpage';
 import RegisterPage from './register';
-
+import Edituser from "./Edituser";
 function App() {
   let type=localStorage.getItem('type');
   return (
@@ -33,6 +33,7 @@ function App() {
         <Route path={`/${type}/history`} element={<History/>}/>
         <Route path={`/${type}/add`}element={<Add/>}/>
         <Route path={`/${type}/edit`} element={<Edit/>}/>
+        <Route path={`/${type}/edituser`} element={<Edituser/>}/>
       </Routes>
     </Router>
   </SnackbarProvider>

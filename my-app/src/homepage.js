@@ -1,14 +1,10 @@
 import React, {useRef,useEffect, useState } from "react";
-import ReactPlayer from 'react-player'; 
-import Video from "./sam.mp4";
 import CustomCard from "./customcard";
-import { FaStar } from 'react-icons/fa'; 
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';  
 import LaterCard from "./Latercard";
-const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -16,7 +12,7 @@ function HomePage() {
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
   const [pro,setpro]=useState([]);
-  const [cur,setcur]=useState([]);
+  const [user,setuser]=useState([]);
   const [Balance,setBalance]=useState(0); 
   const username = localStorage.getItem('username'); 
   let typeo=localStorage.getItem('type');
@@ -39,8 +35,24 @@ function HomePage() {
     console.error('Selected file is not a valid image.');
   }
   };
-
+let sel="";
+if(typeo=="seller"){
+  sel="access";
+}
+else{
+  sel="companyaccess";
+}
   let count=0;
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/${sel}/${username}`)
+        .then((response) => {
+            setuser(response.data); 
+            console.log(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching history items:', error);
+        });
+  }, [username]);
   useEffect(() => {
     axios.get(`http://localhost:8080/api/balance/${username}`)
           .then((response) => {
@@ -59,8 +71,6 @@ function HomePage() {
       localStorage.setItem('rec',"true");
       navigate(`/${typeo}/menext`);
     }
-    // const playerRef = useRef(null); 
-    
     useEffect(() => {
       axios.get(`http://localhost:8080/api/historyhome/${username}`)
           .then((response) => {
@@ -82,7 +92,7 @@ function HomePage() {
     },[username]); 
     
     useEffect(() => {
-      axios.get(`http://localhost:8080/api/${typeo}/${username}`)
+      axios.get(`http://localhost:8080/api/ty/${typeo}/${username}`)
         .then((response) => {
           setdata(response.data); 
           setprov(response.data[0]?.provider); 
@@ -217,16 +227,8 @@ function HomePage() {
       item.topic.toLowerCase().includes(query.toLowerCase())
     );
   };
+ 
     useEffect(()=>{
-      // const filteredData = Data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase())); 
-      // const filterdata=Data.filter(item => {
-      //   const lowerCaseTopic = item.topic.toLowerCase();
-      //   const lowerCaseCategory = item.person.toLowerCase();
-      //   const matchesSearchQuery = lowerCaseTopic.includes(searchQuery.toLowerCase());
-      //   const matchesCategory = selectedPerson === '' || lowerCaseCategory === selectedPerson;
-      //   return matchesSearchQuery && matchesCategory;
-      // });   
-      // setpatch(filteredData && filterdata);
       setpatch(filterData(Data, searchQuery));
     },[Data,searchQuery])
     useEffect(() => {
@@ -248,6 +250,21 @@ function HomePage() {
     const handleRemoveImage = () => {
       setSelectedFile(null); // Set the selected image to null to remove it
     };
+    const handleRemove=(id)=>{
+      axios
+            .delete(`http://localhost:8080/api/delete${sel}/${id}`)
+            .then((response) => { 
+              window.location.reload()
+              console.log(response.data);
+            })
+            .catch((error) => {
+                console.error('Error transferring data:', error);
+            });
+    }
+    const handleEdit=(id)=>{ 
+    localStorage.setItem("id",id); 
+    navigate(`/${typeo}/edituser`);
+    }
     useEffect(()=>{
       const sorted=[...(pro)].sort((a,b)=>{
         if(typ=="cost"){
@@ -296,7 +313,7 @@ function HomePage() {
     return (
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button">
-        <button>{username}</button>
+        <button>{username}</button> 
         {localStorage.getItem('type') === 'buyer' && (
           <>  
           <select 
@@ -403,11 +420,6 @@ function HomePage() {
       )}
       
         <div>
-          {/* <center>
-            <video width="50%" height="50%" controls>
-              <source src={Video} type="video/mp4" />
-            </video>
-          </center> */}
           {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
       <>
          <h2 style={{marginLeft:"10px"}}>SOLD HISTORY:</h2> 
@@ -450,7 +462,32 @@ function HomePage() {
           ))}
         </tbody>
       </table>
-
+      {(localStorage.getItem('type') === 'seller' ||localStorage.getItem('type') === 'company') &&(
+        <>
+        <h2>Users</h2>
+      <table className="purchase-history-table">
+      <thead>
+           <tr>
+            <th>id</th>
+            <th>user</th>
+            <th>type</th>
+            <th>Remove</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(user).map((item, index) => (
+            <tr key={index}>
+              <td>{item.id}</td>
+              <td>{item.username}</td>
+              <td>{item.type}</td>
+              <td><button className="cart-button" onClick={() => handleRemove(item.id)} >Remove</button></td> 
+              <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </>)}
         </>
           )} 
           

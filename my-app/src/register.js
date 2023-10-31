@@ -132,9 +132,9 @@ function RegisterPage() {
               
         };
         
-        const handlegoogle=()=>{
-            enqueueSnackbar("Login successfully",{ variant: "success" });
-        }
+        // const handlegoogle=()=>{
+        //     enqueueSnackbar("Login successfully",{ variant: "success" });
+        // }
         const errorStyle = {
             color: 'red',
             fontSize: '10px',
@@ -268,7 +268,6 @@ function RegisterPage() {
             setWebsite(value);
            };
            const redirectinglogin =()=>{
-            // redirectlogin();
             navigate(`/${type}/login`);
         }
         
@@ -383,8 +382,7 @@ function RegisterPage() {
                 <input
                 type="text"
                 placeholder="Company Address"
-                value={comaddress}
-                // onChange={handleChange4}     
+                value={comaddress}    
                 onChange={handleChange8}           
                 />
                 )}
@@ -451,10 +449,8 @@ function RegisterPage() {
                             .then(response => response.json())
                             .then(data => {
                                 console.log(data.username); 
-                              
-                                //localStorage.setItem('type',"buyer");
-                                //  
                                 navigate(`/${type}/homepage`);
+                                enqueueSnackbar("Login Successful",{ variant: "success" });
                             })
                             .catch(error => {
                                 console.error(error);
@@ -464,7 +460,7 @@ function RegisterPage() {
                         console.log(err);
                         }}
                     >
-                    <GoogleLoginButton onClick={handlegoogle}/>
+                    <GoogleLoginButton />
                     </LoginSocialGoogle >
                     </>
                     )}

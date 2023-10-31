@@ -5,7 +5,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 function Cart() {
 const { enqueueSnackbar } = useSnackbar();
- 
+const [It, setIt] = useState([]);
 const [Balance,setBalance]=useState(0); 
 const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
@@ -30,6 +30,15 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       });
       
   }, [Username]); 
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/historyhome/${Username}`)
+        .then((response) => {
+            setIt(response.data);
+        })
+        .catch((error) => {
+            console.error('Error fetching history items:', error);
+        });
+  }, [Username]);
 const handlePaymentandretain=()=>{
   let total = 0;
   for (const item of Items) {
@@ -105,11 +114,18 @@ const handlePayment1=()=>{
   }
   if(total>100){
     total=total*9/10;
-  }
+  } 
+
   if(Items.length === 0)
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
-  else if(Balance>total){
-    const newBalance = Balance - (total*9/10)-10;
+  else if(Balance>total){ 
+    let newBalance=0;
+    if(It.length<10){
+    newBalance = Balance - (total*9/10)-10; 
+    }
+    else{
+      newBalance = Balance - (total*9/10);
+    } 
       axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
           .then((response) => {
               console.log(response.data);
@@ -138,7 +154,8 @@ const handlePayment2=()=>{
   }
   if(total>100){
     total=total*9/10;
-  }
+  } 
+  
   if(Items.length === 0 )
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
   else if(total<50){
@@ -248,7 +265,10 @@ return (
     </div>
     
     {localStorage.getItem('type') === 'buyer' && (
-        <>
+        <> 
+      {It.length>10 &&(
+        <h2>You Are A Premium User</h2>
+      )}
       <h1 className="cart-header">Cart for {Username}</h1>
       <input
                 type="text"
@@ -320,7 +340,7 @@ return (
       </table>  
         </>)}
         
-    <p style={{marginLeft:20}}>*$10 Extra for Express Delivery</p>
+    <p style={{marginLeft:20}}>*$10 Extra for Non Premium Users in Express Delivery</p>
     <p style={{marginLeft:20}}>*Products will be delivered within 24 hours in Express Delivery</p>   
     <p style={{marginLeft:20}}>*The total should be less than $50 for payment later</p> 
     </div>

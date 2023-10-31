@@ -98,7 +98,8 @@ function Menext() {
                         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`, { variant:"success"}); 
                         console.log(cartItem);
                         setCount(0);
-                        navigate(`/${type}/cart`);
+                        navigate(`/${type}/cart`); 
+                        window.location.reload();
                     } else {
                         
                     }
