@@ -35,7 +35,8 @@ public class Historyprint {
             List<HistoryItem> historyItems = new ArrayList<>();
 
             while (resultSet.next()) {
-                HistoryItem historyItem = new HistoryItem();
+                HistoryItem historyItem = new HistoryItem(); 
+                historyItem.setId(resultSet.getLong("id"));
                 historyItem.setTopic(resultSet.getString("topic"));
                 historyItem.setDescription(resultSet.getString("description"));
                 historyItem.setCost(resultSet.getDouble("cost"));

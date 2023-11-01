@@ -7,6 +7,8 @@ function Cart() {
 const { enqueueSnackbar } = useSnackbar();
 const [It, setIt] = useState([]);
 const [Balance,setBalance]=useState(0); 
+const [Address,setAddress]=useState('');
+const [address,setaddress]=useState('');
 const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
@@ -31,6 +33,17 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       
   }, [Username]); 
   useEffect(() => {
+    axios.get(`http://localhost:8080/api/address/${Username}`)
+      .then((response) => {
+        const data = response.data;
+        setAddress(data); // Update the Address state here
+        console.log(data); // Log the updated data
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, [Username]);
+  useEffect(() => {
     axios.get(`http://localhost:8080/api/historyhome/${Username}`)
         .then((response) => {
             setIt(response.data);
@@ -39,7 +52,11 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
             console.error('Error fetching history items:', error);
         });
   }, [Username]);
-const handlePaymentandretain=()=>{
+const handlePaymentandretain=()=>{ 
+  if(Address==undefined|| Address==" " ||Address==""){
+    enqueueSnackbar("Enter your Address for Delivery");
+  }
+  else{
   let total = 0;
   for (const item of Items) {
     total += item.cost * item.count;
@@ -74,7 +91,12 @@ const handlePaymentandretain=()=>{
     enqueueSnackbar("Insuficient Balance",{variant:"warning"});
   }
 }
+}
 const handlePayment=()=>{
+  if(Address==undefined|| Address==" " ||Address==""){
+    enqueueSnackbar("Enter your Address for Delivery");
+  }
+  else{
   let total = 0;
   for (const item of Items) {
     total += item.cost * item.count;
@@ -105,9 +127,18 @@ const handlePayment=()=>{
   } 
   else{
     enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
-  } 
+  } }
 }  
+const handleChange4 = (e) => {
+  const value = e.target.value;
+  setaddress(value);
+   
+ }; 
 const handlePayment1=()=>{
+  if(Address==undefined|| Address==" " ||Address==""){
+    enqueueSnackbar("Enter your Address for Delivery");
+  }
+  else{
   let total = 0;
   for (const item of Items) {
     total += item.cost * item.count;
@@ -145,9 +176,13 @@ const handlePayment1=()=>{
   } 
   else{
     enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
-  } 
+  } }
 }  
 const handlePayment2=()=>{
+  if(Address==undefined|| Address==" " ||Address==""){
+    enqueueSnackbar("Enter your Address for Delivery");
+  }
+  else{
   let total = 0;
   for (const item of Items) {
     total += item.cost * item.count;
@@ -174,7 +209,7 @@ const handlePayment2=()=>{
   } 
   else{
     enqueueSnackbar("The total should be less than $50 for payment later",{ variant:"warning"});
-  } 
+  } }
 }  
 const handlehistory=()=>{
   navigate(`/${type}/history`); 
@@ -183,6 +218,7 @@ const handlehistory=()=>{
 
 const updateBalance = () => {
   navigate(`/${type}/add`);
+  console.log(filteredItems);
 }
 
 const calculateTotal = (cartItems) => {
@@ -229,7 +265,8 @@ const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 useEffect(() => {
   axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
     .then((response) => {
-      setItems(response.data);
+      setItems(response.data); 
+      
     })
     .catch((error) => {
       console.error('Error fetching cart items:', error);
@@ -254,11 +291,30 @@ const handleSearchChange = (e) => {
   setSearchQuery(e.target.value);
 };
 
+
+const handleaddress = async () => {
+  try {
+    const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response.status === 200) {
+      console.log(response.data);
+    } else {
+      console.log('Error updating user address');
+    }
+  } catch (error) {
+    console.log('Error updating user address catch');
+  }
+  window.location.reload();
+};
+
 // Filter items based on the search query
 const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
 return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
     <div className="logout-button">
     <button onClick={handlebacktohome} >Back To Home</button>  
      {backButton}
@@ -266,10 +322,30 @@ return (
     
     {localStorage.getItem('type') === 'buyer' && (
         <> 
-      {It.length>10 &&(
-        <h2>You Are A Premium User</h2>
+      {It.length>10 &&( 
+        <>
+        <h2>You Are A Premium User</h2> 
+       
+        </>
       )}
-      <h1 className="cart-header">Cart for {Username}</h1>
+      <div>
+      <h1 className="cart-header">Cart for {Username}</h1> 
+      {(Address==undefined|| Address==" " ||Address=="") &&(
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <p style={{marginLeft:"10px"}}>Enter Your Address Before placing order:</p>
+        
+        <input
+        style={{width:"200px",marginLeft:"20px"}}
+        type="text"
+        placeholder="Personal Address"
+        value={address}
+        onChange={handleChange4}              
+        /><button style={{marginLeft:"20px"}} className="lob" onClick={handleaddress}>Confirm</button>
+        </div>
+        
+      )}
+      </div>
+      <p>Delivery Address:{Address}</p>
       <input
                 type="text"
                 placeholder="Search Items"

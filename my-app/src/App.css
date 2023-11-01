@@ -454,3 +454,8 @@ align-items: center;
 .individual-registration button, .company-registration button {
   margin: 5px;
 }
+.cart-icon {
+  
+  background-color: #91c6ff;
+  border-radius: 50%;
+}

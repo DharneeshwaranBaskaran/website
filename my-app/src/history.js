@@ -11,6 +11,49 @@ function History() {
     let Username=localStorage.getItem('username');
     let type=localStorage.getItem('type'); 
     const [searchQuery, setSearchQuery] = useState('');
+    const [Balance,setBalance]=useState(0); 
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/balance/${Username}`)
+            .then((response) => {
+              const data = response.data;
+              
+              setBalance(data);
+            })
+            .catch((error) => {
+              console.error('Error fetching data:', error);
+            });
+            
+        }, [Username]); 
+  
+        const handlerepeat = (id,cost,count) => { 
+        console.log(id,cost,count); 
+        let total = 0;
+        total += (cost * count)*9/10;
+        let newBalance=Balance-total;
+        if(total>Balance){
+          enqueueSnackbar("Insuficient Balance",{ variant:"warning"});
+        } 
+        else{
+          axios.post(`http://localhost:8080/api/repeatHistory/${id}`)
+          .then((response) => {
+              console.log(response.data); 
+              enqueueSnackbar(response.data)
+              navigate(`/${type}/payment`);
+          })
+          .catch((error) => {
+              console.error('Error transferring data:', error);
+              enqueueSnackbar('Error transferring data:', error);
+          });
+
+          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }) 
+          
+          
+        }
+        }
   const handlebacktohomefromhis = () => {
     navigate(`/${type}/homepage`);
     enqueueSnackbar('Redirecting To Home Page',{variant:"default"})
@@ -125,7 +168,8 @@ else{
       <div className="logout-button">
         <button onClick={handlebacktohomefromhis} >
           Back To Home
-        </button>
+        </button> 
+        {Balance}
       </div>
       {localStorage.getItem('type') =="buyer" && (
       <input
@@ -144,7 +188,8 @@ else{
             <th>Topic</th>
             <th>Count</th>
             <th>Cost</th>
-            <th>Total Cost</th>
+            <th>Total Cost</th> 
+            <th>Repeat Order</th>
           </tr>
         </thead> 
       )}
@@ -155,7 +200,9 @@ else{
               <td>{item.count}</td>
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
-            </tr>
+              <td><button className="cart-button" onClick={()=>handlerepeat(item.id,item.cost,item.count)}>
+                  Repeat Order</button></td>
+            </tr> 
           ))}
         </tbody>
       </table>

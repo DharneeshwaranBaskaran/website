@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';  
+
 import LaterCard from "./Latercard";
 function HomePage() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ function HomePage() {
   const [pro,setpro]=useState([]);
   const [user,setuser]=useState([]);
   const [Balance,setBalance]=useState(0); 
+  const [counting,setcounting]=useState(0);
+  const [cart,setcart]=useState([]);
   const username = localStorage.getItem('username'); 
   let typeo=localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,6 +45,19 @@ if(typeo=="seller"){
 else{
   sel="companyaccess";
 }
+useEffect(() => {
+  axios.get(`http://localhost:8080/api/cart/getItems/${username}`)
+    .then((response) => {
+      setcart(response.data); 
+      console.log(response.data); 
+      
+    })
+    .catch((error) => {
+      console.error('Error fetching cart items:', error);
+    });
+}, [username]);
+
+
   let count=0;
   useEffect(() => {
     axios.get(`http://localhost:8080/api/${sel}/${username}`)
@@ -202,7 +218,7 @@ else{
     else{
       navigate("/start"); 
       localStorage.clear();
-      window.location.reload()
+      window.location.reload();
       enqueueSnackbar("Logout Successful");
       
     }
@@ -309,11 +325,16 @@ else{
           console.error('Error fetching cart items:', error);
         });
     }, [username]);
-
-    return (
+    const handlehelp =()=>{
+      navigate(`/${typeo}/help`);
+    }
+    return ( 
+      
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
-        <div className="logout-button">
+        <div className="logout-button"> 
+        
         <button>{username}</button> 
+        
         {localStorage.getItem('type') === 'buyer' && (
           <>  
           <select 
@@ -336,6 +357,7 @@ else{
               <option value="Kids">Kids</option>
               
           </select>
+          <button onClick={handlehelp}>Help</button> 
           </>
         )}
             {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
@@ -366,7 +388,10 @@ else{
             <option>Menu</option>
             <option value="Back">Cart</option>
             <option value="Logout">Logout</option>
-            </select> 
+            </select>  
+            <div className="lob"  style={{marginLeft:"10px" }}>
+            🛒{cart.length}
+            </div>
             <div>
             <input
       type="file"

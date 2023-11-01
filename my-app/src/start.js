@@ -109,7 +109,7 @@ function Start(){
                  </div>
         
                  <div style={{textAlign:"center"}}>
-                  <h2>Are You a Admin?</h2>
+                  <h2>Are You a DataBase Viewer?</h2>
                   <div class="registration-container">
                   <div class="individual-registration">
                       <h4>Individual:</h4>
