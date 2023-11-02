@@ -9,6 +9,7 @@ import LaterCard from "./Latercard";
 function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [ty,settyp] = useState(''); 
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
@@ -277,10 +278,10 @@ useEffect(() => {
                 console.error('Error transferring data:', error);
             });
     }
-    const handleEdit=(id)=>{ 
-    localStorage.setItem("id",id); 
-    navigate(`/${typeo}/edituser`);
-    }
+    // const handleEdit=(id)=>{ 
+    // localStorage.setItem("id",id); 
+    // navigate(`/${typeo}/edituser`);
+    // }
     useEffect(()=>{
       const sorted=[...(pro)].sort((a,b)=>{
         if(typ=="cost"){
@@ -327,19 +328,47 @@ useEffect(() => {
     }, [username]);
     const handlehelp =()=>{
       navigate(`/${typeo}/help`);
-    }
+    } 
+    const handleChange5 = (e) => {
+      const value = e.target.value;
+      settyp(value);
+     };
+  
+  
+  const handleEdit = async (id) => { 
+      const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id,type:ty}),
+                    credentials: 'include',
+                  });
+                  if (response.ok) {
+                      enqueueSnackbar("Registration Successful", { variant: "success" });    
+                      console.log(response);  
+                      window.location.reload();
+                      // navigate(`/${typeo}/homepage`); 
+                      
+                  } else if (response.status === 409) {
+                      const errorData = await response.json();
+                      enqueueSnackbar(errorData.error, { variant: "error" });
+                  } else {
+                      enqueueSnackbar("Registration Failed", { variant: "error" });
+                  }        
+  }
     return ( 
       
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button"> 
         
-        <button>{username}</button> 
+        <button style={{backgroundColor:"#5B0888"}}>{username}</button> 
         
         {localStorage.getItem('type') === 'buyer' && (
           <>  
           <select 
             onChange={handleChange} 
-            style={{ backgroundColor: "#6666ff", color: "white", 
+            style={{ backgroundColor: "#5B0888", color: "white", 
             border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
           >
             <option>Weekend Delivery</option>
@@ -349,7 +378,7 @@ useEffect(() => {
     
           <select 
           onChange={handleCategoryChange} 
-          style={{ backgroundColor: "#6666ff", color: "white", 
+          style={{ backgroundColor: "#713ABE", color: "white", 
           border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
               <option>Category</option>
               <option value="Men">Men</option>
@@ -357,7 +386,7 @@ useEffect(() => {
               <option value="Kids">Kids</option>
               
           </select>
-          <button onClick={handlehelp}>Help</button> 
+          <button style={{backgroundColor:"#713ABE"}} onClick={handlehelp}>Help</button> 
           </>
         )}
             {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
@@ -365,7 +394,7 @@ useEffect(() => {
             <select
             value={selectedAction}
             onChange={handleActionChange}
-            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
+            style={{ backgroundColor: "#451952", color: "white", border: "none",
              padding: "5px",borderRadius:"5px",marginLeft:"5px"  }}
           >
             <option>Menu</option>
@@ -382,14 +411,14 @@ useEffect(() => {
             <select
             value={selectedAction}
             onChange={handleActionChange}
-            style={{ backgroundColor: "#6666ff", color: "white", border: "none",
+            style={{ backgroundColor: "#793FDF", color: "white", border: "none",
              padding: "5px",borderRadius:"5px",marginLeft:"5px" }}
           >
             <option>Menu</option>
             <option value="Back">Cart</option>
             <option value="Logout">Logout</option>
             </select>  
-            <div className="lob"  style={{marginLeft:"10px" }}>
+            <div  style={{marginLeft:"10px",backgroundColor:"#793FDF",borderRadius:"5px" }}>
             🛒{cart.length}
             </div>
             <div>
@@ -400,8 +429,8 @@ useEffect(() => {
       style={{ display: "none" }}
       ref={fileInputRef}
     />
-    <button onClick={() => fileInputRef.current.click()}>Select Image</button>
-    <button onClick={handleRemoveImage} >Remove Image</button>
+    <button onClick={() => fileInputRef.current.click()} style={{backgroundColor:"#7752FE"}}>Select Image</button>
+    <button onClick={handleRemoveImage} style={{backgroundColor:"#7752FE"}}>Remove Image</button>
           </div> 
           </>
             )}
@@ -506,8 +535,20 @@ useEffect(() => {
               <td>{item.id}</td>
               <td>{item.username}</td>
               <td>{item.type}</td>
-              <td><button className="cart-button" onClick={() => handleRemove(item.id)} >Remove</button></td> 
-              <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
+              <td><button className="cart-button" onClick={() => handleRemove(item.id)} >Remove</button></td>
+              <td><select
+               value={ty}
+               onChange={handleChange5} 
+               style={{ backgroundColor: "#713ABE", color: "white", 
+             border: "none", padding: "5px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
+             >
+            <option value="">Select Type</option>
+            <option value="cost">Cost</option>
+            <option value="count">Count</option>
+            <option value="revenue">Revenue</option>
+            {/* Add more options as needed */}
+          </select>   
+              <button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
             </tr>
           ))}
         </tbody>

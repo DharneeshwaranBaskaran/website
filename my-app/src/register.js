@@ -6,6 +6,7 @@ import './App.css';
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 
+import Papa from 'papaparse';
 function RegisterPage() { 
     const type=localStorage.getItem("type");
     const navigate = useNavigate();
@@ -40,6 +41,8 @@ function RegisterPage() {
     const [isPassword,setIspassword]=useState(false)
     const [isconPassword,setIsconpassword]=useState(false)
     const [isAddress,setIsAddress]=useState(false);
+    const [csvData, setCsvData] = useState(null); // Store the CSV data
+    
         const handleRegister = async (event) => {
             if (!username || !password || !conpassword || !email ) {
                 enqueueSnackbar("Please fill in all required fields", { variant: "error" });
@@ -293,12 +296,46 @@ function RegisterPage() {
           const inputStyle6 = {
             outline:iscompany? '1px solid red' : '1px solid black',    
           };
+          
+          const handleFileUpload = (e) => {
+            const file = e.target.files[0];
+          
+            if (file) {
+              const formData = new FormData();
+              formData.append("file", file);
+          
+              // Send the formData as a multipart request
+              fetch("http://localhost:8080/api/upload-csv/company", {
+                method: 'POST',
+                body: formData,
+                credentials: 'include',
+              })
+              .then(async response => {
+                if (response.ok) {
+                  enqueueSnackbar("CSV data uploaded successfully", { variant: "success" });
+                } else {
+                  enqueueSnackbar("Failed to upload CSV data", { variant: "error" });
+                  const errorData = await response.text();
+                  enqueueSnackbar(errorData, { variant: "error" });
+                  console.log(errorData, { variant: "error" });
+                }
+              })
+              .catch(error => {
+                console.error(error);
+              });
+            } else {
+              enqueueSnackbar("Please select a CSV file first", { variant: "error" });
+            }
+          };
+          
+       
     return ( 
         <div style={{ 
-          backgroundImage: `url(${backpic})` ,minHeight: "110vh"
-        }}>
-            <div className="app">
-                <div className="login-page">
+          backgroundImage: `url(${backpic})` ,minHeight: "130vh"
+        }}> 
+        <div style={{padding:"35px"}}></div>
+            <div className="app" >
+                <div className="login-page" >
                 <h2>Register</h2> 
                 <div className="con">
                 {localStorage.getItem('type') !== 'buyer' && (
@@ -409,6 +446,17 @@ function RegisterPage() {
                 </>
                  )}
                 </div>
+                
+                {localStorage.getItem('type') === 'company' && ( 
+                    <>
+                    <div  >
+                 <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
+                 <br/>
+                 <br/>
+                 </div>
+                 </>
+                )}
+                
                <button onClick={handleRegister} className="lob">
                 Register</button> 
                 

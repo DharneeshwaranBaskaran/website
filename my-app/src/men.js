@@ -114,9 +114,9 @@ function Men() {
             <MenuItem value={fil2}>{fil2}</MenuItem>
             <MenuItem value={fil3}>{fil3}</MenuItem>
           </Select>
-            <button onClick={handlebackhome}>Back</button>
-            <button onClick={toggleModal}>Offer Products</button> 
-            <button onClick={toggleSorting}>
+            <button onClick={handlebackhome} style={{backgroundColor:"#5B0888"}}>Back</button>
+            <button onClick={toggleModal}style={{backgroundColor:"#713ABE"}}>Offer Products</button> 
+            <button onClick={toggleSorting} style={{backgroundColor:"#793FDF"}}>
           {ascending ? "Sort Descending" : "Sort Ascending"}
         </button>
           </div>

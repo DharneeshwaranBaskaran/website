@@ -208,7 +208,7 @@ function Menext() {
               );
             }else{
             backButton = (
-              <button onClick={handleback}>Back</button>
+              <button onClick={handleback} style={{backgroundColor:"#713ABE"}}>Back</button>
             );
           }
           }
@@ -223,7 +223,7 @@ function Menext() {
           let countButton=null;
       if (type=="buyer") { 
         cartButton = (
-          <button onClick={viewcart} >View Cart</button>
+          <button onClick={viewcart} style={{backgroundColor:"#5B0888"}}>View Cart</button>
          );
          addButton=(<button type="submit" 
          className="lob" onClick={handlecart} 

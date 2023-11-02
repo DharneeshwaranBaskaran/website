@@ -1,4 +1,4 @@
-import React, {useRef,useEffect, useState } from "react"; 
+import React, {useState } from "react"; 
 import { useSnackbar } from "notistack";
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
@@ -47,12 +47,18 @@ return (
     <div className="app">
         <div className="login-page">
         <h2>Edit</h2> 
-        <input
-        type="text"
-        placeholder="type"
-        value={typ}  
-        onChange={handleChange5}               
-       />                 
+        <select
+            value={typ}
+            onChange={handleChange5} 
+            style={{ backgroundColor: "#713ABE", color: "white", 
+          border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
+          >
+            <option value="">Select Type</option>
+            <option value="cost">Cost</option>
+            <option value="count">Count</option>
+            <option value="revenue">Revenue</option>
+            {/* Add more options as needed */}
+          </select>             
         <button onClick={handleedit} className="lob">
                 Edit</button> 
                 
