@@ -21,6 +21,7 @@ function Menext() {
     const [imageData, setImageData] = useState({});
     const targetImageId = localStorage.getItem('myID');
     const [Items, setItems] = useState([]); 
+    const [wish, setwish] = useState([]); 
     const [Item,setItem]=useState([]);
     const [isImage, setIsImage] = useState(true);
     const [formData, setFormData] = useState({
@@ -65,6 +66,97 @@ function Menext() {
     }
     else{
       weekends="No";
+    }
+    useEffect(() => {
+      axios.get(`http://localhost:8080/api/wishlist/${Username}`)
+        .then((response) => {
+          setwish(response.data);
+        })
+        .catch((error) => {
+          console.error('Error fetching cart items:', error);
+        });
+    }, [Username]); 
+    const handlewish = () => {
+      if (count > 0) {
+        const cartItem = {
+          topic: imageData.topic,
+          description: imageData.description,
+          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, // Check the count value and set the cost accordingly
+          count: count,
+          username: localStorage.getItem("username"), 
+          rating:imageData.rating,
+          url:imageData.url,
+          person:imageData.person,
+          seller:imageData.seller,
+          weekend:weekends
+        };
+
+        console.log(cartItem);
+        const existingCartItems = (wish) || [];
+        const existingIndex = existingCartItems.findIndex(item => item.topic === cartItem.topic); 
+        console.log(existingIndex);
+        if (existingIndex !== -1) { 
+          enqueueSnackbar("Already in Wishlist Incrementing The count",{ variant:"success"});
+          fetch(`http://localhost:8080/api/update/wish/${cartItem.topic}/${Username}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cartItem),
+            })
+                .then(response => {
+                    if (response.status === 201) {
+                        enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wishlist.`, { variant:"success"}); 
+                        console.log(cartItem);
+                        setCount(0);
+                        navigate(`/${type}/cart`); 
+                        window.location.reload();
+                    } else {
+                        
+                    }
+                })
+                .catch(error => {
+              
+                });
+    
+          
+          existingCartItems[existingIndex].count += count;
+        } else {
+          fetch('http://localhost:8080/api/wish/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(cartItem),
+            })
+                .then(response => {
+                    if (response.status === 201) {
+                        enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wish.`, { variant:"success" }); 
+                        console.log(cartItem);
+                        setCount(0);
+                        navigate(`/${type}/phone`);
+                    } else {
+                       
+                    }
+                })
+                .catch(error => {
+                   enqueueSnackbar(error);
+                });
+    
+          existingCartItems.push(cartItem);
+        }
+        localStorage.setItem('cartItems', JSON.stringify(existingCartItems)); 
+ 
+        setCount(0);
+        // navigate(`/${type}/cart`);  
+        enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wishlist.`,{ variant:"success" });
+      
+        const username = localStorage.getItem('username');
+        navigate(`/${type}/phone`);
+        } else {
+        enqueueSnackbar("Please select at least one item before adding to wishlist.",{ variant:"warning" });
+        
+      }
     }
     const handlecart = () => {
       if (count > 0) {
@@ -220,14 +312,18 @@ function Menext() {
           
           let cartButton = null; 
           let addButton=null; 
-          let countButton=null;
+          let countButton=null; 
+          let Wishlist=null;
       if (type=="buyer") { 
         cartButton = (
           <button onClick={viewcart} style={{backgroundColor:"#5B0888"}}>View Cart</button>
          );
-         addButton=(<button type="submit" 
-         className="lob" onClick={handlecart} 
+         addButton=(<button type="submit" className="lob" onClick={handlecart} 
          >Add To Cart</button>)
+
+         Wishlist=(<button type="submit" className="lob" style={{marginLeft:"5px"}} onClick={handlewish} 
+         >Wishlist</button>)
+
          countButton=(<div className='contain1'>
          <button onClick={decrement} style={{ 
                  backgroundColor: "#6666ff", }}>-</button>
@@ -376,7 +472,8 @@ function Menext() {
             </Box> 
             <br /> 
             
-            {addButton} 
+            {addButton}  
+            {Wishlist}
             {purchase}
             <button onClick={toggleModal} className="lob"
             style={{

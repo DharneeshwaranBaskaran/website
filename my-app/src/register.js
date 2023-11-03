@@ -26,6 +26,7 @@ function RegisterPage() {
     const [num,setnum]=useState(''); 
     const [name,setname]=useState('');
     const [email,setEmail]=useState('');
+    const [mail,setmail]=useState('');
     const [error, setError] = useState('');
     const [error1, setError1] = useState('');
     const [error2, setError2] = useState('');
@@ -42,7 +43,53 @@ function RegisterPage() {
     const [isconPassword,setIsconpassword]=useState(false)
     const [isAddress,setIsAddress]=useState(false);
     const [csvData, setCsvData] = useState(null); // Store the CSV data
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    const handlePhoneNumberChange = (e) => {
+      const inputPhoneNumber = e.target.value;
+      // Use a regular expression to check if only numbers are entered
+      const onlyNumbers = /^[0-9]*$/;
+
+      if (onlyNumbers.test(inputPhoneNumber)) {
+        setPhoneNumber(inputPhoneNumber);
+      } 
+    }; 
+    const handlephone= async (event) =>{
+      if(phoneNumber=="" || mail==""){
+        enqueueSnackbar("Enter the Required data");
+      }
+      
+        try {
+          const response = await fetch("http://localhost:8080/api/phone", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username:phoneNumber,email:mail}),
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            setShowModal(!showModal);
+            navigate(`/${type}/login`);
+            enqueueSnackbar("Username and password sent to mail",{ variant: "success" });
+          }
+          else{
+            console.log(response); 
+            const errorData = await response.json();
+                    enqueueSnackbar(errorData.error, { variant: "error" });
+          }
+          
+          } catch (error) {
+            enqueueSnackbar("An error occurred",{ variant:"error" });
+          }
+      
+    }
+    const [showModal, setShowModal] = useState(false);
     
+      const toggleModal = () => {
+        setShowModal(!showModal);
+      };
         const handleRegister = async (event) => {
             if (!username || !password || !conpassword || !email ) {
                 enqueueSnackbar("Please fill in all required fields", { variant: "error" });
@@ -205,7 +252,11 @@ function RegisterPage() {
                 setIsAddress(true);
             }
              setError3('')
-          };
+          }; 
+          const handleChange0=(e)=>{
+            const value = e.target.value;
+            setmail(value);
+          }
           
           const handleChange4 = (e) => {
             const value = e.target.value;
@@ -328,7 +379,9 @@ function RegisterPage() {
             }
           };
           
-       
+        // const handlephone =()=>{
+        //   
+        // } 
     return ( 
         <div style={{ 
           backgroundImage: `url(${backpic})` ,minHeight: "130vh"
@@ -466,6 +519,34 @@ function RegisterPage() {
                     <button onClick={redirectinglogin} className="lob"> Login </button>
                     {localStorage.getItem('type') === 'buyer' && (
                         <>
+                        <div>
+                    <p>Sign Up using Phone Number</p> 
+                    <button onClick={toggleModal} className="lob">Register Phone Number</button> 
+                    {showModal && (
+        
+                  <div>
+                      <h2>Enter Moblile Number:</h2> 
+                        <div className="con"> 
+                        
+                              <input
+                                type="text"
+                                
+                                placeholder="Number"
+                                value={phoneNumber}
+                                onChange={handlePhoneNumberChange}
+                              />
+                              <input
+                              type="text"
+                              placeholder="Email"
+                              value={mail}
+                              onChange={handleChange0}
+                              />
+                        <button type="submit" className="lob" onClick={handlephone}>Submit</button>
+                      
+                    </div>
+                  </div>
+                 )}
+                    
                     <p>Sign Up with Google</p>
                     <LoginSocialGoogle
                         client_id={"812988011805-bjggbnbauqg4a4g7f9e8r2qd0rh290u6.apps.googleusercontent.com"}
@@ -510,6 +591,7 @@ function RegisterPage() {
                     >
                     <GoogleLoginButton />
                     </LoginSocialGoogle >
+                    </div>
                     </>
                     )}
                     </div>

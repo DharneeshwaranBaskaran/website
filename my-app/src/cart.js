@@ -257,8 +257,8 @@ const removeItemFromCart = (topic) => {
       .catch((error) => {
         console.log(error);
       }); 
-      navigate(`/${type}/homepage`); 
-      enqueueSnackbar(topic+"removed from cart");
+      window.location.reload();
+      enqueueSnackbar(topic+" removed from cart");
   };
   
 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];

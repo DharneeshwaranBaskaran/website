@@ -334,7 +334,9 @@ useEffect(() => {
       settyp(value);
      };
   
-  
+     const handlewish=()=>{
+      navigate(`/${typeo}/phone`); 
+     }
   const handleEdit = async (id) => { 
       const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
                     method: 'POST',
@@ -431,6 +433,7 @@ useEffect(() => {
     />
     <button onClick={() => fileInputRef.current.click()} style={{backgroundColor:"#7752FE"}}>Select Image</button>
     <button onClick={handleRemoveImage} style={{backgroundColor:"#7752FE"}}>Remove Image</button>
+    <button onClick={handlewish} style={{backgroundColor:"#7752FE"}}>Wishlist</button>
           </div> 
           </>
             )}
