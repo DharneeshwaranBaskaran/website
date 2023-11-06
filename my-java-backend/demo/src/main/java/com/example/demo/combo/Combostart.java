@@ -47,7 +47,8 @@ public class Combostart {
                 combo.setCat(resultSet.getString("cat"));
                 combo.setPerson(resultSet.getString("person")); 
                 combo.setSeller(resultSet.getString("seller"));
-                combo.setCount(resultSet.getInt("count"));
+                combo.setCount(resultSet.getInt("count")); 
+                combo.setStockcount(resultSet.getInt("stockcount"));
                 combos.add(combo);
             }
             return ResponseEntity.ok(combos);

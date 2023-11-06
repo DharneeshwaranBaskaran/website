@@ -134,7 +134,7 @@ function Menext() {
                         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wish.`, { variant:"success" }); 
                         console.log(cartItem);
                         setCount(0);
-                        navigate(`/${type}/phone`);
+                        // navigate(`/${type}/phone`);
                     } else {
                        
                     }
@@ -152,7 +152,7 @@ function Menext() {
         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wishlist.`,{ variant:"success" });
       
         const username = localStorage.getItem('username');
-        navigate(`/${type}/phone`);
+        // navigate(`/${type}/phone`);
         } else {
         enqueueSnackbar("Please select at least one item before adding to wishlist.",{ variant:"warning" });
         

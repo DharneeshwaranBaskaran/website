@@ -39,7 +39,7 @@ public class Combo {
     private int cost;
     private String cat;
     private String person;  
-    
+    private int Stockcount;
     private Boolean state; 
      @ManyToOne
     private seller seller;

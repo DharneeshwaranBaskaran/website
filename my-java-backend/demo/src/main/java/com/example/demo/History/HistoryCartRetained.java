@@ -40,7 +40,7 @@ public class HistoryCartRetained {
                 String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id,weekend) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
                     // String updateComboSql = "UPDATE combo SET id=? AND count = count + ? WHERE topic = ?";
                     
-                    String updateComboSql = "UPDATE combo SET history_item_id = ?, count = count + ? WHERE topic = ?";
+                    String updateComboSql = "UPDATE combo SET history_item_id = ?,stockcount=stockcount-?, count = count + ? WHERE topic = ?";
                     PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
                     PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
@@ -89,7 +89,8 @@ public class HistoryCartRetained {
                                 "\nCount: " + resultSet.getInt("count"));
                         updateComboStatement.setLong(1, newId);       
                         updateComboStatement.setInt(2, itemCount);
-                        updateComboStatement.setString(3, itemName);
+                        updateComboStatement.setInt(3, itemCount);
+                        updateComboStatement.setString(4, itemName);
                         updateComboStatement.executeUpdate();
                     }
 

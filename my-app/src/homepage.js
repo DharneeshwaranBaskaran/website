@@ -16,7 +16,6 @@ function HomePage() {
   const [pro,setpro]=useState([]);
   const [user,setuser]=useState([]);
   const [Balance,setBalance]=useState(0); 
-  const [counting,setcounting]=useState(0);
   const [cart,setcart]=useState([]);
   const username = localStorage.getItem('username'); 
   let typeo=localStorage.getItem('type');
@@ -303,6 +302,16 @@ useEffect(() => {
           else{
             return 0; // Default to no sorting
             }
+        } 
+        else if(typ=="stockcount"){
+          if(accsortingCriteria==="des"){
+            return b.stockcount - a.stockcount;
+          }else if(accsortingCriteria==="ass"){
+            return a.stockcount - b.stockcount;
+          }
+          else{
+            return 0; // Default to no sorting
+            }
         }
         else{
           if(accsortingCriteria==="des"){
@@ -358,6 +367,19 @@ useEffect(() => {
                   } else {
                       enqueueSnackbar("Registration Failed", { variant: "error" });
                   }        
+  } 
+  const handlestock = (id) => { 
+    console.log(id);
+    axios
+      .post(`http://localhost:8080/api/updatestock/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        enqueueSnackbar('Stock count updated successfully', { variant: 'success' });
+      })
+      .catch((error) => {
+        console.error('Error updating stock count:', error);
+        enqueueSnackbar('Error updating stock count', { variant: 'error' });
+      });
   }
     return ( 
       
@@ -505,7 +527,9 @@ useEffect(() => {
             <th>Topic</th>
             <th>Count</th>
             <th>Cost</th>
-            <th>Revenue</th>
+            <th>Revenue</th> 
+            <th>Stock</th> 
+            <th>Add Stock</th>
           </tr>
         </thead>
         <tbody>
@@ -514,7 +538,9 @@ useEffect(() => {
               <td>{item.topic}</td>
               <td>{item.count}</td>
               <td>${item.cost}</td>
-              <td>${item.cost * item.count}</td>
+              <td>${item.cost * item.count}</td> 
+              <td>{item.stockcount}</td> 
+              {/* <td><button className="cart-button" onClick={()=>handlestock(item.id)}>Add</button></td> */}
             </tr>
           ))}
         </tbody>
@@ -548,7 +574,8 @@ useEffect(() => {
             <option value="">Select Type</option>
             <option value="cost">Cost</option>
             <option value="count">Count</option>
-            <option value="revenue">Revenue</option>
+            <option value="revenue">Revenue</option> 
+            {/* <option value="stockcount">Stock</option> */}
             {/* Add more options as needed */}
           </select>   
               <button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>

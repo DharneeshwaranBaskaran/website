@@ -82,13 +82,12 @@ function LoginPage() {
           }
           else{
             console.log(response); 
-            console.log(); 
+            
             enqueueSnackbar("Invalid Credentials");
           }
           
           } catch (error) {
-            enqueueSnackbar("An error occurred",{ variant:"error" });
-          }
+            enqueueSnackbar("An error occurred: " + error.message, { variant: "error" });          }
       };
       const handleChange = (e) => {
         const value = e.target.value;

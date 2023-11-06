@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.JwtUtils;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -34,8 +36,9 @@ public class companyaccesslogin {
                         String retrievedPassword = resultSet.getString("password");
                         
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
-                           
-                            return ResponseEntity.ok("Login successful!");
+                          String jwtToken = JwtUtils.generateToken(loginRequest.getUsername());
+                           return ResponseEntity.ok().header("Authorization", "Bearer " + jwtToken).body("Login successful!");
+                            // return ResponseEntity.ok("Login successful!");
                         } else {
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }
@@ -48,7 +51,8 @@ public class companyaccesslogin {
             catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println(e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());
+
             }
         }
     }

@@ -46,7 +46,7 @@ public class ViewHistory {
                 combo.setCount(resultSet.getInt("count"));
                 combo.setCat(resultSet.getString("cat"));
                 combo.setPerson(resultSet.getString("person")); 
-                
+                combo.setStockcount(resultSet.getInt("stockcount"));
                 combos.add(combo);
             }
             return ResponseEntity.ok(combos);
