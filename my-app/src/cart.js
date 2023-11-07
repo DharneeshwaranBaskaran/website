@@ -291,7 +291,23 @@ const handleSearchChange = (e) => {
   setSearchQuery(e.target.value);
 };
 
-
+const updateaddress=async()=>{
+  try {
+    const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response.status === 200) {
+      console.log(response.data);
+    } else {
+      console.log('Error updating user address');
+    }
+  } catch (error) {
+    console.log('Error updating user address catch');
+  }
+  window.location.reload();
+}
 const handleaddress = async () => {
   try {
     const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
@@ -344,7 +360,22 @@ return (
         </div>
         
       )}
-      </div>
+      {(Address!=undefined && Address!=" " && Address!="") &&(  
+        <><div style={{ display: 'flex', alignItems: 'center' }}>
+        <h3 style={{marginLeft:"10px"}}>Alter Delivery Address If Required:</h3>
+        <input
+        style={{width:"200px",marginLeft:"20px"}}
+        type="text"
+        placeholder="Personal Address"
+        value={address}
+        onChange={handleChange4}              
+        /><button style={{marginLeft:"20px"}} className="lob" onClick={updateaddress}>Confirm</button>
+        </div></>
+        )}
+        
+        </div>
+      
+      
       <p>Delivery Address:{Address}</p>
       <input
                 type="text"

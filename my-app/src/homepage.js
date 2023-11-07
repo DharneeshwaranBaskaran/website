@@ -9,7 +9,8 @@ import LaterCard from "./Latercard";
 function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [ty,settyp] = useState(''); 
+  const [ty,settyp] = useState('');  
+  const [inputNumber,setInputnumber]=useState('');
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
@@ -199,6 +200,7 @@ useEffect(() => {
       localStorage.setItem("weekend","Yes");
     }
   }
+  
   const [selectedAction, setSelectedAction] = useState(""); // Default action
   const handleActionChange = (event) => {
     if(event.target.value=="Back"){
@@ -369,18 +371,28 @@ useEffect(() => {
                   }        
   } 
   const handlestock = (id) => { 
-    console.log(id);
+    console.log(inputNumber); 
+    if(inputNumber<=0){
+      enqueueSnackbar("Enter a Number greater than 0");
+    }
+    else{
     axios
-      .post(`http://localhost:8080/api/updatestock/${id}`)
+      .post(`http://localhost:8080/api/updatestock/${id}/${inputNumber}`)
       .then((response) => {
         console.log(response.data);
-        enqueueSnackbar('Stock count updated successfully', { variant: 'success' });
+        enqueueSnackbar('Stock count updated successfully', { variant: 'success' }); 
+        window.location.reload();
       })
       .catch((error) => {
         console.error('Error updating stock count:', error);
         enqueueSnackbar('Error updating stock count', { variant: 'error' });
       });
+    }
   }
+  const validatePositiveNumber = (value) => {
+    const parsedValue = parseFloat(value);
+    return !isNaN(parsedValue) && parsedValue >= 0 ? parsedValue : 0;
+  };
     return ( 
       
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
@@ -540,7 +552,15 @@ useEffect(() => {
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td> 
               <td>{item.stockcount}</td> 
-              {/* <td><button className="cart-button" onClick={()=>handlestock(item.id)}>Add</button></td> */}
+              <td><input
+          type="number"
+          value={inputNumber}
+          onChange={(e) => setInputnumber(validatePositiveNumber(e.target.value))}
+          placeholder="Enter a number" 
+          style={{ backgroundColor: "#713ABE", color: "white", 
+             border: "none", padding: "5px",width:"50px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
+        />
+        <button onClick={()=>handlestock(item.id)} className="cart-button" >Add</button></td>
             </tr>
           ))}
         </tbody>

@@ -12,12 +12,12 @@ import java.io.InputStreamReader;
 
 @RestController
 @RequestMapping("/api")
-public class companyController {
-
+public class registerseller {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @PostMapping("/upload-csv/company")
-     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+
+    @PostMapping("/up-csv/company")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
             return "Please select a CSV file to upload.";
         }
@@ -38,19 +38,18 @@ public class companyController {
                 String[] fields = line.split(",");
 
                 // Assuming the order of fields matches the CSV file
-                
-                String email = fields[0].trim();
-                
-                String password = fields[1].trim();
-                String provider=fields[2].trim(); 
-                String type=fields[3].trim();
-                String username = fields[4].trim();
-                
+                String comaddress = fields[1].trim();
+                String company = fields[2].trim();
+                String email = fields[3].trim();
+                long num = Long.parseLong(fields[4].trim());
+                String password = fields[5].trim();
+                String username = fields[6].trim();
+                String website = fields[7].trim();
 
                 // Use JdbcTemplate to insert data directly into the database
-                String insertSql = "INSERT INTO companyaccess (email, password,provider,type,username) " +
-                        "VALUES (?, ?, ?, ?, ?)";
-                jdbcTemplate.update(insertSql,email, password,provider,type, username);
+                String insertSql = "INSERT INTO company (comaddress, company, email, num, password, username, website) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                jdbcTemplate.update(insertSql, comaddress, company, email, num, password, username, website);
             }
 
             return "CSV data uploaded successfully.";

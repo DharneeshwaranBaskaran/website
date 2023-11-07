@@ -47,13 +47,18 @@ public class CartController {
         String weekend=cartItem.getWeekend();
         
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String selectComboIdSql = "SELECT id FROM combo WHERE topic = ?";
+            String selectComboIdSql = "SELECT * FROM combo WHERE topic = ?";
             PreparedStatement selectComboIdStatement = connection.prepareStatement(selectComboIdSql);
             selectComboIdStatement.setString(1, topic);
             ResultSet comboIdResultSet = selectComboIdStatement.executeQuery();
-            
             if (comboIdResultSet.next()) {
                 int comboId = comboIdResultSet.getInt("id");
+                int stockCount = comboIdResultSet.getInt("stockcount");
+    
+                if (stockCount < count) {
+                    System.out.println("Stock count is less than the requested count.");
+                    return ResponseEntity.badRequest().body("Stock count is less than the requested count.");
+                }
                         String getLastIdQuery = "SELECT MAX(id) FROM cart";
                         Statement statement = connection.createStatement();
                         ResultSet resultSet1 = statement.executeQuery(getLastIdQuery);

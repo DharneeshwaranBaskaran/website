@@ -177,7 +177,7 @@ function Menext() {
         const existingCartItems = (Items) || [];
         const existingIndex = existingCartItems.findIndex(item => item.topic === cartItem.topic);
         if (existingIndex !== -1) { 
-          enqueueSnackbar("Already in cart Incrementing The count",{ variant:"success"});
+          // enqueueSnackbar("Already in cart Incrementing The count"+cartItem.count,{ variant:"success"});
           fetch(`http://localhost:8080/api/update/${cartItem.topic}/${Username}`, {
                 method: 'POST',
                 headers: {
@@ -186,15 +186,21 @@ function Menext() {
                 body: JSON.stringify(cartItem),
             })
                 .then(response => {
-                    if (response.status === 201) {
-                        enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`, { variant:"success"}); 
+                  if (response.status === 201) {
+                    // Successfully updated the count
+                    response.text().then(message => {
+                        enqueueSnackbar(message, { variant: "success" });
                         console.log(cartItem);
                         setCount(0);
-                        navigate(`/${type}/cart`); 
+                        navigate(`/${type}/cart`);
                         window.location.reload();
-                    } else {
-                        
-                    }
+                    });
+                } else if (response.status === 400) {
+                      // Product not found or other error
+                      response.text().then(errorMessage => {
+                          enqueueSnackbar(errorMessage, { variant: "error" });
+                      });
+                  }
                 })
                 .catch(error => {
               
@@ -202,7 +208,8 @@ function Menext() {
     
           
           existingCartItems[existingIndex].count += count;
-        } else {
+        } else {  
+          
           fetch('http://localhost:8080/api/cart/add', {
                 method: 'POST',
                 headers: {
@@ -216,9 +223,12 @@ function Menext() {
                         console.log(cartItem);
                         setCount(0);
                         navigate(`/${type}/cart`);
-                    } else {
-                       
-                    }
+                    } else if (response.status === 400) {
+                      // Product not found or other error
+                      response.text().then(errorMessage => {
+                          enqueueSnackbar(errorMessage, { variant: "error" });
+                      });
+                  }
                 })
                 .catch(error => {
                    enqueueSnackbar(error);
@@ -230,7 +240,7 @@ function Menext() {
  
         setCount(0);
         navigate(`/${type}/cart`);  
-        enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`,{ variant:"success" });
+        // enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`,{ variant:"success" });
       
         const username = localStorage.getItem('username');
         
@@ -463,6 +473,7 @@ function Menext() {
         
         <h1  style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>{imageData.topic} </h1>
         <h2 style={{ fontSize: '18px', color: '#333' }}>{imageData.description}</h2>  
+        <h2 style={{ fontSize: '18px', color: '#333' }}>Quantity:{imageData.stockcount} pieces</h2>
         {renderDiscountAmount()}
             {countButton}
             <Box>

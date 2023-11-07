@@ -36,6 +36,18 @@ public class cartUpdate {
                 currentCount = resultSet.getInt("count");
             }
             int newCount = currentCount + count;  
+            String selectComboIdSql = "SELECT * FROM combo WHERE topic = ?";
+            PreparedStatement selectComboIdStatement = connection.prepareStatement(selectComboIdSql);
+            selectComboIdStatement.setString(1, topic);
+            ResultSet comboIdResultSet = selectComboIdStatement.executeQuery();
+            if (comboIdResultSet.next()) {
+                int stockCount = comboIdResultSet.getInt("stockcount");
+    
+                if (stockCount < newCount) {
+                    System.out.println("Stock count is less than the requested count.");
+                    return ResponseEntity.badRequest().body("Stock count is less than the requested count.");
+                }
+            }
             String updateSql = "UPDATE cart SET count = ? WHERE topic = ? AND username = ? AND  state = ?";
             PreparedStatement updateStatement = connection.prepareStatement(updateSql);
             updateStatement.setInt(1, newCount);

@@ -21,8 +21,8 @@ public class stock {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @PostMapping("/updatestock/{id}")
-     public ResponseEntity<String> UpdateCart(@PathVariable Long id) {
+    @PostMapping("/updatestock/{id}/{number}")
+     public ResponseEntity<String> UpdateCart(@PathVariable Long id,@PathVariable Integer number) {
          
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String selectSql = "SELECT stockcount FROM combo WHERE id=?";
@@ -34,11 +34,11 @@ public class stock {
             if (resultSet.next()) {
                 currentCount = resultSet.getInt("stockcount");
             }
-            int newCount = currentCount + 5;  
+            int newCount = currentCount + number;  
             String updateSql = "UPDATE combo SET stockcount = ? WHERE id=?";
             PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setLong(1, newCount);
-            
+            updateStatement.setInt(1, newCount);
+            updateStatement.setLong(2, id);
             int rowsAffected = updateStatement.executeUpdate();
             if (rowsAffected > 0) {
             System.out.println("Count updated successfully for product: " + id);

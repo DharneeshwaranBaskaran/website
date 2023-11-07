@@ -107,6 +107,36 @@ function Add() {
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
       }
+      const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+      
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+      
+          // Send the formData as a multipart request
+          fetch(`http://localhost:8080/api/up-csv/${localStorage.getItem("type")}`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+          })
+          .then(async response => {
+            if (response.ok) {
+              enqueueSnackbar("CSV data uploaded successfully", { variant: "success" });
+            } else {
+              enqueueSnackbar("Failed to upload CSV data", { variant: "error" });
+              const errorData = await response.text();
+              enqueueSnackbar(errorData, { variant: "error" });
+              console.log(errorData, { variant: "error" });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+        } else {
+          enqueueSnackbar("Please select a CSV file first", { variant: "error" });
+        }
+      };
       useEffect(() => {
         axios.get(`http://localhost:8080/api/balance/${Username}`)
               .then((response) => {
@@ -118,6 +148,7 @@ function Add() {
                 console.error('Error fetching data:', error);
               });
           }, [Username]); 
+          
   return (
     <div style={{ backgroundColor: "#e5e5ff"  }}>
     <div  className="logout-button">
@@ -212,7 +243,11 @@ function Add() {
                 Launch Product</button> 
                 <button className="lob" onClick={addData} style={{marginLeft:"5px"}}>
                 Add To Draft</button> 
-                
+                <div  >
+                 <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
+                 <br/>
+                 <br/>
+                 </div>
                 </div>
                 
            </div>  

@@ -89,7 +89,36 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
     const value = e.target.value;
     setType(value); 
   } 
-    
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+  
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+  
+      // Send the formData as a multipart request
+      fetch("http://localhost:8080/api/upload-csv/company", {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      })
+      .then(async response => {
+        if (response.ok) {
+          enqueueSnackbar("CSV data uploaded successfully", { variant: "success" });
+        } else {
+          enqueueSnackbar("Failed to upload CSV data", { variant: "error" });
+          const errorData = await response.text();
+          enqueueSnackbar(errorData, { variant: "error" });
+          console.log(errorData, { variant: "error" });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    } else {
+      enqueueSnackbar("Please select a CSV file first", { variant: "error" });
+    }
+  };
 return(
   <div style={{ 
     backgroundColor: "#e5e5ff", minHeight: "100vh"
@@ -134,7 +163,17 @@ return(
    
    <button className="lob" onClick={handleRegister}>
     Give Access</button> 
-    </div>
+    {localStorage.getItem('type') === 'company' && ( 
+                    <>
+                    <div  >
+                 <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
+                 <br/>
+                 <br/>
+                 </div>
+                 </>
+                )}
+    </div> 
+    
     </div>
   )}
   </div>
