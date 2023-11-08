@@ -291,23 +291,7 @@ const handleSearchChange = (e) => {
   setSearchQuery(e.target.value);
 };
 
-const updateaddress=async()=>{
-  try {
-    const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.status === 200) {
-      console.log(response.data);
-    } else {
-      console.log('Error updating user address');
-    }
-  } catch (error) {
-    console.log('Error updating user address catch');
-  }
-  window.location.reload();
-}
+
 const handleaddress = async () => {
   try {
     const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
@@ -328,7 +312,9 @@ const handleaddress = async () => {
 
 // Filter items based on the search query
 const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
-
+const toaddress=()=>{
+  navigate(`/${localStorage.getItem("type")}/address`); 
+}
 return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
     <div className="logout-button">
@@ -360,18 +346,7 @@ return (
         </div>
         
       )}
-      {(Address!=undefined && Address!=" " && Address!="") &&(  
-        <><div style={{ display: 'flex', alignItems: 'center' }}>
-        <h3 style={{marginLeft:"10px"}}>Alter Delivery Address If Required:</h3>
-        <input
-        style={{width:"200px",marginLeft:"20px"}}
-        type="text"
-        placeholder="Personal Address"
-        value={address}
-        onChange={handleChange4}              
-        /><button style={{marginLeft:"20px"}} className="lob" onClick={updateaddress}>Confirm</button>
-        </div></>
-        )}
+      
         
         </div>
       
@@ -418,7 +393,8 @@ return (
         <button className="cart-button" style={{backgroundColor:"#713ABE"}} onClick={handlePayment1}>Express Delivery</button>
         <button className="cart-button" style={{backgroundColor:"#793FDF"}} onClick={handlePaymentandretain}>Pay And Retain</button> 
         <button className="cart-button" style={{backgroundColor:"#7752FE"}}  onClick={handlePayment}>Pay</button>  
-        <button onClick={updateBalance} className="cart-button">Add Balance</button>
+        <button onClick={updateBalance} className="cart-button">Add Balance</button> 
+        <button onClick={toaddress} className="lob" style={{marginLeft:"10px",marginRight:"10px"}}>Alter Address</button>
       </div>
     </div>
     </>

@@ -14,8 +14,12 @@ import { SnackbarProvider } from 'notistack';
 import LoginPage from './loginpage';
 import RegisterPage from './register';
 import Edituser from "./Edituser"; 
-import Help from "./help"; 
+import Help from "./help";  
 import Phone from "./Wish";
+import User from "./User"; 
+import Address from "./address"; 
+// import Email from "./email";
+import Email from "./Email";
 function App() {
   let type=localStorage.getItem('type');
   return (
@@ -38,6 +42,9 @@ function App() {
         <Route path={`/${type}/edituser`} element={<Edituser/>}/> 
         <Route path={`/${type}/help`} element={<Help/>}/>
         <Route path={`/${type}/phone`} element={<Phone/>}/>
+        <Route path={`/${type}/user`}element={<User/>}/>
+        <Route path={`/${type}/address`}element={<Address/>}/> 
+        <Route path={`/${type}/mail`}element={<Email/>}/>
       </Routes>
     </Router>
   </SnackbarProvider>

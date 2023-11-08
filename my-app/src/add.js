@@ -115,7 +115,7 @@ function Add() {
           formData.append("file", file);
       
           // Send the formData as a multipart request
-          fetch(`http://localhost:8080/api/up-csv/${localStorage.getItem("type")}`, {
+          fetch("http://localhost:8080/api/up-csv", {
             method: 'POST',
             body: formData,
             credentials: 'include',

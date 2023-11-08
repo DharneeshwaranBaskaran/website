@@ -16,13 +16,17 @@ public class registerseller {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @PostMapping("/up-csv/company")
+    @PostMapping("/up-csv")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (file.isEmpty()) {
             return "Please select a CSV file to upload.";
         }
 
         try {
+            int maxId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM combo", Integer.class);
+            if (maxId < 1) {
+                maxId = 1; // Start from 1 if the table is empty
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
             String line;
             boolean firstLine = true;
@@ -33,25 +37,29 @@ public class registerseller {
                     firstLine = false;
                     continue;
                 }
-
+                maxId=maxId+1;
                 // Split the CSV line into individual fields
                 String[] fields = line.split(",");
-
+                System.out.println(fields);
                 // Assuming the order of fields matches the CSV file
-                String comaddress = fields[1].trim();
-                String company = fields[2].trim();
-                String email = fields[3].trim();
-                long num = Long.parseLong(fields[4].trim());
-                String password = fields[5].trim();
-                String username = fields[6].trim();
-                String website = fields[7].trim();
+                String cat = fields[0].trim();
+                Integer cost = Integer.parseInt(fields[1].trim());
+                String description = fields[2].trim();
+                double rating = Double.parseDouble(fields[3].trim());
+                String topic = fields[4].trim();
+                String url = fields[5].trim();
+                String person = fields[6].trim();
+                boolean state = Boolean.parseBoolean(fields[7].trim());
+                String seller = (fields[9].trim());
+                int count = Integer.parseInt(fields[8].trim());
+                int stockcount = Integer.parseInt(fields[10].trim());
 
-                // Use JdbcTemplate to insert data directly into the database
-                String insertSql = "INSERT INTO company (comaddress, company, email, num, password, username, website) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
-                jdbcTemplate.update(insertSql, comaddress, company, email, num, password, username, website);
+                // Use JdbcTemplate to insert data into the "combo" table
+                String insertSql = "INSERT INTO combo (id,cat, cost, description, rating, topic, url, person, state, count,seller, stockcount) " +
+                        "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+                jdbcTemplate.update(insertSql,maxId, cat, cost, description, rating, topic, url, person, state, count,seller, stockcount);
             }
-
+            
             return "CSV data uploaded successfully.";
         } catch (DataAccessException e) {
             // Handle database-related errors

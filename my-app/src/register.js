@@ -254,7 +254,8 @@ function RegisterPage() {
              setError3('')
           }; 
           const handleChange0=(e)=>{
-            const value = e.target.value;
+            const value = e.target.value; 
+            
             setmail(value);
           }
           
@@ -264,7 +265,9 @@ function RegisterPage() {
             setValidAddress(value.length >= 6);
             if (email.length<6) {
                 setError3('*Email should contain a minimum of 6 characters');
-            } 
+            }else if(!(email.includes("@"))){
+              setError3('*Enter a valid Email')
+            }
                 setAddress(value);    
            }; 
            const handleChange5 = (e) => {
@@ -439,15 +442,7 @@ function RegisterPage() {
                 style={inputStyle3}
                 />
                 )}
-                {localStorage.getItem('type') !== 'buyer' && (
-                <input
-                type="text"
-                placeholder="Company Address"
-                value={comaddress}    
-                onChange={handleChange8}           
-                />
-                )}
-                 {localStorage.getItem('type') !== 'company' && ( 
+                {localStorage.getItem('type') !== 'company' && ( 
                     <>
                 <div style={errorStyle}>{error3}</div>
                 <input
@@ -458,6 +453,15 @@ function RegisterPage() {
                 />
                 </>
                  )} 
+                {localStorage.getItem('type') !== 'buyer' && (
+                <input
+                type="text"
+                placeholder="Company Address"
+                value={comaddress}    
+                onChange={handleChange8}           
+                />
+                )}
+                 
                  {localStorage.getItem('type') === 'company' && ( 
                     <>
                

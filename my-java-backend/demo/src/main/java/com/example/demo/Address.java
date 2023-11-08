@@ -56,6 +56,7 @@ public class Address {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
                 }
             } catch (SQLException e) {
+                
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user address");
             }
@@ -63,6 +64,32 @@ public class Address {
             System.out.println(e);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user address");
+        }
+    }
+    @PostMapping("/updateEmail/{username}")
+    public ResponseEntity<String> updateUseremail(@PathVariable String username, @RequestBody String newEmail) {
+        try {
+            String updateAddressSql = "UPDATE users SET email = ? WHERE username = ?";
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateAddressSql);  // Change variable name here
+                preparedStatement.setString(1, newEmail);
+                preparedStatement.setString(2, username);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    return ResponseEntity.ok("User email updated successfully");
+                } else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+                }
+            } catch (SQLException e) {
+                
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user email");
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user email");
         }
     }
 }

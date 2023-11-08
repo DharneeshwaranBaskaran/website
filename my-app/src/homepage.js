@@ -10,7 +10,7 @@ function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [ty,settyp] = useState('');  
-  const [inputNumber,setInputnumber]=useState('');
+  const [inputNumber,setInputnumber]=useState([]);
   const [Items,setItems]=useState([]);
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
@@ -348,13 +348,13 @@ useEffect(() => {
      const handlewish=()=>{
       navigate(`/${typeo}/phone`); 
      }
-  const handleEdit = async (id) => { 
+  const handleEdit = async (id,index) => { 
       const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({id,type:ty}),
+                    body: JSON.stringify({id,type:selectValues[index]}),
                     credentials: 'include',
                   });
                   if (response.ok) {
@@ -370,14 +370,36 @@ useEffect(() => {
                       enqueueSnackbar("Registration Failed", { variant: "error" });
                   }        
   } 
-  const handlestock = (id) => { 
-    console.log(inputNumber); 
-    if(inputNumber<=0){
-      enqueueSnackbar("Enter a Number greater than 0");
+  
+  const [inputValues, setInputValues] = useState(Array(sortedData.length).fill('')); // Use an array of strings to store input values
+
+  const handleChangein = (index, e) => {
+    const newValue = e.target.value;
+    const newInputValues = [...inputValues];
+    newInputValues[index] = newValue;
+    setInputValues(newInputValues);
+  };
+  
+  const validatePositiveNum = (value) => {
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue) && numericValue >= 0) {
+      return numericValue;
+    } else {
+      // If the input is not a valid positive number, return the current value.
+      return null;
+    }
+  };
+  
+  const handlestock = (id,index) => { 
+     
+    
+    const inputValue = inputValues[index]; 
+    if(inputValue<=0){
+      enqueueSnackbar("Enter a Number greater than 0")
     }
     else{
     axios
-      .post(`http://localhost:8080/api/updatestock/${id}/${inputNumber}`)
+      .post(`http://localhost:8080/api/updatestock/${id}/${inputValue}`)
       .then((response) => {
         console.log(response.data);
         enqueueSnackbar('Stock count updated successfully', { variant: 'success' }); 
@@ -387,21 +409,39 @@ useEffect(() => {
         console.error('Error updating stock count:', error);
         enqueueSnackbar('Error updating stock count', { variant: 'error' });
       });
-    }
+    
   }
-  const validatePositiveNumber = (value) => {
-    const parsedValue = parseFloat(value);
-    return !isNaN(parsedValue) && parsedValue >= 0 ? parsedValue : 0;
-  };
+  
+}
+const [selectValues, setSelectValues] = useState(user.map((item) => ""));
+
+// Function to handle changes in the select element
+const handleSelectChange = (index, value) => {
+  // Create a copy of the selectValues array
+  const newSelectValues = [...selectValues];
+  // Update the value for the specific select element
+  newSelectValues[index] = value;
+  // Set the updated state  
+  console.log(newSelectValues)
+  setSelectValues(newSelectValues);
+};
+const handleuser=()=>{
+  navigate(`/${typeo}/user`);
+}
     return ( 
       
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button"> 
         
-        <button style={{backgroundColor:"#5B0888"}}>{username}</button> 
-        
+       
+        {localStorage.getItem('type') !== 'buyer' && (
+          <>
+          <button style={{backgroundColor:"#5B0888"}}>{username}</button> 
+          </>   
+          )}
         {localStorage.getItem('type') === 'buyer' && (
           <>  
+           <button style={{backgroundColor:"#5B0888"}} onClick={handleuser}>{username}</button> 
           <select 
             onChange={handleChange} 
             style={{ backgroundColor: "#5B0888", color: "white", 
@@ -554,13 +594,13 @@ useEffect(() => {
               <td>{item.stockcount}</td> 
               <td><input
           type="number"
-          value={inputNumber}
-          onChange={(e) => setInputnumber(validatePositiveNumber(e.target.value))}
+          value={inputValues[index]}
+        onChange={(e) => handleChangein(index, e)}
           placeholder="Enter a number" 
           style={{ backgroundColor: "#713ABE", color: "white", 
              border: "none", padding: "5px",width:"50px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
         />
-        <button onClick={()=>handlestock(item.id)} className="cart-button" >Add</button></td>
+        <button onClick={()=>handlestock(item.id,index)} className="cart-button" >Add</button></td>
             </tr>
           ))}
         </tbody>
@@ -586,19 +626,24 @@ useEffect(() => {
               <td>{item.type}</td>
               <td><button className="cart-button" onClick={() => handleRemove(item.id)} >Remove</button></td>
               <td><select
-               value={ty}
-               onChange={handleChange5} 
-               style={{ backgroundColor: "#713ABE", color: "white", 
-             border: "none", padding: "5px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
-             >
-            <option value="">Select Type</option>
-            <option value="cost">Cost</option>
-            <option value="count">Count</option>
-            <option value="revenue">Revenue</option> 
-            {/* <option value="stockcount">Stock</option> */}
-            {/* Add more options as needed */}
-          </select>   
-              <button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
+  value={selectValues[index]} // Use the state for this select element
+  onChange={(e) => handleSelectChange(index, e.target.value)} // Pass the index and value
+  style={{
+    backgroundColor: "#713ABE",
+    color: "white",
+    border: "none",
+    padding: "5px",
+    borderRadius: "5px",
+    marginTop: "10px",
+    marginLeft: "10px"
+  }}
+>
+  <option value="">Select Type</option>
+  <option value="cost">Cost</option>
+  <option value="count">Count</option>
+  <option value="revenue">Revenue</option>
+</select>
+              <button className="cart-button" onClick={() => handleEdit(item.id,index)} >Edit</button></td>
             </tr>
           ))}
         </tbody>
