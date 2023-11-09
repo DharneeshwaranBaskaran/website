@@ -4,12 +4,15 @@ import axios from "axios";
 import ReactPlayer from 'react-player'; 
 import CustomCard from "./customcard";
 import { useNavigate } from 'react-router-dom';
+import DissatisfiedSymbol from './DissatisfiedSymbol';
+import Autosuggest from 'react-autosuggest';
+
 import './App.css'; 
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function Start(){ 
   const [type, setType] = useState(localStorage.getItem('type'));
     const navigate = useNavigate();
-    
+    const [searchValue, setSearchValue] = useState(''); 
     const [data,setData]=useState([]); 
     const handletomenex=(id)=>{
       localStorage.setItem('myID', id); 
@@ -65,6 +68,48 @@ function Start(){
           index === self.findIndex((t) => t.topic === item.topic)
       )
       : [];
+      const handleSearch = (e) => {
+        // Step 3: Update search input value as the user types
+        setSearchValue(e.target.value);
+      }
+    
+      const filteredItems = uniqueItems.filter(item => {
+        // Step 4: Filter the uniqueItems based on the search input value
+        return item.topic.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      const suggestions = uniqueItems.map(item => item.topic);
+
+  // Autosuggest input value
+  const [value, setValue] = useState('');
+  // Suggestions to be shown in the autosuggest dropdown
+  const [suggestionsList, setSuggestionsList] = useState([]);
+
+  // Autosuggest input change handler
+  const onInputChange = (event, { newValue }) => {
+    setValue(newValue);
+  };
+
+  // Autosuggest suggestion update handler
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestionsList(getSuggestions(value));
+  };
+
+  // Autosuggest suggestion clear handler
+  const onSuggestionsClearRequested = () => {
+    setSuggestionsList([]);
+  };
+
+  // Function to get suggestions based on user input
+  const getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+
+    return inputLength === 0
+      ? []
+      : suggestions.filter(suggestion =>
+        suggestion.toLowerCase().slice(0, inputLength) === inputValue
+      );
+  };
     return (
         <div style={{ backgroundImage: `url(${backpic})` , minHeight: "1080vh" }}> 
         <div className="logout-button">
@@ -73,8 +118,32 @@ function Start(){
                 </div>
                
         <h2 style={{textAlign:"center"}}> MOST PURCHASED PRODUCTS: </h2>
+        
+        <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search Products"
+          value={searchValue}
+          onChange={handleSearch} 
+          style={{width:"200px"}}
+        />
+        <Autosuggest
+          suggestions={suggestionsList}
+          onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+          onSuggestionsClearRequested={onSuggestionsClearRequested}
+          getSuggestionValue={suggestion => suggestion}
+          renderSuggestion={suggestion => <div>{suggestion}</div>}
+          inputProps={{
+            placeholder: "Search Products",
+            value: value,
+            onChange: onInputChange,
+          }}
+        />
+      </div>
         <div  className='class-contain' >
-            {(uniqueItems).map(item => (
+          {(filteredItems).length!==0?(
+            <>
+            {(filteredItems).map(item => (
       
         <CustomCard
           key={item.id}
@@ -83,7 +152,15 @@ function Start(){
            
         />
        ))}
-       
+       </>
+       ):(<>
+        <DissatisfiedSymbol />
+        <br/>
+        <br/>
+        <h2>No products Found</h2>
+        
+        
+        </>)}
        </div >
        <br/>
         <div className="video-container">

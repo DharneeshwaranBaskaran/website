@@ -30,15 +30,46 @@ function HomePage() {
   const [typ,settye]=useState('');
   const [selectedFile, setSelectedFile] = useState(null); 
   const [later,setLater]=useState('');
+  const [imageUrl, setImageUrl] = useState(null);
+  const [forpic, setforpic] = useState('');
   const fileInputRef = useRef();
+  useEffect(() => {
+    const username = localStorage.getItem("username");
+    
+
+    axios.get(`http://localhost:8080/api/user/${username}`)
+      .then(response => {
+        setforpic(response.data[0].profilepic);
+        console.log(response.data[0].profilepic);
+      })
+      .catch(error => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []); 
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Get the first selected file
-  if (file && file.type.startsWith('image/')) {
-    setSelectedFile(file); // Set the selected image file
-  } else {
-    console.error('Selected file is not a valid image.');
-  }
+  
+    if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file); // Set the selected image file
+      const imageURL = URL.createObjectURL(file); // Get the URL of the selected image
+      setImageUrl(imageURL); // Set the image URL in state  
+      console.log(imageUrl);
+      axios.post(`http://localhost:8080/api/userpic/${username}`, { profilepic: imageURL })
+      .then((response) => {
+        console.log("Image URL sent to the backend:", response.data);
+        // Handle the response from the backend if needed
+      })
+      .catch((error) => {
+        console.error("Error sending image URL to the backend:", error);
+        // Handle errors if needed
+      });
+      console.log(imageURL);
+    } else {
+      console.error('Selected file is not a valid image.');
+    }
+    // window.location.reload();
   };
+  
 let sel="";
 if(typeo=="seller"){
   sel="access";
@@ -436,12 +467,15 @@ const handleuser=()=>{
        
         {localStorage.getItem('type') !== 'buyer' && (
           <>
+              
           <button style={{backgroundColor:"#5B0888"}}>{username}</button> 
           </>   
           )}
         {localStorage.getItem('type') === 'buyer' && (
           <>  
+          <img src={forpic} alt={forpic} style={{ height: '35px' ,marginLeft:'100px'}}  />
            <button style={{backgroundColor:"#5B0888"}} onClick={handleuser}>{username}</button> 
+           
           <select 
             onChange={handleChange} 
             style={{ backgroundColor: "#5B0888", color: "white", 
@@ -505,8 +539,8 @@ const handleuser=()=>{
       style={{ display: "none" }}
       ref={fileInputRef}
     />
-    <button onClick={() => fileInputRef.current.click()} style={{backgroundColor:"#7752FE"}}>Select Image</button>
-    <button onClick={handleRemoveImage} style={{backgroundColor:"#7752FE"}}>Remove Image</button>
+    {/* <button onClick={() => fileInputRef.current.click()} style={{backgroundColor:"#7752FE"}}>Select Image</button>
+    <button onClick={handleRemoveImage} style={{backgroundColor:"#7752FE"}}>Remove Image</button> */}
     <button onClick={handlewish} style={{backgroundColor:"#7752FE"}}>Wishlist</button>
           </div> 
           </>
@@ -517,9 +551,9 @@ const handleuser=()=>{
           </div>
         {localStorage.getItem('type') === 'buyer' && (  
           <>
-          {selectedFile && selectedFile.type.startsWith('image/') && (
-      <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" style={{ height: '50px' ,marginLeft:'100px'}}  />
-      )}
+        
+  
+      
           <>
           <div style={{width:"350px",marginLeft:"800px"}}> 
           {later.length > 0 && (   

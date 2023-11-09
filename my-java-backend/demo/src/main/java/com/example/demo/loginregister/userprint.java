@@ -43,7 +43,8 @@ public class userprint {
                 combo.setUsername(resultSet.getString("username"));
                 combo.setEmail(resultSet.getString("email"));
                 combo.setAddress(resultSet.getString("address")); 
-               combo.setBalance(resultSet.getLong("balance"));
+               combo.setBalance(resultSet.getLong("balance")); 
+               combo.setProfilepic(resultSet.getString("profilepic"));
                 combos.add(combo);
             }
             return ResponseEntity.ok(combos);

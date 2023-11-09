@@ -29,6 +29,7 @@ public class User {
     private String address;
     private Long balance; 
     private Double loyalty;
+    private String profilepic;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     // private List<Combo> combos;
