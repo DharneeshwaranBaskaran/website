@@ -486,4 +486,18 @@ align-items: center;
   margin-top: 30px;
 }
 
-/* Add more styles as needed */
+.pagination ul {
+  list-style: none;
+  display: flex; /* Use flex container */
+  justify-content: center; /* Center items horizontally */
+}
+
+.pagination li {
+  margin: 0 5px; /* Adjust the spacing between items if needed */
+  cursor: pointer;
+}
+
+.pagination li.active {
+  font-weight: bold; /* Style for the active page */
+}
+

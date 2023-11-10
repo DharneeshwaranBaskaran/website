@@ -14,6 +14,9 @@ function Start(){
     const navigate = useNavigate();
     const [searchValue, setSearchValue] = useState(''); 
     const [data,setData]=useState([]); 
+    const [value, setValue] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15; 
     const handletomenex=(id)=>{
       localStorage.setItem('myID', id); 
       localStorage.setItem('rec',"");
@@ -68,32 +71,26 @@ function Start(){
           index === self.findIndex((t) => t.topic === item.topic)
       )
       : [];
-      const handleSearch = (e) => {
-        // Step 3: Update search input value as the user types
-        setSearchValue(e.target.value);
-      }
-    
-      const filteredItems = uniqueItems.filter(item => {
-        // Step 4: Filter the uniqueItems based on the search input value
-        return item.topic.toLowerCase().includes(searchValue.toLowerCase());
-      });
+     
+      const onInputChange = (event, { newValue }) => {
+        setValue(newValue); // Update the value state directly
+      };
+     
       const suggestions = uniqueItems.map(item => item.topic);
 
-  // Autosuggest input value
-  const [value, setValue] = useState('');
   // Suggestions to be shown in the autosuggest dropdown
   const [suggestionsList, setSuggestionsList] = useState([]);
 
-  // Autosuggest input change handler
-  const onInputChange = (event, { newValue }) => {
-    setValue(newValue);
-  };
-
   // Autosuggest suggestion update handler
   const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestionsList(getSuggestions(value));
-  };
+  const inputValue = (value || '').toLowerCase(); // Ensure value is not undefined
+  setSuggestionsList(getSuggestions(inputValue));
+};
 
+const filteredItems = uniqueItems.filter((item) => {
+  const inputValue = (value || '').toLowerCase(); // Ensure value is not undefined
+  return item.topic.toLowerCase().includes(inputValue);
+});
   // Autosuggest suggestion clear handler
   const onSuggestionsClearRequested = () => {
     setSuggestionsList([]);
@@ -101,7 +98,7 @@ function Start(){
 
   // Function to get suggestions based on user input
   const getSuggestions = (value) => {
-    const inputValue = value.trim().toLowerCase();
+    const inputValue = value.toLowerCase();
     const inputLength = inputValue.length;
 
     return inputLength === 0
@@ -110,8 +107,13 @@ function Start(){
         suggestion.toLowerCase().slice(0, inputLength) === inputValue
       );
   };
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
     return (
-        <div style={{ backgroundImage: `url(${backpic})` , minHeight: "1080vh" }}> 
+        <div style={{ backgroundImage: `url(${backpic})` , minHeight: "500vh" }}> 
         <div className="logout-button">
           <button onClick={() =>handletoregister(2) }>Register</button>
            <button onClick={() =>handletologin(2)}>Login</button>       
@@ -120,14 +122,9 @@ function Start(){
         <h2 style={{textAlign:"center"}}> MOST PURCHASED PRODUCTS: </h2>
         
         <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search Products"
-          value={searchValue}
-          onChange={handleSearch} 
-          style={{width:"200px"}}
-        />
+       
         <Autosuggest
+          value={searchValue} 
           suggestions={suggestionsList}
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
           onSuggestionsClearRequested={onSuggestionsClearRequested}
@@ -141,7 +138,7 @@ function Start(){
         />
       </div>
         <div  className='class-contain' >
-          {(filteredItems).length!==0?(
+          {/* {(filteredItems).length!==0?(
             <>
             {(filteredItems).map(item => (
       
@@ -152,7 +149,18 @@ function Start(){
            
         />
        ))}
-       </>
+       </> */}
+       {(currentItems).length !== 0 ? (
+          <>
+            {(currentItems).map(item => (
+              <CustomCard
+                key={item.id}
+                item={item}
+                handleView={(itemName) => handletomenex(itemName)}
+              />
+            ))}
+            
+          </>
        ):(<>
         <DissatisfiedSymbol />
         <br/>
@@ -162,6 +170,17 @@ function Start(){
         
         </>)}
        </div >
+       <div className="pagination">
+          <ul>
+            {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
+              <li key={i} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? 'active' : ''}>
+                {i + 1}
+              </li>
+              
+            ))}
+          </ul>
+        </div>
+        
        <br/>
         <div className="video-container">
           <ReactPlayer ref={playerRef} url={VIDEO_PATH} controls={true} /> 
