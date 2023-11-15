@@ -5,6 +5,16 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 function History() {
   const navigate = useNavigate();
+  const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
     const [Data,setData]=useState([]);
     const [Items, setItems] = useState([]);
     const [Draft,setDraft]= useState([]);

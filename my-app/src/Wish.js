@@ -4,6 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
+  const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
   const [Items,setItems]=useState([]);
   const navigate = useNavigate(); 
   const username=localStorage.getItem("username");
@@ -17,13 +27,13 @@ function Phone() {
         });
   }, [username]);
 
-  const removeItemFromCart = (topic) => {
-    console.log(topic);
+  const removeItemFromCart = (id) => {
+    console.log(id);
     axios
-      .put(`http://localhost:8080/api/updatewish/${topic}/${username}`)
+      .put(`http://localhost:8080/api/updatewish/${id}/${username}`)
       .then((response) => {
         const updatedCartItems = Items.map((item) => {
-          if (item.topic === topic) {
+          if (item.id === id) {
             return { ...item, state: true }; // Update the state of the item
           }
           return item;
@@ -36,7 +46,7 @@ function Phone() {
         console.log(error);
       }); 
       window.location.reload();
-      enqueueSnackbar(topic+" removed from cart");
+      enqueueSnackbar(id+" removed from cart");
   };
   const typeo=localStorage.getItem("type"); 
   const home=()=>{
@@ -83,7 +93,7 @@ function Phone() {
               <td>${item.cost * item.count}</td>
               <td><button className="cart-button" onClick={()=>addtocart(item.id)}>
                   Add to Cart</button></td>
-                  <td><button className="cart-button" onClick={()=>removeItemFromCart(item.topic)}>
+                  <td><button className="cart-button" onClick={()=>removeItemFromCart(item.id)}>
                   remove</button></td>
             </tr>
           ))}

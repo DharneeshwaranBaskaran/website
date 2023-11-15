@@ -1,4 +1,5 @@
 package com.example.demo.Companyaccess;
+import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.JwtUtils;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @RestController
 @RequestMapping("/api")
@@ -36,9 +41,14 @@ public class companyaccesslogin {
                         String retrievedPassword = resultSet.getString("password");
                         
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
-                          String jwtToken = JwtUtils.generateToken(loginRequest.getUsername());
-                           return ResponseEntity.ok().header("Authorization", "Bearer " + jwtToken).body("Login successful!");
-                            // return ResponseEntity.ok("Login successful!");
+                          Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+                            String jwtToken = Jwts.builder()
+                                .setSubject(loginRequest.getUsername())
+                                .signWith(key, SignatureAlgorithm.HS512)
+                                .compact(); 
+                                System.out.println(jwtToken);
+                            return ResponseEntity.ok(jwtToken);
                         } else {
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }

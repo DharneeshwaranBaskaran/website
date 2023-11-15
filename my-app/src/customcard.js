@@ -9,7 +9,7 @@ function CustomCard({ item, handleView ,showButton}) {
       <div key={item.id} className='class'>
         <Card>
           <CardMedia component="img" image={item.url} alt="img" />
-          <CardContent className="card-content" style={{ paddingTop: '20px' }}>
+          <CardContent className="card-content" style={{ paddingTop: '0px' }}>
             <Typography gutterBottom variant="h6">
               <p style={{ textAlign: "center" }}>{item.topic}</p>
             </Typography> 
@@ -33,13 +33,13 @@ function CustomCard({ item, handleView ,showButton}) {
           </CardContent>
            
           <CardActions className="card-actions">
-            {/* <Button
+            <Button
               variant="contained"
               className="card-button"
               fullWidth
-              onClick={() => handleView(item.topic )}
-            >View
-          </Button> */}
+              onClick={() => handleView(item.id,item.topic,item.stockcount )}
+            >Remind
+          </Button>
           </CardActions>
           
         </Card>
@@ -52,7 +52,7 @@ function CustomCard({ item, handleView ,showButton}) {
     <div key={item.id} className='class'>
       <Card>
         <CardMedia component="img" image={item.url} alt="img" />
-        <CardContent className="card-content" style={{ padding: '0px' }}>
+        <CardContent className="card-content" style={{ padding: '9px' }}>
           <Typography gutterBottom variant="h6">
             <p style={{ textAlign: "center" }}>{item.topic}</p>
           </Typography> 
@@ -80,7 +80,7 @@ function CustomCard({ item, handleView ,showButton}) {
             variant="contained"
             className="card-button"
             fullWidth
-            onClick={() => handleView(item.topic )}
+            onClick={() => handleView(item.id,item.topic )}
           >View
         </Button>
         </CardActions>
@@ -95,7 +95,7 @@ function CustomCard({ item, handleView ,showButton}) {
       <div key={item.id} className='class'>
         <Card>
           <CardMedia component="img" image={item.url} alt="img" />
-          <CardContent className="card-content" style={{ padding: '0px' }}>
+          <CardContent className="card-content" style={{ padding: '9px' }}>
             <Typography gutterBottom variant="h6">
               <p style={{ textAlign: "center" }}>{item.topic}</p>
             </Typography>
@@ -119,7 +119,7 @@ function CustomCard({ item, handleView ,showButton}) {
               variant="contained"
               className="card-button"
               fullWidth
-              onClick={() => handleView(item.topic )}
+              onClick={() => handleView(item.id,item.topic )}
             >View
           </Button>
           </CardActions>

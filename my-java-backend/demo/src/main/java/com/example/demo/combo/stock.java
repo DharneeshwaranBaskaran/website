@@ -21,8 +21,9 @@ public class stock {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
-    @PostMapping("/updatestock/{id}/{number}")
-     public ResponseEntity<String> UpdateCart(@PathVariable Long id,@PathVariable Integer number) {
+    
+    @PostMapping("/updatestock/{id}/{number}/{topic}")
+     public ResponseEntity<String> UpdateCart(@PathVariable Long id,@PathVariable Integer number,@PathVariable String topic) {
          
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String selectSql = "SELECT stockcount FROM combo WHERE id=?";
@@ -33,6 +34,14 @@ public class stock {
             int currentCount = 0;
             if (resultSet.next()) {
                 currentCount = resultSet.getInt("stockcount");
+            }
+            if(currentCount==0){
+                String upsql = "UPDATE reminder SET state = ? WHERE topic=?";
+                PreparedStatement updateReminderStatement = connection.prepareStatement(upsql);
+                updateReminderStatement.setBoolean(1, true);
+                updateReminderStatement.setString(2, topic);
+                // Execute the update statement for the reminder table
+                updateReminderStatement.executeUpdate();
             }
             int newCount = currentCount + number;  
             String updateSql = "UPDATE combo SET stockcount = ? WHERE id=?";

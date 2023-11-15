@@ -7,6 +7,16 @@ import './App.css';
  const Email = () => { 
     const Username=localStorage.getItem("username");
     const navigate = useNavigate();  
+    const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
     const [email,setemail]=useState('');
     const handleChange4 = (e) => {
         const value = e.target.value;

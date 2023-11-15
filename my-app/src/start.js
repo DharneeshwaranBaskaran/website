@@ -118,9 +118,11 @@ const filteredItems = uniqueItems.filter((item) => {
           <button onClick={() =>handletoregister(2) }>Register</button>
            <button onClick={() =>handletologin(2)}>Login</button>       
                 </div>
-               
+                     
         <h2 style={{textAlign:"center"}}> MOST PURCHASED PRODUCTS: </h2>
-        
+        {/* <img  style={{height:"200px",paddingLeft:"40px"}}src="https://media1.giphy.com/media/wcmTjQoJVqMCOZpVLs/giphy.gif?cid=ecf05e47xo1xor0ksplnwojpq4lljhnto8hihwehzlc3eiuu&ep=v1_gifs_search&rid=giphy.gif&ct=g"></img>
+        <img  style={{height:"200px",paddingLeft:"40px"}}src="https://media.tenor.com/Tdn9eRKG_5kAAAAi/shopaholic-malls.gif"></img>
+         */}
         <div className="search-container">
        
         <Autosuggest
@@ -138,18 +140,6 @@ const filteredItems = uniqueItems.filter((item) => {
         />
       </div>
         <div  className='class-contain' >
-          {/* {(filteredItems).length!==0?(
-            <>
-            {(filteredItems).map(item => (
-      
-        <CustomCard
-          key={item.id}
-          item={item}
-          handleView={(itemName) => handletomenex(itemName)}
-           
-        />
-       ))}
-       </> */}
        {(currentItems).length !== 0 ? (
           <>
             {(currentItems).map(item => (

@@ -52,14 +52,7 @@ button {
   width: 100%;
 }
 
-/* .logout-button {
-  display: flex;
-  justify-content: flex-end;
-  border: 5px solid #ffffff;
-  background-color: rgb(202, 202, 205);
-} */
-/* Start.css */
-/* Start.css */
+
 .logout-button {
   display: flex;
   justify-content: flex-end;
@@ -230,6 +223,12 @@ button {
     justify-content: center;
     align-items: center;
     flex-direction: column; 
+}
+.conrem{
+  display: flex;
+  justify-content: right;
+  align-items: right;
+margin-right: 10%;
 }
 
 .cart-container {

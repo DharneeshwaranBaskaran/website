@@ -34,7 +34,8 @@ public class CartController {
     String DB_PASSWORD = "GBds@28102001";
 
     @PostMapping("/add")
-    public ResponseEntity<String> addItemToCart(@RequestBody CartItem cartItem) {
+    public ResponseEntity<String> addItemToCart(@RequestBody CartItem cartItem) { 
+        Long id=cartItem.getId();
         String topic = cartItem.getTopic();
         String description = cartItem.getDescription();
         Double cost = cartItem.getCost();
@@ -47,9 +48,9 @@ public class CartController {
         String weekend=cartItem.getWeekend();
         
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String selectComboIdSql = "SELECT * FROM combo WHERE topic = ?";
+            String selectComboIdSql = "SELECT * FROM combo WHERE id = ?";
             PreparedStatement selectComboIdStatement = connection.prepareStatement(selectComboIdSql);
-            selectComboIdStatement.setString(1, topic);
+            selectComboIdStatement.setLong(1, id);
             ResultSet comboIdResultSet = selectComboIdStatement.executeQuery();
             if (comboIdResultSet.next()) {
                 int comboId = comboIdResultSet.getInt("id");
@@ -90,10 +91,10 @@ public class CartController {
                     System.out.println("Data inserted successfully.");
                     System.out.println(seller);
                    
-                    String updateComboSql = "UPDATE combo SET cart_item_id = ? WHERE topic = ?";
+                    String updateComboSql = "UPDATE combo SET cart_item_id = ? WHERE id = ?";
                     PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
                     updateComboStatement.setInt(1, newId);
-                    updateComboStatement.setString(2, topic);
+                    updateComboStatement.setLong(2, id);
                     updateComboStatement.executeUpdate();
                      return ResponseEntity.ok("Data inserted successfully");
                 } else {

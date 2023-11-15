@@ -1,4 +1,4 @@
-import React, {useState } from "react"; 
+import React, {useState ,useEffect} from "react"; 
 import { useSnackbar } from "notistack";
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +37,16 @@ const handleedit = async (event) => {
                     enqueueSnackbar("Registration Failed", { variant: "error" });
                 }        
 }
+const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
 return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
     <div className="logout-button">

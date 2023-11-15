@@ -12,6 +12,16 @@ const handleChange5 = (e) => {
     const value = e.target.value;
     setcost(value);
    };
+   const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
 const handleedit = async (event) => { 
     const response = await fetch("http://localhost:8080/api/editdata", {
                   method: 'POST',

@@ -1,4 +1,5 @@
 package com.example.demo.Access;
+import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,6 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @RestController
 @RequestMapping("/api")
@@ -34,8 +39,14 @@ public class accesslogin {
                         String retrievedPassword = resultSet.getString("password");
                         
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
-                           
-                            return ResponseEntity.ok("Login successful!");
+                           Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+                            String jwtToken = Jwts.builder()
+                                .setSubject(loginRequest.getUsername())
+                                .signWith(key, SignatureAlgorithm.HS512)
+                                .compact(); 
+                                System.out.println(jwtToken);
+                            return ResponseEntity.ok(jwtToken);
                         } else {
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }

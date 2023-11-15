@@ -1,4 +1,6 @@
 package com.example.demo.loginregister;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,11 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
+     
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
     @PostMapping("/buyer")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
@@ -31,16 +41,26 @@ public class LoginController {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        
+                        System.out.println("good");
                         String retrievedPassword = resultSet.getString("password");
                         
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
                            
-                            return ResponseEntity.ok("Login successful!");
+                            Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+                            String jwtToken = Jwts.builder()
+                                .setSubject(loginRequest.getUsername())
+                                .signWith(key, SignatureAlgorithm.HS512)
+                                .compact(); 
+                                System.out.println(jwtToken);
+                            return ResponseEntity.ok(jwtToken);
+                            
                         } else {
+                            System.out.println("err");
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }
                     } else {
+                        System.out.println("error");
                         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username not found.");
                     }
                 }
@@ -70,7 +90,14 @@ public class LoginController {
                         String retrievedPassword = resultSet.getString("password");
 
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
-                            return ResponseEntity.ok("Login successful!");
+                            Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+                            String jwtToken = Jwts.builder()
+                                .setSubject(loginRequest.getUsername())
+                                .signWith(key, SignatureAlgorithm.HS512)
+                                .compact(); 
+                                System.out.println(jwtToken);
+                            return ResponseEntity.ok(jwtToken);
                         } else {
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }
@@ -101,7 +128,14 @@ public class LoginController {
                         String retrievedPassword = resultSet.getString("password");
 
                         if (retrievedPassword.equals(loginRequest.getPassword())) {
-                            return ResponseEntity.ok("Login successful!");
+                            Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+                            String jwtToken = Jwts.builder()
+                                .setSubject(loginRequest.getUsername())
+                                .signWith(key, SignatureAlgorithm.HS512)
+                                .compact(); 
+                                System.out.println(jwtToken);
+                            return ResponseEntity.ok(jwtToken);
                         } else {
                             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
                         }

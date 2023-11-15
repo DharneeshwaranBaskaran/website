@@ -6,12 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';  
 
 import LaterCard from "./Latercard";
+import { Card } from "@mui/material";
 function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [ty,settyp] = useState('');  
   const [inputNumber,setInputnumber]=useState([]);
   const [Items,setItems]=useState([]);
+  const [reminder,setremider]=useState([]);
   const [Data,setData]=useState([]);  
   const [data,setdata]=useState([]);  
   const [pro,setpro]=useState([]);
@@ -114,8 +116,9 @@ useEffect(() => {
           
       }, [username]);  
    
-    const handleRecommendation = (id)=>{
+    const handleRecommendation = (id,topic)=>{
       localStorage.setItem('myID', id); 
+      console.log(id);
       localStorage.setItem('rec',"true");
       navigate(`/${typeo}/menext`);
     }
@@ -166,7 +169,10 @@ useEffect(() => {
     },[prov]);
     const uniqueItems = Items.filter((item, index, self) =>
     index === self.findIndex((t) => t.topic === item.topic)
-    );  
+    );   
+    const Uniquereminder =reminder.filter((item, index, self) =>
+    index === self.findIndex((t) => t.topic === item.topic)
+    );   
   
   const handleCategoryChange = (event) => {
     if(event.target.value=="Men"){
@@ -379,6 +385,17 @@ useEffect(() => {
      const handlewish=()=>{
       navigate(`/${typeo}/phone`); 
      }
+     const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
+
   const handleEdit = async (id,index) => { 
       const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
                     method: 'POST',
@@ -410,7 +427,16 @@ useEffect(() => {
     newInputValues[index] = newValue;
     setInputValues(newInputValues);
   };
-  
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/reminder/getItems/${username}`)
+      .then((response) => {
+        setremider(response.data); 
+        
+      })
+      .catch((error) => {
+        console.error('Error fetching cart items:', error);
+      });
+  }, [username]);
   const validatePositiveNum = (value) => {
     const numericValue = parseFloat(value);
     if (!isNaN(numericValue) && numericValue >= 0) {
@@ -421,7 +447,7 @@ useEffect(() => {
     }
   };
   
-  const handlestock = (id,index) => { 
+  const handlestock = (id,topic,index) => { 
      
     
     const inputValue = inputValues[index]; 
@@ -430,7 +456,7 @@ useEffect(() => {
     }
     else{
     axios
-      .post(`http://localhost:8080/api/updatestock/${id}/${inputValue}`)
+      .post(`http://localhost:8080/api/updatestock/${id}/${inputValue}/${topic}`)
       .then((response) => {
         console.log(response.data);
         enqueueSnackbar('Stock count updated successfully', { variant: 'success' }); 
@@ -442,6 +468,7 @@ useEffect(() => {
       });
     
   }
+  console.log(topic);
   
 }
 const [selectValues, setSelectValues] = useState(user.map((item) => ""));
@@ -459,11 +486,32 @@ const handleSelectChange = (index, value) => {
 const handleuser=()=>{
   navigate(`/${typeo}/user`);
 }
+const handleview=(id)=>{
+  localStorage.setItem('myID', id);
+  localStorage.setItem('rec', "");
+  localStorage.removeItem('value');
+  console.log(localStorage.getItem("count"));
+// You need to set the username here, as it is used in the request body
+
+  axios.delete(`http://localhost:8080/api/reminderdelete`, {
+      data: { topic: id, username:  localStorage.getItem('username') }
+    })
+    .then(response => {
+      // Handle the response from the backend if needed
+      console.log(response.data);
+      navigate(`/${typeo}/menext`);
+      enqueueSnackbar("Reminder deleted successfully");
+    })
+    .catch(error => {
+      // Handle the error if the HTTP request fails
+      console.error('Error sending id to the backend:', error);
+    });
+}
     return ( 
       
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button"> 
-        
+        {/* {localStorage.getItem("token")} */}
        
         {localStorage.getItem('type') !== 'buyer' && (
           <>
@@ -563,8 +611,25 @@ const handleuser=()=>{
                
             ))}
             </>)}
+          </div> 
+          {Uniquereminder.length>0 &&(
+          <div className="conrem">
+            <Card style={{backgroundColor:"#ccccff",paddingLeft:"20px",paddingRight:"20px",paddingBottom:"10px"}}> 
+              <> 
+              <p style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}> Product Arrived</p>
+          {(Uniquereminder).map((item, index) => (
+            <tr key={index}>
+              <td>{item.topic}</td> 
+              <td><button className="lob" style={{marginLeft:"30px"}} onClick={() =>handleview(item.topic)}>View</button></td>
+       
+            </tr>
+          ))}
+          </>
+          </Card>
           </div>
+          )}
         {uniqueItems.length > 0 && (
+          
           <><h2>RECOMMENDED PRODUCTS:</h2>
          <div  className='class-contain' >
                 
@@ -572,7 +637,7 @@ const handleuser=()=>{
               <CustomCard
                 key={index}
                 item={item}
-                handleView={(itemName) => handleRecommendation(itemName)}
+                handleView={(itemid,itemName) => handleRecommendation(itemid,itemName)}
                 showButton={true}
               /> 
             ))} 
@@ -634,7 +699,7 @@ const handleuser=()=>{
           style={{ backgroundColor: "#713ABE", color: "white", 
              border: "none", padding: "5px",width:"50px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
         />
-        <button onClick={()=>handlestock(item.id,index)} className="cart-button" >Add</button></td>
+        <button onClick={()=>handlestock(item.id,item.topic,index)} className="cart-button" >Add</button></td>
             </tr>
           ))}
         </tbody>

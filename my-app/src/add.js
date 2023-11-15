@@ -20,9 +20,16 @@ function Add() {
       navigate(`/${type}/homepage`);
         enqueueSnackbar("Back to Home",{variant:"default"});
     }
-    // const drafttodata=()=>{
-    //   dtod();
-    // }
+    const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
     const backtocart=()=>{
       navigate(`/${type}/cart`);
       enqueueSnackbar("Back to Cart",{variant:"default"});

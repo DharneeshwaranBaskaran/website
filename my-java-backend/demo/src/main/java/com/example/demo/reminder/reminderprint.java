@@ -1,4 +1,4 @@
-package com.example.demo.posi;
+package com.example.demo.reminder;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,17 +15,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.posi.CartItem;
 @RestController
-@RequestMapping("/api/cart")
-@CrossOrigin(origins = "http://localhost:3000")
-public class CartPrint {
+@RequestMapping("/api/reminder")
+public class reminderprint {
     String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
     @GetMapping("/getItems/{username}")
     public ResponseEntity<List<CartItem>> getCartItemsForUsername(@PathVariable String username) {
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        String sql = "SELECT * FROM cart WHERE username = ? AND state = ? ";
+        String sql = "SELECT * FROM reminder WHERE username = ? AND state = ? ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username); 
         preparedStatement.setBoolean(2, true);
@@ -35,14 +36,9 @@ public class CartPrint {
 
         while (resultSet.next()) {
             CartItem cartItem = new CartItem();
-            cartItem.setId(resultSet.getLong("id"));
-            cartItem.setCost(resultSet.getDouble("cost"));
-            cartItem.setCount(resultSet.getInt("count"));
-            cartItem.setTopic(resultSet.getString("topic"));
-            cartItem.setDescription(resultSet.getString("description"));
-            cartItem.setUsername(resultSet.getString("username"));
-            cartItem.setState(resultSet.getBoolean("state"));
             
+            cartItem.setTopic(resultSet.getString("topic"));
+            cartItem.setUsername(resultSet.getString("username"));
             cartItems.add(cartItem);
         }
         return ResponseEntity.ok(cartItems);
@@ -51,5 +47,6 @@ public class CartPrint {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
+
 
 }

@@ -1,7 +1,10 @@
-import React, {  useState } from "react";
+
 import backpic from "./images/backpic.jpg";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import jwtDecode from 'jwt-decode';
+
 import './App.css'; 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -54,6 +57,33 @@ function LoginPage() {
           }
       
     }
+    
+    const isTokenExpired = (token) => {
+      try {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        return decodedToken.exp < Date.now() / 1000;
+      } catch (error) {
+        // Handle decoding errors (e.g., invalid token format)
+        console.error("Error decoding token:", error);
+        return true; // Treat as expired to be cautious
+      }
+    };
+  
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+  
+      if (token) {
+        const expired = isTokenExpired(token);
+  
+        if (expired) {
+          navigate('/login');
+        } else {
+          const type = localStorage.getItem('type');
+          navigate(`/${type}/homepage`);
+        }
+      }
+    }, [navigate]);
+
     const handleLogin = async (event) => { 
        if(password==""){
         setError1("*Enter Password");
@@ -71,9 +101,9 @@ function LoginPage() {
           });
 
           if (response.ok) {
-            // const jwtToken = await response.text(); // Get the JWT token from the response
-            // localStorage.setItem('jwtToken', jwtToken);
-            // console.log(jwtToken);
+            const token = await response.text(); // assuming the token is returned as a plain text
+            sessionStorage.setItem('token', token); 
+            console.log(token);
             localStorage.setItem('username', username);             
             console.log(username);
             
@@ -86,7 +116,8 @@ function LoginPage() {
             enqueueSnackbar("Invalid Credentials");
           }
           
-          } catch (error) {
+          } catch (error) { 
+            console.log(error.message)
             enqueueSnackbar("An error occurred: " + error.message, { variant: "error" });          }
       };
       const handleChange = (e) => {

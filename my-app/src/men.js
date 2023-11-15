@@ -27,15 +27,32 @@ function Men() {
     const target = localStorage.getItem('myRef');
     const [data, setData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-   
-    const handlemenex=(id)=>{
-      localStorage.setItem('myID', id); 
+    const username = localStorage.getItem('username'); 
+    const handlemenex=(id,topic,sc)=>{ 
+      if(sc==0){
+        console.log(id,sc);
+        axios.post('http://localhost:8080/api/reminder', { topic:topic,username })
+        .then(response => {
+          // Handle the response from the backend if needed
+          console.log(response.data);
+          navigate(`/${type}/homepage`); 
+          enqueueSnackbar("You will be Reminded if the stock arrives")
+        })
+        .catch(error => {
+          // Handle the error if the HTTP request fails
+          console.error('Error sending id to the backend:', error);
+        });
+      }
+      else{
+      localStorage.setItem('myID', id);  
+      console.log(typeof(id));
       localStorage.setItem('rec',"");
       localStorage.removeItem('value'); 
       console.log(localStorage.getItem("count"));
       // menex();
       
       navigate(`/${type}/menext`);
+    }
     }
     const handlebackhome=()=>{
       // backhome(); 
@@ -68,6 +85,16 @@ function Men() {
     const toggleSorting = () => {
       setAscending(!ascending);
     };
+    const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
     useEffect(() => {
       axios.get(`http://localhost:8080/api/combo/${per}`)
           .then((response) => {
@@ -150,7 +177,7 @@ function Men() {
           <CustomCard
             key={index}
             item={item}
-            handleView={(itemName) => handlemenex(itemName)}
+            handleView={(itemid,itemName,itemsc) => handlemenex(itemid,itemName,itemsc)}
             showButton={true}
           />
         ))
@@ -174,8 +201,8 @@ function Men() {
           <CustomCard
             key={index}
             item={item}
-            handleView={(itemName) => handlemenex(itemName)}
-            showButton={true}
+            handleView={(itemid,itemName,itemsc) => handlemenex(itemid,itemName,itemsc)}
+            showButton={true}  
           />
         ))
       )}

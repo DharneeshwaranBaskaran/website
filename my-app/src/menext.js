@@ -19,7 +19,7 @@ function Menext() {
         setShowModal(!showModal);
       };
     const [imageData, setImageData] = useState({});
-    const targetImageId = localStorage.getItem('myID');
+    const targetImageId = (localStorage.getItem('myID'));
     const [Items, setItems] = useState([]); 
     const [wish, setwish] = useState([]); 
     const [Item,setItem]=useState([]);
@@ -134,7 +134,7 @@ function Menext() {
                         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wish.`, { variant:"success" }); 
                         console.log(cartItem);
                         setCount(0);
-                        // navigate(`/${type}/phone`);
+                        navigate(`/${type}/phone`);
                     } else {
                        
                     }
@@ -158,9 +158,20 @@ function Menext() {
         
       }
     }
+    const jwtToken = sessionStorage.getItem('token');
+
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
     const handlecart = () => {
       if (count > 0) {
         const cartItem = {
+          id:imageData.id,
           topic: imageData.topic,
           description: imageData.description,
           cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, // Check the count value and set the cost accordingly
@@ -175,7 +186,7 @@ function Menext() {
 
         console.log(cartItem);
         const existingCartItems = (Items) || [];
-        const existingIndex = existingCartItems.findIndex(item => item.topic === cartItem.topic);
+        const existingIndex = existingCartItems.findIndex(item => item.topic == cartItem.topic);
         if (existingIndex !== -1) { 
           // enqueueSnackbar("Already in cart Incrementing The count"+cartItem.count,{ variant:"success"});
           fetch(`http://localhost:8080/api/update/${cartItem.topic}/${Username}`, {
@@ -290,12 +301,13 @@ function Menext() {
             fetch(link)
               .then(response => response.json())
               .then(data => {
-                const image = data.find(item => item.topic === (targetImageId));
+                const image = data.find(item => item.id == (localStorage.getItem('myID')));
+                console.log(image);
                 if (image) {
                   setImageData(image); 
-                  // console.log(image.count);
+                  console.log(image);
                 } else {
-                  console.error(`Image data for id ${targetImageId} not found.`);
+                  console.error(`Image data for id ${typeof(targetImageId)} not found.`);
                 }
               })
               .catch(error => console.error('Error fetching data:', error));

@@ -215,7 +215,16 @@ const handlehistory=()=>{
   navigate(`/${type}/history`); 
   enqueueSnackbar("Redirecting to History page",{variant:"default"});
 }
+const jwtToken = sessionStorage.getItem('token');
 
+  // Check if the JWT token is present
+  useEffect(() => {
+    if (!jwtToken) {
+      // Redirect to the login page or show an error message 
+      console.log(jwtToken);
+      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+    }
+  }, [jwtToken]);
 const updateBalance = () => {
   navigate(`/${type}/add`);
   console.log(filteredItems);
@@ -239,13 +248,13 @@ const calculateTotaldis = (cartItems) => {
   return total;
 };
 
-const removeItemFromCart = (topic) => {
-    console.log(topic);
+const removeItemFromCart = (id) => {
+    console.log(id);
     axios
-      .put(`http://localhost:8080/api/update/${topic}/${Username}`)
+      .put(`http://localhost:8080/api/update/${id}/${Username}`)
       .then((response) => {
         const updatedCartItems = Items.map((item) => {
-          if (item.topic === topic) {
+          if (item.id === id) {
             return { ...item, state: true }; // Update the state of the item
           }
           return item;
@@ -258,7 +267,7 @@ const removeItemFromCart = (topic) => {
         console.log(error);
       }); 
       window.location.reload();
-      enqueueSnackbar(topic+" removed from cart");
+      enqueueSnackbar(id +" removed from cart");
   };
   
 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -379,7 +388,7 @@ return (
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
               <td><button className="cart-button"
-            onClick={() => removeItemFromCart(item.topic)}>
+            onClick={() => removeItemFromCart(item.id)}>
                   Remove</button></td>
             </tr>
           ))}
