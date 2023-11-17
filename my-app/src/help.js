@@ -20,16 +20,18 @@ function Help() {
     },
     // Add more FAQ items
   ];
-  const jwtToken = sessionStorage.getItem('token');
+  const jwtToken = localStorage.getItem('token');
 
-  // Check if the JWT token is present
   useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
+    const logoutChannel = new BroadcastChannel('logoutChannel');
+    logoutChannel.onmessage = () => {
+      // Perform the local logout actions
+      navigate("/start");
+      localStorage.clear();
+      window.location.reload();
+      //enqueueSnackbar("Logout Successful");
+    };
+  }, []);
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>  
     <div className="logout-button"> 

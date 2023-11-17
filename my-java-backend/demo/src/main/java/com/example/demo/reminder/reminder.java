@@ -24,6 +24,7 @@ public class reminder {
     private Long id;
     private String username;
     private String topic;
-    private Boolean state;
+    private Boolean state; 
+    private Long combo_id;
     
 }

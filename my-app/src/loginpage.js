@@ -102,7 +102,7 @@ function LoginPage() {
 
           if (response.ok) {
             const token = await response.text(); // assuming the token is returned as a plain text
-            sessionStorage.setItem('token', token); 
+            localStorage.setItem('token', token); 
             console.log(token);
             localStorage.setItem('username', username);             
             console.log(username);

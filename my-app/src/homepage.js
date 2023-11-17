@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';  
-
+import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
 import { Card } from "@mui/material";
 function HomePage() {
@@ -35,10 +35,20 @@ function HomePage() {
   const [imageUrl, setImageUrl] = useState(null);
   const [forpic, setforpic] = useState('');
   const fileInputRef = useRef();
+  
   useEffect(() => {
+    // Listen for logout messages from other tabs
+    const logoutChannel = new BroadcastChannel('logoutChannel');
+    logoutChannel.onmessage = () => {
+      // Perform the local logout actions
+      navigate("/start");
+      localStorage.clear();
+      window.location.reload();
+      enqueueSnackbar("Logout Successful");
+    };
+  
+    // Fetch user data
     const username = localStorage.getItem("username");
-    
-
     axios.get(`http://localhost:8080/api/user/${username}`)
       .then(response => {
         setforpic(response.data[0].profilepic);
@@ -47,7 +57,13 @@ function HomePage() {
       .catch(error => {
         console.error("Error fetching user data:", error);
       });
-  }, []); 
+  
+    // Cleanup the channel and listener when component unmounts
+    return () => {
+      logoutChannel.close();
+    };
+  }, []);
+  
   const handleFileChange = (event) => {
     const file = event.target.files[0]; // Get the first selected file
   
@@ -59,11 +75,10 @@ function HomePage() {
       axios.post(`http://localhost:8080/api/userpic/${username}`, { profilepic: imageURL })
       .then((response) => {
         console.log("Image URL sent to the backend:", response.data);
-        // Handle the response from the backend if needed
       })
       .catch((error) => {
         console.error("Error sending image URL to the backend:", error);
-        // Handle errors if needed
+        
       });
       console.log(imageURL);
     } else {
@@ -255,13 +270,21 @@ useEffect(() => {
     navigate(`/${typeo}/payment`);
     }
     else{
-      navigate("/start"); 
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-      
+      // navigate("/start"); 
+      // localStorage.clear();
+      // window.location.reload();
+      // enqueueSnackbar("Logout Successful");
+      const broadcastChannel = new BroadcastChannel('logoutChannel');
+  broadcastChannel.postMessage('logout');
+
+  // Perform the local logout actions
+  navigate("/start");
+  localStorage.clear();
+  window.location.reload();
+  enqueueSnackbar("Logout Successful");
     }
   }; 
+  
   const handlelogout =()=>{
     navigate("/start"); 
       localStorage.clear();
@@ -316,10 +339,7 @@ useEffect(() => {
                 console.error('Error transferring data:', error);
             });
     }
-    // const handleEdit=(id)=>{ 
-    // localStorage.setItem("id",id); 
-    // navigate(`/${typeo}/edituser`);
-    // }
+    
     useEffect(()=>{
       const sorted=[...(pro)].sort((a,b)=>{
         if(typ=="cost"){
@@ -385,16 +405,9 @@ useEffect(() => {
      const handlewish=()=>{
       navigate(`/${typeo}/phone`); 
      }
-     const jwtToken = sessionStorage.getItem('token');
+     const jwtToken = localStorage.getItem('token');
+   
 
-  // Check if the JWT token is present
-  useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
 
   const handleEdit = async (id,index) => { 
       const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
@@ -486,15 +499,16 @@ const handleSelectChange = (index, value) => {
 const handleuser=()=>{
   navigate(`/${typeo}/user`);
 }
-const handleview=(id)=>{
-  localStorage.setItem('myID', id);
+const handleview=(comid,id,topic)=>{
+  localStorage.setItem('myID', comid); 
+  console.log(comid);
   localStorage.setItem('rec', "");
   localStorage.removeItem('value');
   console.log(localStorage.getItem("count"));
 // You need to set the username here, as it is used in the request body
 
   axios.delete(`http://localhost:8080/api/reminderdelete`, {
-      data: { topic: id, username:  localStorage.getItem('username') }
+      data: { id: id, username:  localStorage.getItem('username') }
     })
     .then(response => {
       // Handle the response from the backend if needed
@@ -620,7 +634,7 @@ const handleview=(id)=>{
           {(Uniquereminder).map((item, index) => (
             <tr key={index}>
               <td>{item.topic}</td> 
-              <td><button className="lob" style={{marginLeft:"30px"}} onClick={() =>handleview(item.topic)}>View</button></td>
+              <td><button className="lob" style={{marginLeft:"30px"}} onClick={() =>handleview(item.combo_id,item.id,item.topic)}>View</button></td>
        
             </tr>
           ))}
@@ -671,7 +685,11 @@ const handleview=(id)=>{
           <option value="count">By Count</option>
           <option value="revenue">By Revenue</option>
         </select>
+        
         </div>
+        <div>
+      <BarGraph data={sortedData} />
+    </div>
          <table className="purchase-history-table">
           <thead>
            <tr>

@@ -31,7 +31,7 @@ function Men() {
     const handlemenex=(id,topic,sc)=>{ 
       if(sc==0){
         console.log(id,sc);
-        axios.post('http://localhost:8080/api/reminder', { topic:topic,username })
+        axios.post('http://localhost:8080/api/reminder', { combo_id:id,topic:topic,username })
         .then(response => {
           // Handle the response from the backend if needed
           console.log(response.data);
@@ -85,17 +85,18 @@ function Men() {
     const toggleSorting = () => {
       setAscending(!ascending);
     };
-    const jwtToken = sessionStorage.getItem('token');
+    const jwtToken = localStorage.getItem('token');
 
-  // Check if the JWT token is present
-  useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
-    useEffect(() => {
+  
+    useEffect(() => { 
+      const logoutChannel = new BroadcastChannel('logoutChannel');
+      logoutChannel.onmessage = () => {
+        // Perform the local logout actions
+        navigate("/start");
+        localStorage.clear();
+        window.location.reload();
+        enqueueSnackbar("Logout Successful");
+      };
       axios.get(`http://localhost:8080/api/combo/${per}`)
           .then((response) => {
             let sortedData = response.data;

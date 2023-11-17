@@ -24,24 +24,24 @@ public class reminderprint {
     String DB_USER = "root";
     String DB_PASSWORD = "GBds@28102001";
     @GetMapping("/getItems/{username}")
-    public ResponseEntity<List<CartItem>> getCartItemsForUsername(@PathVariable String username) {
+    public ResponseEntity<List<reminder>> getCartItemsForUsername(@PathVariable String username) {
     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
         String sql = "SELECT * FROM reminder WHERE username = ? AND state = ? ";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, username); 
         preparedStatement.setBoolean(2, true);
         ResultSet resultSet = preparedStatement.executeQuery();
-
-        List<CartItem> cartItems = new ArrayList<>();
-
+        List<reminder> reminders = new ArrayList<>();
         while (resultSet.next()) {
-            CartItem cartItem = new CartItem();
             
-            cartItem.setTopic(resultSet.getString("topic"));
-            cartItem.setUsername(resultSet.getString("username"));
-            cartItems.add(cartItem);
+            reminder remind = new reminder();
+                remind.setTopic(resultSet.getString("topic"));
+                remind.setUsername(resultSet.getString("username"));
+                remind.setId(resultSet.getLong("id"));
+                remind.setCombo_id(resultSet.getLong("combo_id"));
+                reminders.add(remind);
         }
-        return ResponseEntity.ok(cartItems);
+        return ResponseEntity.ok(reminders);
     } catch (SQLException e) {
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

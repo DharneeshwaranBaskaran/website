@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
 import './App.css'; 
+import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 function Add() {  
   const navigate = useNavigate();
@@ -16,20 +17,22 @@ function Add() {
     const [person,setperson]=useState('');
     let Username=localStorage.getItem('username');
     const type=localStorage.getItem('type');
+    const [csvData, setCsvData] = useState([]);
+    const [formData, setFormData] = useState(new FormData());
     const backtohomebal=()=>{
       navigate(`/${type}/homepage`);
         enqueueSnackbar("Back to Home",{variant:"default"});
     }
-    const jwtToken = sessionStorage.getItem('token');
+    const jwtToken = localStorage.getItem('token');
 
   // Check if the JWT token is present
-  useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
+  // useEffect(() => {
+  //   if (!jwtToken) {
+  //     // Redirect to the login page or show an error message 
+  //     console.log(jwtToken);
+  //     navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
+  //   }
+  // }, [jwtToken]);
     const backtocart=()=>{
       navigate(`/${type}/cart`);
       enqueueSnackbar("Back to Cart",{variant:"default"});
@@ -116,20 +119,51 @@ function Add() {
       }
       const handleFileUpload = (e) => {
         const file = e.target.files[0];
+        
       
         if (file) {
           const formData = new FormData();
-          formData.append("file", file);
-      
-          // Send the formData as a multipart request
-          fetch("http://localhost:8080/api/up-csv", {
+          formData.append("file", file); 
+          setFormData(formData);
+        }
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const csvContent = event.target.result;
+    
+            // Parse CSV content using papaparse
+            Papa.parse(csvContent, {
+              complete: (result) => {
+                // Set CSV data to state
+                setCsvData(result.data);
+    
+                // Print CSV data to console
+                console.log(result.data);
+              },
+              header: true, // Use the first row as headers
+            });
+          };
+    
+          reader.readAsText(file);
+        } else {
+          enqueueSnackbar("Please select a CSV file first", { variant: "error" });
+        }
+      };
+    
+      const uploadCsvToBackend = async () => {
+        
+          // Check if csvData has elements
+          if (csvData.length > 0) {
+            // Make a POST request to your backend API
+            fetch("http://localhost:8080/api/up-csv", {
             method: 'POST',
             body: formData,
             credentials: 'include',
           })
           .then(async response => {
             if (response.ok) {
-              enqueueSnackbar("CSV data uploaded successfully", { variant: "success" });
+              enqueueSnackbar("CSV data uploaded successfully", { variant: "success" }); 
+              setCsvData([]);
             } else {
               enqueueSnackbar("Failed to upload CSV data", { variant: "error" });
               const errorData = await response.text();
@@ -140,11 +174,19 @@ function Add() {
           .catch(error => {
             console.error(error);
           });
-        } else {
-          enqueueSnackbar("Please select a CSV file first", { variant: "error" });
         }
-      };
-      useEffect(() => {
+      
+    };
+     
+      useEffect(() => { 
+        const logoutChannel = new BroadcastChannel('logoutChannel');
+        logoutChannel.onmessage = () => {
+          // Perform the local logout actions
+          navigate("/start");
+          localStorage.clear();
+          window.location.reload();
+          enqueueSnackbar("Logout Successful");
+        };
         axios.get(`http://localhost:8080/api/balance/${Username}`)
               .then((response) => {
                 const data = response.data;
@@ -155,7 +197,10 @@ function Add() {
                 console.error('Error fetching data:', error);
               });
           }, [Username]); 
-          
+
+
+        
+                
   return (
     <div style={{ backgroundColor: "#e5e5ff"  }}>
     <div  className="logout-button">
@@ -252,7 +297,9 @@ function Add() {
                 Add To Draft</button> 
                 <div  >
                  <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
+
                  <br/>
+                <button onClick={uploadCsvToBackend}>Upload CSV to Backend</button>
                  <br/>
                  </div>
                 </div>
@@ -260,7 +307,28 @@ function Add() {
            </div>  
            
            )}
-           
+            <div className="purchase-history-table" style={{marginTop:"20px"}}>
+                 <table>
+          <thead>
+            <tr>
+              {/* Assuming the first row of CSV is headers */}
+              {csvData.length > 0 &&
+                Object.keys(csvData[0]).map((header, index) => (
+                  <th key={index}>{header}</th>
+                ))}
+            </tr>
+          </thead>
+          <tbody>
+            {csvData.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {Object.values(row).map((value, colIndex) => (
+                  <td key={colIndex}>{value}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+                 </div>
     </div>
   );
 }

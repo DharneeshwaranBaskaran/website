@@ -215,16 +215,8 @@ const handlehistory=()=>{
   navigate(`/${type}/history`); 
   enqueueSnackbar("Redirecting to History page",{variant:"default"});
 }
-const jwtToken = sessionStorage.getItem('token');
+const jwtToken = localStorage.getItem('token');
 
-  // Check if the JWT token is present
-  useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
 const updateBalance = () => {
   navigate(`/${type}/add`);
   console.log(filteredItems);
@@ -272,6 +264,14 @@ const removeItemFromCart = (id) => {
   
 const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 useEffect(() => {
+  const logoutChannel = new BroadcastChannel('logoutChannel');
+  logoutChannel.onmessage = () => {
+    // Perform the local logout actions
+    navigate("/start");
+    localStorage.clear();
+    window.location.reload();
+    enqueueSnackbar("Logout Successful");
+  };
   axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
     .then((response) => {
       setItems(response.data); 

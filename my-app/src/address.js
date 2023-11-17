@@ -40,16 +40,19 @@ import './App.css';
         navigate(`/${localStorage.getItem("type")}/homepage`); 
       }
     }
-    const jwtToken = sessionStorage.getItem('token');
+    const jwtToken = localStorage.getItem('token');
 
-  // Check if the JWT token is present
+  
   useEffect(() => {
-    if (!jwtToken) {
-      // Redirect to the login page or show an error message 
-      console.log(jwtToken);
-      navigate("YOU CAN'T ACCESS THIS PAGE"); // Use the appropriate route for your login page
-    }
-  }, [jwtToken]);
+    const logoutChannel = new BroadcastChannel('logoutChannel');
+    logoutChannel.onmessage = () => {
+      // Perform the local logout actions
+      navigate("/start");
+      localStorage.clear();
+      window.location.reload();
+      enqueueSnackbar("Logout Successful");
+    };
+  }, []);
       const handlehome=()=>{
         navigate(`/${localStorage.getItem("type")}/homepage`); 
       }

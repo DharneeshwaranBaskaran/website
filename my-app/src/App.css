@@ -337,12 +337,14 @@ margin-right: 10%;
 }
 .purchase-history-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; 
+  flex-direction: column; /* Stack images vertically */
+align-items: center;
 }
 
 .purchase-history-table th, .purchase-history-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 20px;
   text-align: left;
 }
 
@@ -500,3 +502,70 @@ align-items: center;
   font-weight: bold; /* Style for the active page */
 }
 
+.suggestions-dropdown {
+  position: absolute;
+  width: 15%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 1;
+}
+
+.suggestions-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.suggestions-dropdown li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestions-dropdown li:hover {
+  background-color: #f2f2f2;
+}
+
+.p-history-table {
+  width: 100%;
+  border-collapse: collapse; 
+  flex-direction: column; /* Stack images vertically */
+align-items: center;
+}
+
+.p-history-table th, .p-history-table td {
+  border: 1px solid #ddd;
+  padding: 70px;
+  text-align: left;
+}
+
+.p-history-table th {
+  background-color: #f2f2f2;
+}
+
+.p-history-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+.react-autosuggest__suggestions-container {
+  position: absolute;
+  z-index: 9999;
+  background-color: #fff; /* Set the background color to white or any color you prefer */
+  border: 1px solid #ccc; /* Add a border for better visibility */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
+.react-autosuggest__suggestions-list {
+  list-style-type: none; /* Remove the bullet points */
+  padding: 0;
+  margin: 0;
+}
+
+.react-autosuggest__suggestion {
+  cursor: pointer;
+  padding: 10px;
+}
+
+.react-autosuggest__suggestion--highlighted {
+  background-color: #e0e0e0; /* Change the background color of the highlighted suggestion */
+}

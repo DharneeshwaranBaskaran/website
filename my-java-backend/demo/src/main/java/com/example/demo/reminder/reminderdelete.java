@@ -23,21 +23,21 @@ public class reminderdelete {
     public ResponseEntity<String> deleteComboItem(@RequestBody reminder reminder) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             // Define SQL query to delete a product from the cart table based on its name
-            String topic = reminder.getTopic();
+           Long id=reminder.getId();
         String username = reminder.getUsername();
         
-            String sql = "DELETE FROM reminder WHERE topic = ? AND username= ?";
+            String sql = "DELETE FROM reminder WHERE id = ? AND username= ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, topic); 
+            preparedStatement.setLong(1, id); 
             preparedStatement.setString(2, username);
             
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Product deleted successfully: " + topic);
-                return ResponseEntity.ok("Product deleted successfully: " + topic);
+                System.out.println("Product deleted successfully: " + id);
+                return ResponseEntity.ok("Product deleted successfully: " + id);
             } else {
-                System.out.println("No product found with name: " + topic);
-                return ResponseEntity.badRequest().body("No product found with name: " + topic);
+                System.out.println("No product found with name: " + id);
+                return ResponseEntity.badRequest().body("No product found with name: " + id);
             }
         } catch (SQLException e) {
             e.printStackTrace();

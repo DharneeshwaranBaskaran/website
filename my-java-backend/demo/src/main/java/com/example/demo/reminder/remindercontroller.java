@@ -24,13 +24,14 @@ public class remindercontroller {
     public ResponseEntity<String> addItemToCart(@RequestBody reminder reminder) {
         String topic = reminder.getTopic();
         String username = reminder.getUsername();
-        
+        Long id=reminder.getCombo_id();
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "INSERT INTO reminder (topic, username, state) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO reminder (topic, username, state,combo_id) VALUES (?, ?, ?,?)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, topic);
                 preparedStatement.setString(2, username);
                 preparedStatement.setBoolean(3, false);
+                preparedStatement.setLong(4, id);
                 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
