@@ -72,7 +72,7 @@ function Phone() {
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
         <div className="logout-button"> 
         
-        <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home</button> 
+        <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 
         </div>
       <h2>Wishlist Collection</h2>
       <div  className='class-contain' >

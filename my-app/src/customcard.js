@@ -38,7 +38,7 @@ function CustomCard({ item, handleView ,showButton}) {
               className="card-button"
               fullWidth
               onClick={() => handleView(item.id,item.topic,item.stockcount )}
-            >Remind
+            >Remind🔔
           </Button>
           </CardActions>
           
@@ -81,7 +81,7 @@ function CustomCard({ item, handleView ,showButton}) {
             className="card-button"
             fullWidth
             onClick={() => handleView(item.id,item.topic )}
-          >View
+          >View👁️‍🗨️
         </Button>
         </CardActions>
         
@@ -120,7 +120,7 @@ function CustomCard({ item, handleView ,showButton}) {
               className="card-button"
               fullWidth
               onClick={() => handleView(item.id,item.topic )}
-            >View
+            >View👁️‍🗨️
           </Button>
           </CardActions>
           

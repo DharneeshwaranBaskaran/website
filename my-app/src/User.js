@@ -47,7 +47,7 @@ const User = () => {
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
     <div className="logout-button"   >  
-    <button onClick={handlehome} style={{backgroundColor: "#713ABE", color: "white"}}>Home</button>
+    <button onClick={handlehome} style={{backgroundColor: "#713ABE", color: "white"}}>Home 🏠</button>
     </div>
     <div className="app" >
                 <div className="logins" >

@@ -6,7 +6,8 @@ import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 function Add() {  
   const navigate = useNavigate();
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = useState(""); 
+    const [Upi,setUpi]=useState("");
     const [Balance,setBalance]=useState(0);
     const [cat,setcat]=useState('');
     const [cost,setcost]=useState();
@@ -102,12 +103,17 @@ function Add() {
           if (isNaN(amountToAdd) || amountToAdd <= 0|| amountToAdd.length<1) {
             enqueueSnackbar("Please enter a valid positive number", { variant: "error" });
           }
+          else if(Upi.length<6 || !(Upi.includes("@"))){
+            enqueueSnackbar("Enter a valid Upi")
+          }
           else {
           const newBalance = Balance + amountToAdd;
           axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
             headers: {
               'Content-Type': 'application/json',
+
             },
+            
           })
           navigate(`/${type}/cart`);
         enqueueSnackbar(`Balance Updated to ${newBalance}`,{variant:"success"});
@@ -116,6 +122,9 @@ function Add() {
       }
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
+      } 
+      const handleUpi=(e)=>{
+        setUpi(e.target.value);
       }
       const handleFileUpload = (e) => {
         const file = e.target.files[0];
@@ -217,9 +226,16 @@ function Add() {
     <div className="app">
       <div className="login" >
       <h1>Balance: ${Balance}</h1>
-      <form >
+      <form > 
+      Enter UPI ID:
+      <input
+            type="text"
+            
+            value={Upi}
+            onChange={handleUpi}
+          />
         <label>
-          Enter Number to Add:
+          Enter Amount to Add:
           <input
             type="number"
             step="100"
@@ -241,7 +257,7 @@ function Add() {
                 
                 <input
                     type="text"
-                    placeholder="catogory"
+                    placeholder="category"
                     value={cat}
                     onChange={(e) => setcat(e.target.value)}
                    
@@ -299,7 +315,7 @@ function Add() {
                  <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
 
                  <br/>
-                <button onClick={uploadCsvToBackend}>Upload CSV to Backend</button>
+                <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
                  <br/>
                  </div>
                 </div>

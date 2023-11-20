@@ -4,9 +4,14 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';  
+
+import { FaMale, FaFemale } from "react-icons/fa";
+
+import { MdChildFriendly } from "react-icons/md";
 import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
-import { Card } from "@mui/material";
+import { Card } from "@mui/material"; 
+import PieChart from "./piechart";
 function HomePage() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -485,14 +490,9 @@ useEffect(() => {
   
 }
 const [selectValues, setSelectValues] = useState(user.map((item) => ""));
-
-// Function to handle changes in the select element
 const handleSelectChange = (index, value) => {
-  // Create a copy of the selectValues array
   const newSelectValues = [...selectValues];
-  // Update the value for the specific select element
   newSelectValues[index] = value;
-  // Set the updated state  
   console.log(newSelectValues)
   setSelectValues(newSelectValues);
 };
@@ -505,19 +505,16 @@ const handleview=(comid,id,topic)=>{
   localStorage.setItem('rec', "");
   localStorage.removeItem('value');
   console.log(localStorage.getItem("count"));
-// You need to set the username here, as it is used in the request body
 
   axios.delete(`http://localhost:8080/api/reminderdelete`, {
       data: { id: id, username:  localStorage.getItem('username') }
     })
     .then(response => {
-      // Handle the response from the backend if needed
       console.log(response.data);
       navigate(`/${typeo}/menext`);
       enqueueSnackbar("Reminder deleted successfully");
     })
     .catch(error => {
-      // Handle the error if the HTTP request fails
       console.error('Error sending id to the backend:', error);
     });
 }
@@ -525,11 +522,8 @@ const handleview=(comid,id,topic)=>{
       
       <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}> 
         <div className="logout-button"> 
-        {/* {localStorage.getItem("token")} */}
-       
         {localStorage.getItem('type') !== 'buyer' && (
-          <>
-              
+          <>  
           <button style={{backgroundColor:"#5B0888"}}>{username}</button> 
           </>   
           )}
@@ -537,28 +531,25 @@ const handleview=(comid,id,topic)=>{
           <>  
           <img src={forpic} alt={forpic} style={{ height: '35px' ,marginLeft:'100px'}}  />
            <button style={{backgroundColor:"#5B0888"}} onClick={handleuser}>{username}</button> 
-           
           <select 
             onChange={handleChange} 
             style={{ backgroundColor: "#5B0888", color: "white", 
             border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}
           >
             <option>Weekend Delivery</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
+            <option value="Yes">Yes ✅</option>
+            <option value="No">No ❌</option>
           </select>
-    
           <select 
           onChange={handleCategoryChange} 
           style={{ backgroundColor: "#713ABE", color: "white", 
           border: "none", padding: "5px",borderRadius:"5px",marginRight:"5px" }}> 
               <option>Category</option>
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
-              <option value="Kids">Kids</option>
-              
+              <option value="Men">Men 👨</option>
+              <option value="Women">Women 👩</option>
+              <option value="Kids">Kids 👶</option>
           </select>
-          <button style={{backgroundColor:"#713ABE"}} onClick={handlehelp}>Help</button> 
+          <button style={{backgroundColor:"#713ABE"}} onClick={handlehelp}>Help❓</button> 
           </>
         )}
             {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
@@ -587,7 +578,7 @@ const handleview=(comid,id,topic)=>{
              padding: "5px",borderRadius:"5px",marginLeft:"5px" }}
           >
             <option>Menu</option>
-            <option value="Back">Cart</option>
+            <option value="Back">Cart🛒</option>
             <option value="Logout">Logout</option>
             </select>  
             <div  style={{marginLeft:"10px",backgroundColor:"#793FDF",borderRadius:"5px" }}>
@@ -601,9 +592,7 @@ const handleview=(comid,id,topic)=>{
       style={{ display: "none" }}
       ref={fileInputRef}
     />
-    {/* <button onClick={() => fileInputRef.current.click()} style={{backgroundColor:"#7752FE"}}>Select Image</button>
-    <button onClick={handleRemoveImage} style={{backgroundColor:"#7752FE"}}>Remove Image</button> */}
-    <button onClick={handlewish} style={{backgroundColor:"#7752FE"}}>Wishlist</button>
+    <button onClick={handlewish} style={{backgroundColor:"#7752FE"}}>Wishlist ⭐</button>
           </div> 
           </>
             )}
@@ -613,16 +602,12 @@ const handleview=(comid,id,topic)=>{
           </div>
         {localStorage.getItem('type') === 'buyer' && (  
           <>
-        
-  
-      
           <>
           <div style={{width:"350px",marginLeft:"800px"}}> 
           {later.length > 0 && (   
             <>
             {later.map((item, index) => (
-               <LaterCard key={index} item={item} handlePayClick={(itemid) =>handlePay(itemid)} />
-               
+               <LaterCard key={index} item={item} handlePayClick={(itemid) =>handlePay(itemid)} />   
             ))}
             </>)}
           </div> 
@@ -643,10 +628,8 @@ const handleview=(comid,id,topic)=>{
           </div>
           )}
         {uniqueItems.length > 0 && (
-          
           <><h2>RECOMMENDED PRODUCTS:</h2>
-         <div  className='class-contain' >
-                
+         <div  className='class-contain' >        
        {uniqueItems.map((item, index)  => (
               <CustomCard
                 key={index}
@@ -654,15 +637,13 @@ const handleview=(comid,id,topic)=>{
                 handleView={(itemid,itemName) => handleRecommendation(itemid,itemName)}
                 showButton={true}
               /> 
-            ))} 
-            
+            ))}     
        </div>
        </>
             )}
        </> 
        </>
       )}
-      
         <div>
           {(localStorage.getItem('type') === 'seller'||localStorage.getItem('type') === 'company') && (
       <>
@@ -685,10 +666,14 @@ const handleview=(comid,id,topic)=>{
           <option value="count">By Count</option>
           <option value="revenue">By Revenue</option>
         </select>
-        
         </div>
         <div>
-      <BarGraph data={sortedData} />
+      <BarGraph data={sortedData} /> 
+       
+      <div  style={{width:"600px"}}>
+      <h2 style={{marginLeft:"20px"}}>Revenue Pie Chart:</h2>
+      <PieChart data={sortedData} />
+    </div>
     </div>
          <table className="purchase-history-table">
           <thead>
@@ -713,8 +698,8 @@ const handleview=(comid,id,topic)=>{
           type="number"
           value={inputValues[index]}
         onChange={(e) => handleChangein(index, e)}
-          placeholder="Enter a number" 
-          style={{ backgroundColor: "#713ABE", color: "white", 
+          placeholder="count" 
+          style={{ backgroundColor: "#713ABE",  color: "white", // Set text color to white, 
              border: "none", padding: "5px",width:"50px",borderRadius:"5px",marginTop:"10px",marginLeft:"10px" }}
         />
         <button onClick={()=>handlestock(item.id,item.topic,index)} className="cart-button" >Add</button></td>
@@ -768,7 +753,6 @@ const handleview=(comid,id,topic)=>{
       </>)}
         </>
           )} 
-          
           {(localStorage.getItem('type') === 'access'||localStorage.getItem('type') === 'companyaccess') && (
        <> 
         <select
@@ -779,7 +763,6 @@ const handleview=(comid,id,topic)=>{
         > <option value="">Sort</option>
           <option value="ass">Ascending</option>
           <option value="des">Descending </option>
-          
         </select> 
         <br/>
         <br/>

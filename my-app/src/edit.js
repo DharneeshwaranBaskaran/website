@@ -53,7 +53,7 @@ return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
     <div className="logout-button">
         <button  onClick={back}>
-        Back To Home
+        Back To Home 🏠
         </button>
     </div> 
     <div className="app">

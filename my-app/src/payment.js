@@ -137,33 +137,6 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
     } else {
       enqueueSnackbar("Please select a CSV file first", { variant: "error" });
     }
-    const uploadCsvToBackend = async () => {
-        
-      // Check if csvData has elements
-      if (csvData.length > 0) {
-        // Make a POST request to your backend API
-        fetch("http://localhost:8080/api/up-csv", {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      })
-      .then(async response => {
-        if (response.ok) {
-          enqueueSnackbar("CSV data uploaded successfully", { variant: "success" }); 
-          setCsvData([]);
-        } else {
-          enqueueSnackbar("Failed to upload CSV data", { variant: "error" });
-          const errorData = await response.text();
-          enqueueSnackbar(errorData, { variant: "error" });
-          console.log(errorData, { variant: "error" });
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-    }
-  
-};
   };
   const uploadCsvToBackend = async () => {
         
@@ -198,7 +171,7 @@ return(
     backgroundColor: "#e5e5ff", minHeight: "100vh"
     }}>
   <div className="logout-button">
-          <button onClick={handlebacktohomefrompay} >Back To Home</button>
+          <button onClick={handlebacktohomefrompay} >Back To Home 🏠</button>
   </div>
   {localStorage.getItem('type') === 'buyer' && (
   <div >
@@ -242,7 +215,7 @@ return(
                     <div  >
                  <input type="file" accept=".csv" onChange={handleFileUpload}  style={{ color: '#6499E9' }}/>
                  <br/>
-                 <button onClick={uploadCsvToBackend}>Upload CSV to Backend</button>
+                 <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
                  <br/>
                  </div>
                  </>

@@ -322,13 +322,13 @@ function Menext() {
               );
             }else{
             backButton = (
-              <button onClick={handleback} style={{backgroundColor:"#713ABE"}}>Back</button>
+              <button onClick={handleback} style={{backgroundColor:"#713ABE"}}>Back 🏠</button>
             );
           }
           }
           else{
             backButton = (
-              <button onClick={handlebackfromrec} >Back To Home</button>
+              <button onClick={handlebackfromrec} >Back To Home 🏠</button>
             );
           }
           
@@ -341,7 +341,7 @@ function Menext() {
           <button onClick={viewcart} style={{backgroundColor:"#5B0888"}}>View Cart</button>
          );
          addButton=(<button type="submit" className="lob" onClick={handlecart} 
-         >Add To Cart</button>)
+         >Add To Cart🛒</button>)
 
          Wishlist=(<button type="submit" className="lob" style={{marginLeft:"5px"}} onClick={handlewish} 
          >Wishlist</button>)

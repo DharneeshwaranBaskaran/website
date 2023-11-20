@@ -10,10 +10,12 @@ import CustomCard from './customcard';
 import './App.css'; 
 import { useNavigate } from 'react-router-dom';
 function Men() {
+  
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
     let num=1;
     const [ascending, setAscending] = useState(true);   
+    const [countSortAscending, setCountSortAscending] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState(''); 
     const [showModal, setShowModal] = useState(false);
     let per="";
@@ -83,7 +85,10 @@ function Men() {
       num=3;
     }
     const toggleSorting = () => {
-      setAscending(!ascending);
+      setAscending(!ascending); 
+    };
+    const toggleCountSorting = () => {
+      setCountSortAscending(!countSortAscending);
     };
     const jwtToken = localStorage.getItem('token');
 
@@ -97,23 +102,29 @@ function Men() {
         window.location.reload();
         enqueueSnackbar("Logout Successful");
       };
-      axios.get(`http://localhost:8080/api/combo/${per}`)
-          .then((response) => {
-            let sortedData = response.data;
-            if (!ascending) {
-              // Sort the data based on the "cost" property in descending order
-              sortedData = sortedData.sort((a, b) => b.cost - a.cost);
-            } else {
-              // Sort the data based on the "cost" property in ascending order
-              sortedData = sortedData.sort((a, b) => a.cost - b.cost);
-            }
-            setData(sortedData);
-          })
-          
-          .catch((error) => {
-              console.error('Error fetching history items:', error);
-          });
-  }, [per,ascending]);
+
+
+  // }, [per,ascending]);
+  axios.get(`http://localhost:8080/api/combo/${per}`)
+  .then((response) => {
+    let sortedData = response.data;
+    if (!ascending) {
+      sortedData = sortedData.sort((a, b) => b.cost - a.cost);
+    } else {
+      sortedData = sortedData.sort((a, b) => a.cost - b.cost);
+    }
+
+    // Additional sorting based on count
+    if (!countSortAscending) {
+      sortedData = sortedData.sort((a, b) => b.count - a.count);
+    } 
+
+    setData(sortedData);
+  })
+  .catch((error) => {
+    console.error('Error fetching history items:', error);
+  });
+}, [per, ascending, countSortAscending]);
   
   
     
@@ -142,11 +153,14 @@ function Men() {
             <MenuItem value={fil2}>{fil2}</MenuItem>
             <MenuItem value={fil3}>{fil3}</MenuItem>
           </Select>
-            <button onClick={handlebackhome} style={{backgroundColor:"#5B0888"}}>Back</button>
+            <button onClick={handlebackhome} style={{backgroundColor:"#5B0888"}}>Back 🏠</button>
             <button onClick={toggleModal}style={{backgroundColor:"#713ABE"}}>Offer Products</button> 
             <button onClick={toggleSorting} style={{backgroundColor:"#793FDF"}}>
-          {ascending ? "Sort Descending" : "Sort Ascending"}
+          {ascending ? "Sort Descending" : "Sort Ascending"} 
         </button>
+        <button onClick={toggleCountSorting} style={{ backgroundColor: "#793FDF" }}>
+        {countSortAscending ? "Most Purchased" : ""}
+      </button>
           </div>
           
           <div className="search-container">
@@ -157,20 +171,16 @@ function Men() {
           onChange={(e) => setSearchQuery(e.target.value)} 
           className="search-bar"
         />
-     
         </div> 
         
         <div className='class-contain'>
         {showModal &&(<>
           {(filteredData && filterdata).length === 0 ? (
-        // Render the dissatisfied symbol 
         <>
         <DissatisfiedSymbol />
         <br/>
         <br/>
         <h2>No products Found</h2>
-        
-        
         </>
       ) : (
         
@@ -193,8 +203,6 @@ function Men() {
         <br/>
         <br/>
         <h2>No products Found</h2>
-        
-        
         </>
       ) : (
         

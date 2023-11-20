@@ -284,7 +284,7 @@ useEffect(() => {
 let backButton=null;
 if(localStorage.getItem('type')=='buyer'){
   backButton = (
-    <button  style={{backgroundColor:"#713ABE"}} onClick={handlehistory}>Purchase History</button>
+    <button  style={{backgroundColor:"#713ABE"}} onClick={handlehistory}>Purchase History📜</button>
    );
 }
 useEffect(() => {
@@ -327,7 +327,7 @@ const toaddress=()=>{
 return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
     <div className="logout-button">
-    <button onClick={handlebacktohome} style={{ backgroundColor: "#5B0888" }}>Back To Home</button>  
+    <button onClick={handlebacktohome} style={{ backgroundColor: "#5B0888" }}>Back To Home 🏠</button>  
      {backButton}
     </div>
     
@@ -389,7 +389,7 @@ return (
               <td>${item.cost * item.count}</td>
               <td><button className="cart-button"
             onClick={() => removeItemFromCart(item.id)}>
-                  Remove</button></td>
+                  Remove🗑️</button></td>
             </tr>
           ))}
         </tbody>
@@ -398,12 +398,12 @@ return (
       <div className="cart-total">After Discount: $ {calculateTotaldis(Items)}</div>
       <div className="cart-item-count">Available Balance:${Balance}</div>
       <div className="cart-buttons">
-      <button className="cart-button"  style={{backgroundColor:"#5B0888"}} onClick={handlePayment2}>Buy Now pay Later</button>
-        <button className="cart-button" style={{backgroundColor:"#713ABE"}} onClick={handlePayment1}>Express Delivery</button>
-        <button className="cart-button" style={{backgroundColor:"#793FDF"}} onClick={handlePaymentandretain}>Pay And Retain</button> 
-        <button className="cart-button" style={{backgroundColor:"#7752FE"}}  onClick={handlePayment}>Pay</button>  
-        <button onClick={updateBalance} className="cart-button">Add Balance</button> 
-        <button onClick={toaddress} className="lob" style={{marginLeft:"10px",marginRight:"10px"}}>Alter Address</button>
+      <button className="cart-button"  style={{backgroundColor:"#5B0888"}} onClick={handlePayment2}>Buy Now pay Later💳</button>
+        <button className="cart-button" style={{backgroundColor:"#713ABE"}} onClick={handlePayment1}>Express Delivery🚚</button>
+        <button className="cart-button" style={{backgroundColor:"#793FDF"}} onClick={handlePaymentandretain}>Pay And Retain🛍️</button> 
+        <button className="cart-button" style={{backgroundColor:"#7752FE"}}  onClick={handlePayment}>Pay💸</button>  
+        <button onClick={updateBalance} className="cart-button">Add Balance💰</button> 
+        <button onClick={toaddress} className="lob" style={{marginLeft:"10px",marginRight:"10px"}}>Alter Address📍</button>
       </div>
     </div>
     </>

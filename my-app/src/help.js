@@ -35,7 +35,7 @@ function Help() {
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>  
     <div className="logout-button"> 
-        <button onClick={handleback}>Home</button>
+        <button onClick={handleback}>Home 🏠</button>
     </div>
     <div className="help-page">
       <div className="faq-section">
