@@ -5,11 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.combo.Comborequest;
-
-import java.sql.SQLException;
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,7 +22,7 @@ public class Balance {
             if (balance != null) {
                 return ResponseEntity.ok(balance);
             } else {
-                return ResponseEntity.ok(0.0); // Default balance if user not found
+                return ResponseEntity.ok(0.0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,7 +38,7 @@ public class Balance {
             if (loyalty != null) {
                 return ResponseEntity.ok(loyalty);
             } else {
-                return ResponseEntity.ok(0.0); // Default balance if user not found
+                return ResponseEntity.ok(0.0);
             }
         } catch (Exception e) {
             e.printStackTrace();

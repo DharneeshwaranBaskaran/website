@@ -2,7 +2,6 @@ package com.example.demo.History;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.http.HttpStatus;
@@ -29,11 +28,6 @@ public class HistoryClear {
                     String selectSql = "SELECT state FROM history WHERE username = ? ";
                     PreparedStatement selectStatement = connection.prepareStatement(selectSql);
                     selectStatement.setString(1, username); 
-                    
-                    ResultSet resultSet = selectStatement.executeQuery();
-
-                   
-
                     String updateSql = "UPDATE history SET state = ? WHERE username = ?";
                     PreparedStatement deleteStatement = connection.prepareStatement(updateSql);
                     deleteStatement.setBoolean(1, false);

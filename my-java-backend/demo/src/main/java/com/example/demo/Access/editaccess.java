@@ -1,18 +1,10 @@
 package com.example.demo.Access;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.demo.Seller.*;
-import com.example.demo.Draft.Draftrequest;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")

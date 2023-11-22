@@ -25,11 +25,9 @@ const User = () => {
       
         const logoutChannel = new BroadcastChannel('logoutChannel');
         logoutChannel.onmessage = () => {
-          // Perform the local logout actions
           navigate("/start");
           localStorage.clear();
           window.location.reload();
-          // enqueueSnackbar("Logout Successful");
         };
       
         const username = localStorage.getItem("username");

@@ -25,7 +25,6 @@ useEffect(() => {
 
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
-      // Perform the local logout actions
       navigate("/start");
       localStorage.clear();
       window.location.reload();
@@ -38,7 +37,6 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
         setBalance(data);
       })
       .catch((error) => {
-        // console.error('Error fetching data:', error);
       });
   }, [Username]);
   
@@ -120,16 +118,12 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
       reader.onload = (event) => {
         const csvContent = event.target.result;
 
-        // Parse CSV content using papaparse
         Papa.parse(csvContent, {
           complete: (result) => {
-            // Set CSV data to state
             setCsvData(result.data);
-
-            // Print CSV data to console
             console.log(result.data);
           },
-          header: true, // Use the first row as headers
+          header: true, 
         });
       };
 
@@ -139,10 +133,7 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
     }
   };
   const uploadCsvToBackend = async () => {
-        
-    // Check if csvData has elements
     if (csvData.length > 0) {
-      // Make a POST request to your backend API
       fetch("http://localhost:8080/api/upload-csv/company", {
       method: 'POST',
       body: formData,

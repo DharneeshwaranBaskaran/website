@@ -1,20 +1,16 @@
 package com.example.demo.combo;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Random;
-
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000") // Replace with the actual origin of your frontend
+@CrossOrigin(origins = "http://localhost:3000") 
 public class AddData {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     private static final String DB_USER = "root";
@@ -39,7 +35,6 @@ public class AddData {
                 lastId = resultSet.getInt(1);
             }
             
-            // Step 2: Increment the last ID to get the new ID
             int newId = lastId + 1;
             
                 String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -52,13 +47,12 @@ public class AddData {
                 preparedStatement.setInt(6, cost); 
                 preparedStatement.setDouble(7, rating);
                 preparedStatement.setString(8, person);
-                
                 preparedStatement.setBoolean(9, true); 
                 preparedStatement.setString(10, seller);  
                 preparedStatement.setInt(11, 0);
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    connection.commit(); // Commit the transaction
+                    connection.commit();
                     System.out.println("Data inserted successfully.");
                     return ResponseEntity.ok("Data Added Sucessfully");
                 } else {

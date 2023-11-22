@@ -38,8 +38,7 @@ public class HistoryCartRetained {
                 ResultSet resultSet = selectStatement.executeQuery(); 
                 
                 String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id,weekend) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-                    // String updateComboSql = "UPDATE combo SET id=? AND count = count + ? WHERE topic = ?";
-                    
+                  
                     String updateComboSql = "UPDATE combo SET history_item_id = ?,stockcount=stockcount-?, count = count + ? WHERE topic = ?";
                     PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
@@ -60,19 +59,15 @@ public class HistoryCartRetained {
                         ResultSet historyResultSet = checkHistoryStatement.executeQuery();
                     
                         if (historyResultSet.next()) {
-                            // Matching record found in history, set cost without modification
-                            insertStatement.setDouble(3, resultSet.getDouble("cost"));
+                          insertStatement.setDouble(3, resultSet.getDouble("cost"));
                         } else {
-                            // No matching record found, set cost with modification
-                            insertStatement.setDouble(3, (resultSet.getDouble("cost")) * 10 / 9);
+                           insertStatement.setDouble(3, (resultSet.getDouble("cost")) * 10 / 9);
                         }
-                        // Step 2: Increment the last ID to get the new ID
-                        int newId = lastId + 1;
+                         int newId = lastId + 1;
                         String itemName = resultSet.getString("topic");
                         int itemCount = resultSet.getInt("count");
                         insertStatement.setString(1, resultSet.getString("topic"));
                         insertStatement.setString(2, resultSet.getString("description"));
-                       // insertStatement.setDouble(3, (resultSet.getDouble("cost"))*10/9);
                         insertStatement.setInt(4, resultSet.getInt("count"));
                         insertStatement.setString(5, resultSet.getString("username"));
                         insertStatement.setBoolean(6, resultSet.getBoolean("state"));
@@ -82,7 +77,7 @@ public class HistoryCartRetained {
                         insertStatement.setString(10, resultSet.getString("seller"));
                         insertStatement.setInt(11, resultSet.getInt("combo_id"));
                         insertStatement.setString(12, resultSet.getString("weekend"));
-                        insertStatement.executeUpdate(); // This line inserts the data once
+                        insertStatement.executeUpdate(); 
                         dataToSend.add("Topic: " + resultSet.getString("topic") +
                                 "\nDescription: " + resultSet.getString("description") +
                                 "\nCost: " + resultSet.getDouble("cost") +
@@ -104,11 +99,10 @@ public class HistoryCartRetained {
     private void sendEmail(String toEmail, String username, List<String> data) {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
-        properties.put("mail.smtp.port", "587"); // Change this to the appropriate port
+        properties.put("mail.smtp.port", "587"); 
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
 
-        // Set up the session with your email credentials
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -117,7 +111,6 @@ public class HistoryCartRetained {
         });
 
         try {
-            // Create a message
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
@@ -134,7 +127,6 @@ public class HistoryCartRetained {
 
             message.setText(messageText.toString());
 
-            // Send the message
             Transport.send(message);
             System.out.println("Email sent successfully.");
         } catch (MessagingException e) {

@@ -1,14 +1,10 @@
 package com.example.demo.combo;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,10 +26,8 @@ public class Combostart {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "SELECT * FROM combo WHERE state = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-           
             preparedStatement.setBoolean(1, true);
             ResultSet resultSet = preparedStatement.executeQuery();
-
             List<Combo> combos = new ArrayList<>();
 
             while (resultSet.next()) {

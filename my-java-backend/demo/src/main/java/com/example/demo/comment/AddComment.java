@@ -1,18 +1,10 @@
 package com.example.demo.comment;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-// import com.example.demo.seller;
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -34,7 +26,6 @@ public class AddComment{
             preparedStatement.setString(3, username);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                // connection.commit(); // Commit the transaction
                 System.out.println("Comment inserted successfully.");
                 return ResponseEntity.ok("CommentData Added Successfully");
             } else {
@@ -43,7 +34,6 @@ public class AddComment{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //return ResponseEntity.ok("CommentData Added Successfully");
         return null;
     }
 }

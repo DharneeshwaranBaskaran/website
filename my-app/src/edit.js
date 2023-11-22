@@ -13,12 +13,10 @@ const handleChange5 = (e) => {
     setcost(value);
    };
    const jwtToken = localStorage.getItem('token');
-
-  // Check if the JWT token is present
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
-      // Perform the local logout actions
+
       navigate("/start");
       localStorage.clear();
       window.location.reload();

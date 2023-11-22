@@ -9,7 +9,6 @@ const [It, setIt] = useState([]);
 const [Balance,setBalance]=useState(0); 
 const [Address,setAddress]=useState('');
 const [address,setaddress]=useState('');
-const [person,setperson]=useState([]);
 let Username=localStorage.getItem('username');
 const [Items, setItems] = useState([]); 
 const [Data,setData]=useState([]);
@@ -36,8 +35,8 @@ axios.get(`http://localhost:8080/api/balance/${Username}`)
     axios.get(`http://localhost:8080/api/address/${Username}`)
       .then((response) => {
         const data = response.data;
-        setAddress(data); // Update the Address state here
-        console.log(data); // Log the updated data
+        setAddress(data);
+        console.log(data); 
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -194,7 +193,6 @@ const handlePayment2=()=>{
   if(Items.length === 0 )
   enqueueSnackbar("Your cart is empty",{ variant:"info" });
   else if(total<50){
-    // const newBalance = Balance - (total*9/10)-10;
       axios.post(`http://localhost:8080/api/transferToHistorypaylater/${Username}`)
           .then((response) => {
               console.log(response.data);
@@ -247,7 +245,7 @@ const removeItemFromCart = (id) => {
       .then((response) => {
         const updatedCartItems = Items.map((item) => {
           if (item.id === id) {
-            return { ...item, state: true }; // Update the state of the item
+            return { ...item, state: true };
           }
           return item;
         });
@@ -266,7 +264,6 @@ const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 useEffect(() => {
   const logoutChannel = new BroadcastChannel('logoutChannel');
   logoutChannel.onmessage = () => {
-    // Perform the local logout actions
     navigate("/start");
     localStorage.clear();
     window.location.reload();
@@ -319,7 +316,6 @@ const handleaddress = async () => {
   window.location.reload();
 };
 
-// Filter items based on the search query
 const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
 const toaddress=()=>{
   navigate(`/${localStorage.getItem("type")}/address`); 
@@ -335,15 +331,15 @@ return (
         <> 
       {It.length>10 &&( 
         <>
-        <h2>You Are A Premium User</h2> 
+        <h2 style={{marginLeft:"10px"}}>You Are A Premium User</h2> 
        
         </>
       )}
       <div>
-      <h1 className="cart-header">Cart for {Username}</h1> 
+      <h1 className="cart-header" style={{marginLeft:"15px"}}>Cart for {Username}</h1> 
       {(Address==undefined|| Address==" " ||Address=="") &&(
         <div style={{ display: 'flex', alignItems: 'center' }}>
-        <p style={{marginLeft:"10px"}}>Enter Your Address Before placing order:</p>
+        <p style={{marginLeft:"15px"}}>Enter Your Address Before placing order:</p>
         
         <input
         style={{width:"200px",marginLeft:"20px"}}
@@ -353,50 +349,58 @@ return (
         onChange={handleChange4}              
         /><button style={{marginLeft:"20px"}} className="lob" onClick={handleaddress}>Confirm</button>
         </div>
-        
       )}
-      
-        
         </div>
-      
-      
-      <p>Delivery Address:{Address}</p>
+      <p style={{marginLeft:"20px"}}>Delivery Address:{Address}</p>
       <input
                 type="text"
                 placeholder="Search Items"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="search-bar"
-                style={{marginLeft:"10px"}}
+                style={{marginLeft:"15px"}}
             />
       <div>
       <table className="purchase-history-table">
-        <thead>
-          <tr>
-            <th>Topic</th>
-            <th>Count</th>
-            <th>Cost</th>
-            <th>Total Cost</th>
-            <th> Remove</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredItems.map((item, index) => (
-            <tr key={index}>
-              <td>{item.topic}</td>
-              <td>{item.count}</td>
-              <td>${item.cost}</td>
-              <td>${item.cost * item.count}</td>
-              <td><button className="cart-button"
-            onClick={() => removeItemFromCart(item.id)}>
-                  Remove🗑️</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>      
-      <div className="cart-total">Total: $ {calculateTotal(Items)}</div>
-      <div className="cart-total">After Discount: $ {calculateTotaldis(Items)}</div>
-      <div className="cart-item-count">Available Balance:${Balance}</div>
+  <thead>
+    <tr>
+      <th>Topic</th>
+      <th>Count</th>
+      <th>Cost</th>
+      <th>Total Cost</th>
+      <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredItems.length > 0 ? (
+      filteredItems.map((item, index) => (
+        <tr key={index}>
+          <td>{item.topic}</td>
+          <td>{item.count}</td>
+          <td>${item.cost}</td>
+          <td>${item.cost * item.count}</td>
+          <td>
+            <button
+              className="cart-button"
+              onClick={() => removeItemFromCart(item.id)}
+            >
+              Remove🗑️
+            </button>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="5" style={{ textAlign: "center" }}>
+          <h1>Cart is empty🛒</h1>
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>     
+      <div className="cart-total" style={{marginRight:"87px"}}>Total: $ {calculateTotal(Items)}</div>
+      <div className="cart-total" style={{marginRight:"10px"}}>After Discount: $ {calculateTotaldis(Items)}</div>
+      <div className="cart-item-count" style={{marginLeft:"10px"}}>Available Balance:${Balance}</div>
       <div className="cart-buttons">
       <button className="cart-button"  style={{backgroundColor:"#5B0888"}} onClick={handlePayment2}>Buy Now pay Later💳</button>
         <button className="cart-button" style={{backgroundColor:"#713ABE"}} onClick={handlePayment1}>Express Delivery🚚</button>

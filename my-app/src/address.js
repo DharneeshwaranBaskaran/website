@@ -1,4 +1,4 @@
-import React, {useRef,useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import axios from "axios";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +20,7 @@ import './App.css';
         else{
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/updateAddress/${Username}`,  // Keep this part as is
+            `http://localhost:8080/api/updateAddress/${Username}`,  
             address,
             {
               headers: {
@@ -40,13 +40,10 @@ import './App.css';
         navigate(`/${localStorage.getItem("type")}/homepage`); 
       }
     }
-    const jwtToken = localStorage.getItem('token');
-
-  
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
-      // Perform the local logout actions
+
       navigate("/start");
       localStorage.clear();
       window.location.reload();
@@ -62,7 +59,6 @@ import './App.css';
         <button onClick={handlehome} style={{backgroundColor: "#713ABE", color: "white"}}>Home</button>
         </div>
         <div className="app"  > 
-
         <div className="logins" >
         <h3 style={{textAlign:"center"}}>Alter Delivery Address</h3>
         <input

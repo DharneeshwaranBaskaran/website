@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Random;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -24,17 +23,10 @@ public class mail {
     @PostMapping("/mail")   
     public ResponseEntity<String> loginbuyer(@RequestBody Comborequest request) { 
         String topic = request.getTopic();
-        String description= request.getDescription();   
-        String url=request.getUrl();
-        String cat=request.getCat();  
         Integer cost=request.getCost();
-        Double rating=request.getRating(); 
-        String person=request.getPerson(); 
         String seller=request.getSeller();  
         String email=getSellerEmail(seller);
         if (email == null) {
-            // Handle the case where the seller is not found 
-            
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found");
         }else{
             sendEmail(email,topic,cost,seller);
@@ -55,18 +47,15 @@ public class mail {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println(e);
-            // Handle any exceptions
         }
-        return null; // Return null if the seller is not found
+        return null; 
     }
     private void sendEmail(String toEmail,String topic,Integer cost,String seller) {
         Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
-        properties.put("mail.smtp.port", "587"); // Change this to the appropriate port
+        properties.put("mail.smtp.host", "smtp.gmail.com");
+        properties.put("mail.smtp.port", "587"); 
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-
-        // Set up the session with your email credentials
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -75,14 +64,12 @@ public class mail {
         });
 
         try {
-            // Create a message
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
+            message.setFrom(new InternetAddress("dharnee28@gmail.com")); 
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Registration Successful");
             message.setText("Dear User,\n\nYour product is launched successfully:\n Name" +topic+ "\nCost: " + cost+"\nseller:"+seller);
 
-            // Send the message
             Transport.send(message);
             System.out.println("Email sent successfully.");
         } catch (MessagingException e) {

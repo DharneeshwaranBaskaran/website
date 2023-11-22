@@ -12,7 +12,6 @@ import './App.css';
     useEffect(() => {
       const logoutChannel = new BroadcastChannel('logoutChannel');
       logoutChannel.onmessage = () => {
-        // Perform the local logout actions
         navigate("/start");
         localStorage.clear();
         window.location.reload();
@@ -32,7 +31,7 @@ import './App.css';
         else{
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/updateEmail/${Username}`,  // Keep this part as is
+            `http://localhost:8080/api/updateEmail/${Username}`, 
             email,
             {
               headers: {

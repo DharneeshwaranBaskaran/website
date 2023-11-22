@@ -4,14 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,14 +21,12 @@ public class HistoryRepeat {
     @PostMapping("/repeatHistory/{id}")
     public ResponseEntity<String> transferFromHistory(@PathVariable long id) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Select the record from history based on the given id
             String selectSql = "SELECT * FROM history WHERE id = ?";
             PreparedStatement selectStatement = connection.prepareStatement(selectSql);
             selectStatement.setLong(1, id);
             ResultSet resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Insert the selected record back into the history table
                 String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement insertStatement = connection.prepareStatement(insertSql);
 
@@ -50,7 +40,6 @@ public class HistoryRepeat {
                 insertStatement.setString(8, resultSet.getString("url"));
                 insertStatement.setString(9, resultSet.getString("person"));
                 insertStatement.setString(10, resultSet.getString("seller"));
-                // insertStatement.setInt(11, resultSet.getInt("combo_id"));
                 insertStatement.setString(11, resultSet.getString("weekend"));
 
                 insertStatement.executeUpdate();

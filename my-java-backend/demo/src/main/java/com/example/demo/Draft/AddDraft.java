@@ -1,11 +1,6 @@
 package com.example.demo.Draft;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-// import com.example.demo.seller;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -15,7 +10,7 @@ import java.sql.Statement;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000") // Replace with the actual origin of your frontend
+@CrossOrigin(origins = "http://localhost:3000") 
 public class AddDraft {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
     private static final String DB_USER = "root";
@@ -23,11 +18,8 @@ public class AddDraft {
 
     @PostMapping("/adddatadraft")
     public ResponseEntity<String> addDraft(@RequestBody Draftrequest request) {
-            
-        
             String topic = request.getTopic();
-            String description= request.getDescription();
-            //String conpassword=request.getConpassword();  
+            String description= request.getDescription(); 
             String url=request.getUrl();
             String cat=request.getCat();  
             Integer cost=request.getCost();
@@ -43,8 +35,6 @@ public class AddDraft {
             if (resultSet.next()) {
                 lastId = resultSet.getInt(1);
             }
-            
-            // Step 2: Increment the last ID to get the new ID
             int newId = lastId + 1;
             
                 String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -63,7 +53,6 @@ public class AddDraft {
                 preparedStatement.setInt(11, 0);
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                // connection.commit(); // Commit the transaction
                 System.out.println("Draft data inserted successfully.");
             } else {
                 System.out.println("Draft data insertion failed.");

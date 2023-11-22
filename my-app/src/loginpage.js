@@ -1,12 +1,25 @@
-
 import backpic from "./images/backpic.jpg";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
-import jwtDecode from 'jwt-decode';
-
 import './App.css'; 
 function LoginPage() {
+  const errorStyle = {
+    color: 'red',
+    fontSize: '10px',
+  };
+  
+  const renderInput = (type, placeholder, value, onChange, error, name) => (
+    <> <input
+    type={type}
+    placeholder={placeholder}
+    value={value}
+    onChange={onChange}
+    name={name}
+  />
+  <div style={errorStyle}>{error}</div>
+  </>    
+  );
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState(''); 
     const [username1, setUsername1] = useState('');
@@ -15,14 +28,10 @@ function LoginPage() {
     const [error1, setError1] = useState('');
     const [error2, setError2] = useState('');
     const { enqueueSnackbar } = useSnackbar();
-    let link="";
     const type = localStorage.getItem('type'); 
     const navigate = useNavigate();
       const [showModal, setShowModal] = useState(false);
-      // const [formData, setFormData] = useState({
-      //   name: '',
-      //   email: '',
-      // });
+
       const toggleModal = () => {
         setShowModal(!showModal);
       };
@@ -41,48 +50,18 @@ function LoginPage() {
             body: JSON.stringify({ username:username1, email }),
             credentials: 'include',
           });
-
           if (response.ok) {
             setShowModal(!showModal);
             enqueueSnackbar("Username and password sent to email",{ variant: "success" });
           }
           else{
             console.log(response); 
-            
             enqueueSnackbar("Invalid Credentials");
           }
-          
           } catch (error) {
             enqueueSnackbar("An error occurred",{ variant:"error" });
           }
-      
     }
-    
-    const isTokenExpired = (token) => {
-      try {
-        const decodedToken = JSON.parse(atob(token.split('.')[1]));
-        return decodedToken.exp < Date.now() / 1000;
-      } catch (error) {
-        // Handle decoding errors (e.g., invalid token format)
-        console.error("Error decoding token:", error);
-        return true; // Treat as expired to be cautious
-      }
-    };
-  
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-  
-      if (token) {
-        const expired = isTokenExpired(token);
-  
-        if (expired) {
-          navigate('/login');
-        } else {
-          const type = localStorage.getItem('type');
-          navigate(`/${type}/homepage`);
-        }
-      }
-    }, [navigate]);
 
     const handleLogin = async (event) => { 
        if(password==""){
@@ -101,7 +80,7 @@ function LoginPage() {
           });
 
           if (response.ok) {
-            const token = await response.text(); // assuming the token is returned as a plain text
+            const token = await response.text();
             localStorage.setItem('token', token); 
             console.log(token);
             localStorage.setItem('username', username);             
@@ -111,12 +90,9 @@ function LoginPage() {
             enqueueSnackbar("Login successfully",{ variant: "success" });
           }
           else{
-            console.log(response); 
-            
+            console.log(response);            
             enqueueSnackbar("Invalid Credentials");
-          }
-          
-          } catch (error) { 
+          }} catch (error) { 
             console.log(error.message)
             enqueueSnackbar("An error occurred: " + error.message, { variant: "error" });          }
       };
@@ -146,39 +122,17 @@ function LoginPage() {
         }
       };
     const handlebackRegister=()=>{
-        // backRegister();
-        
         navigate(`/${type}/register`);
       }
-      const errorStyle = {
-        color: 'red',
-        fontSize: '10px',
-      };
-      const name = localStorage.getItem('username');
       
   return ( 
-    <div style={{ 
-      backgroundImage: `url(${backpic})` 
-    }}>
-      
+    <div style={{backgroundImage: `url(${backpic})`  }}>
       <div className="app">
         <div className="login-page">
           <h2>Login</h2> 
-          <div className="con"> 
-          
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={handleChange}
-          />
-          <div style={errorStyle}>{error}</div>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={handleChange1}
-          />
+          <div className="con">   
+          {renderInput("text", "Username", username, handleChange, error, "username")}
+          {renderInput("password", "Password", password, handleChange1, error1, "password")}
           <div style={errorStyle}>{error1}</div>
           </div> 
         <div className="log">
@@ -187,28 +141,13 @@ function LoginPage() {
         <div> 
       <p>forgot password:</p>
       <button onClick={toggleModal} className="lob">Reset</button>
-
       {showModal && (
-        
         <div>
             <h2>Enter Username and Email:</h2> 
               <div className="con"> 
-              <input
-                type="text"
-                placeholder="Username"
-                name="username1"
-                value={username1}
-                onChange={handleChangepass}
-              />
-              <input
-                type="text"
-                placeholder="Email"
-                name="email"
-                value={email}
-                onChange={handleChangepass}
-              />
-              <button type="submit" className="lob" onClick={handlemail}>Submit</button>
-            
+              {renderInput("text", "Username", username1, handleChangepass, "", "username1")}
+              {renderInput("text", "Email", email, handleChangepass, "", "email")}
+              <button type="submit" className="lob" onClick={handlemail}>Submit</button>      
           </div>
          </div>
       )}

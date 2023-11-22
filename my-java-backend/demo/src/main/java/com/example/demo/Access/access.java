@@ -26,9 +26,8 @@ public class access {
     private String email;
     private String type;
     private String provider;
-    // Constructors, getters, and setters
     @ManyToOne
-    @JoinColumn(name = "seller_id")  // Create a foreign key column named seller_id
-    private seller seller;  // Define a reference to the seller entity
+    @JoinColumn(name = "seller_id") 
+    private seller seller;  
 
 }

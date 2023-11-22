@@ -1,26 +1,19 @@
 package com.example.demo.combo;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import com.example.demo.Seller.*;
-import com.example.demo.comment.*;
-import com.example.demo.loginregister.*;
 import com.example.demo.History.HistoryItem;
-import com.example.demo.combo.*;
 import com.example.demo.posi.CartItem;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 
 @Entity
 @Getter
@@ -52,12 +45,4 @@ public class Combo {
 
     public void setSeller(String string) {
     }
-
-    // public void setSeller(String string) {
-    // }
-    
-    
-    
-
-    
 }

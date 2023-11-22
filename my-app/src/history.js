@@ -19,7 +19,6 @@ function History() {
       
         const logoutChannel = new BroadcastChannel('logoutChannel');
         logoutChannel.onmessage = () => {
-          // Perform the local logout actions
           navigate("/start");
           localStorage.clear();
           window.location.reload();
@@ -144,19 +143,50 @@ else{
               .catch((error) => {
                 console.error('Error fetching cart items:', error);
               });
-              // localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
             })
             .catch((error) => {
             });
       };
       const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
-      };
+      }; 
+      const handlecancel=(id,cost,count)=>{
+        
+        let newBalance=Balance+(cost*count*9/10)-5;
+        fetch(`http://localhost:8080/api/cancel/${id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Failed to cancel order');
+            }
+          })
+          .then((data) => {
+            enqueueSnackbar(`Order Cancelled: $5 Charge`, { variant: 'info' });
+            console.log(id, cost, count);
+          })
+          .catch((error) => {
+            console.error('Error cancelling order:', error);
+            enqueueSnackbar('Failed to cancel order', { variant: 'error' });
+          });
+          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        console.log(id,cost,count); 
+        navigate(`/${type}/homepage`); 
+      }
       const handleEdit=(id)=>{ 
         localStorage.setItem('edit',id)
         navigate(`/${type}/edit`);
       }
-      // Filter items based on the search query
       const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
       const drafttodatabase = async (id) => {
         axios.post(`http://localhost:8080/api/transferdata/${id}`)
@@ -172,7 +202,7 @@ else{
                   enqueueSnackbar(error.response.data.error); 
                 }
                else 
-                  enqueueSnackbar(error.message); // Display the error message
+                  enqueueSnackbar(error.message); 
               });
                             
       }
@@ -202,7 +232,8 @@ else{
             <th>Count</th>
             <th>Cost</th>
             <th>Total Cost</th> 
-            <th>Repeat Order</th>
+            <th>Repeat Order</th> 
+            <th>Cancel Order</th>
           </tr>
         </thead> 
       )}
@@ -215,6 +246,8 @@ else{
               <td>${item.cost * item.count}</td>
               <td><button className="cart-button" onClick={()=>handlerepeat(item.id,item.cost,item.count)}>
                   Repeat Order</button></td>
+              <td><button className="cart-button" onClick={()=>handlecancel(item.id,item.cost,item.count)}>
+                  Cancel</button></td>
             </tr> 
           ))}
         </tbody>

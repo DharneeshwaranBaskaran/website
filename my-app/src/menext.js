@@ -7,9 +7,7 @@ import axios from 'axios';
 import './App.css'; 
 import { FiVideo, FiImage } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import ReactPlayer from 'react-player'; 
 function Menext() {
-  
   const navigate = useNavigate();
     const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
     const videoId = videoUrl.split('v=')[1];
@@ -34,23 +32,26 @@ function Menext() {
 
     let Username=localStorage.getItem("username");
     let type=localStorage.getItem('type');
+
     const handleback=()=>{
-      
       navigate(`/${type}/men`);
     } 
+
     const tostart=()=>{
-      
-      navigate(`/${type}/register`);
-       
+      navigate(`/buyer/register`);
        localStorage.setItem('type',"buyer"); 
        enqueueSnackbar("Register",{ variant:"default" });
+       window.location.reload();
     }
+
     const viewcart=()=>{
       navigate(`/${type}/cart`);
     }
+
     const handlebackfromrec=()=>{
       navigate(`/${type}/homepage`); 
     }
+
     useEffect(() => {
       axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
         .then((response) => {
@@ -81,7 +82,7 @@ function Menext() {
         const cartItem = {
           topic: imageData.topic,
           description: imageData.description,
-          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, // Check the count value and set the cost accordingly
+          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, 
           count: count,
           username: localStorage.getItem("username"), 
           rating:imageData.rating,
@@ -115,11 +116,7 @@ function Menext() {
                         
                     }
                 })
-                .catch(error => {
-              
-                });
-    
-          
+                .catch(error => {});
           existingCartItems[existingIndex].count += count;
         } else {
           fetch('http://localhost:8080/api/wish/add', {
@@ -146,19 +143,13 @@ function Menext() {
           existingCartItems.push(cartItem);
         }
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems)); 
- 
-        setCount(0);
-        // navigate(`/${type}/cart`);  
+        setCount(0); 
         enqueueSnackbar(`${count} ${imageData.topic}(s) added to the wishlist.`,{ variant:"success" });
-      
-        const username = localStorage.getItem('username');
-        // navigate(`/${type}/phone`);
         } else {
         enqueueSnackbar("Please select at least one item before adding to wishlist.",{ variant:"warning" });
         
       }
     }
-    const jwtToken = localStorage.getItem('token');
 
     const handlecart = () => {
       if (count > 0) {
@@ -166,7 +157,7 @@ function Menext() {
           id:imageData.id,
           topic: imageData.topic,
           description: imageData.description,
-          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, // Check the count value and set the cost accordingly
+          cost: imageData.count == 0 ? imageData.cost * 0.9 : imageData.cost, 
           count: count,
           username: localStorage.getItem("username"), 
           rating:imageData.rating,
@@ -180,7 +171,6 @@ function Menext() {
         const existingCartItems = (Items) || [];
         const existingIndex = existingCartItems.findIndex(item => item.topic == cartItem.topic);
         if (existingIndex !== -1) { 
-          // enqueueSnackbar("Already in cart Incrementing The count"+cartItem.count,{ variant:"success"});
           fetch(`http://localhost:8080/api/update/${cartItem.topic}/${Username}`, {
                 method: 'POST',
                 headers: {
@@ -190,7 +180,6 @@ function Menext() {
             })
                 .then(response => {
                   if (response.status === 201) {
-                    // Successfully updated the count
                     response.text().then(message => {
                         enqueueSnackbar(message, { variant: "success" });
                         console.log(cartItem);
@@ -199,17 +188,12 @@ function Menext() {
                         window.location.reload();
                     });
                 } else if (response.status === 400) {
-                      // Product not found or other error
                       response.text().then(errorMessage => {
                           enqueueSnackbar(errorMessage, { variant: "error" });
                       });
                   }
                 })
-                .catch(error => {
-              
-                });
-    
-          
+                .catch(error => {});
           existingCartItems[existingIndex].count += count;
         } else {  
           
@@ -227,7 +211,6 @@ function Menext() {
                         setCount(0);
                         navigate(`/${type}/cart`);
                     } else if (response.status === 400) {
-                      // Product not found or other error
                       response.text().then(errorMessage => {
                           enqueueSnackbar(errorMessage, { variant: "error" });
                       });
@@ -240,16 +223,10 @@ function Menext() {
           existingCartItems.push(cartItem);
         }
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems)); 
- 
         setCount(0);
-        navigate(`/${type}/cart`);  
-        // enqueueSnackbar(`${count} ${imageData.topic}(s) added to the cart.`,{ variant:"success" });
-      
-        const username = localStorage.getItem('username');
-        
+        navigate(`/${type}/cart`);
         } else {
         enqueueSnackbar("Please select at least one item before adding to cart.",{ variant:"warning" });
-        
       }
     };
     
@@ -263,7 +240,6 @@ function Menext() {
         border: '2px solid black',
         width:'300px',
         height:'auto',
-        // padding:15,
         borderRadius:'5px'
     };
      
@@ -272,6 +248,7 @@ function Menext() {
           return (prevCount += 1);
       });
     }
+
     function decrement() {
         setCount(function (prevCount) {
           if (prevCount > 0) {
@@ -281,18 +258,18 @@ function Menext() {
           }
       });
     }
+
     const handleToggleImage = () => {
       setIsImage(true);
     };
+
     const handleToggleVideo = () => {
       setIsImage(false);
     };
       let link="http://localhost:8080/api/combodata";
-      
           useEffect(() => { 
             const logoutChannel = new BroadcastChannel('logoutChannel');
             logoutChannel.onmessage = () => {
-              // Perform the local logout actions
               navigate("/start");
               localStorage.clear();
               window.location.reload();
@@ -331,7 +308,6 @@ function Menext() {
               <button onClick={handlebackfromrec} >Back To Home 🏠</button>
             );
           }
-          
           let cartButton = null; 
           let addButton=null; 
           let countButton=null; 
@@ -416,30 +392,25 @@ function Menext() {
         
         <div className="logout-button"> 
         {cartButton}
-
                     {backButton}
         </div>   
         <br />
         <div class="contain">
         <div id="mag">
         <div class="containimg">
-      
         <div className='vim' style={{
-             border: "2px solid #ccccff", // Add a black border
+             border: "2px solid #ccccff", 
              backgroundColor: '#ccccff',
-            //  display: '', // Make sure the div is displayed as an inline-block
              padding: '5px',
              borderRadius:'5px'}}>
             <img
               src={imageData.url}
               alt={imageData.topic}
-              onClick={handleToggleImage}
-              
+              onClick={handleToggleImage} 
               style={{ cursor: 'pointer',height:'100px',
                paddingTop: '10px',paddingBottom:'10px',
               }}
             />
-         
             <FiVideo
               size={50}
               color="black"
@@ -455,9 +426,7 @@ function Menext() {
                 alt: imageData.topic,
                 isFluidWidth: true,
                 src: imageData.url,
-                
-                
-              }}
+                 }}
               largeImage={{
                 src: imageData.url,
                 width: 1200,
@@ -472,17 +441,14 @@ function Menext() {
         height="337.5"
         src={`https://www.youtube.com/embed/${videoId}`}
         title="YouTube Video Player"
-        
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
       />
          )}
-          
           </div>
           </div>
           <div>
         <Card onSubmit={handleSubmit}  style={divStyle}> 
-        
         <h1  style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>{imageData.topic} </h1>
         <h2 style={{ fontSize: '18px', color: '#333' }}>{imageData.description}</h2>  
         <h2 style={{ fontSize: '18px', color: '#333' }}>Quantity:{imageData.stockcount} pieces</h2>
@@ -494,14 +460,12 @@ function Menext() {
             </div>
             </Box> 
             <br /> 
-            
             {addButton}  
             {Wishlist}
             {purchase}
             <button onClick={toggleModal} className="lob"
             style={{
             marginLeft:"5px"}}>Comment</button>
-
       {showModal && (
         <div>
               <div className="con"> 
@@ -531,12 +495,10 @@ function Menext() {
         </Card>
         </> 
         )} 
-         
         </div>
         </div>
         <br />
       </div>
   )
-  
 }
 export default Menext;

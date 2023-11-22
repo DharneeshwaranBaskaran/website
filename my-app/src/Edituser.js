@@ -42,7 +42,7 @@ const jwtToken = localStorage.getItem('token');
 useEffect(() => {
   const logoutChannel = new BroadcastChannel('logoutChannel');
   logoutChannel.onmessage = () => {
-    // Perform the local logout actions
+  
     navigate("/start");
     localStorage.clear();
     window.location.reload();

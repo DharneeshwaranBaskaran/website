@@ -23,14 +23,12 @@ const PieChart = ({ data }) => {
           backgroundColor: [
             'rgba(255,99,132,0.2)',
             'rgba(75,192,192,0.2)',
-            'rgba(255,205,86,0.2)',
-            // Add more colors as needed
+            'rgba(255,205,86,0.2)',        
           ],
           borderColor: [
             'rgba(255,99,132,1)',
             'rgba(75,192,192,1)',
             'rgba(255,205,86,1)',
-            // Add more colors as needed
           ],
           borderWidth: 1,
         },
@@ -47,9 +45,8 @@ const PieChart = ({ data }) => {
             position: 'bottom',
           },
         },
-         // Set to false to allow adjusting width and height independently
-        width: 200, // Set the width of the chart
-        height: 200, // Set the height of the chart
+        width: 200,
+        height: 200, 
       }}
     />
   );

@@ -50,7 +50,7 @@ const BarGraph = ({ data }) => {
       options={{
         scales: {
           x: {
-            type: 'category', // Use category scale for x-axis
+            type: 'category', 
             position: 'bottom',
           },
         },

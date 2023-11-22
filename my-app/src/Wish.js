@@ -14,7 +14,6 @@ function Phone() {
     
       const logoutChannel = new BroadcastChannel('logoutChannel');
       logoutChannel.onmessage = () => {
-        // Perform the local logout actions
         navigate("/start");
         localStorage.clear();
         window.location.reload();
@@ -37,7 +36,7 @@ function Phone() {
       .then((response) => {
         const updatedCartItems = Items.map((item) => {
           if (item.id === id) {
-            return { ...item, state: true }; // Update the state of the item
+            return { ...item, state: true };
           }
           return item;
         });

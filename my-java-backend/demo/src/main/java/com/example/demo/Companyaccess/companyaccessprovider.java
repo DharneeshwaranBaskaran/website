@@ -5,11 +5,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.combo.Combo;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -41,7 +37,6 @@ public class companyaccessprovider {
                 accesss.setUsername(resultSet.getString("username"));
                 accesss.setType(resultSet.getString("type"));
                 accesss.setProvider(resultSet.getString("provider"));
-                // Add more fields as needed
                 accessList.add(accesss);
             }
 
@@ -66,7 +61,6 @@ public class companyaccessprovider {
                 accesss.setUsername(resultSet.getString("username"));
                 accesss.setType(resultSet.getString("type"));
                 accesss.setProvider(resultSet.getString("provider"));
-                // Add more fields as needed
                 accessList.add(accesss);
             }
 
