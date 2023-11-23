@@ -21,14 +21,12 @@ function Add() {
   const type = localStorage.getItem('type');
   const [csvData, setCsvData] = useState([]);
   const [formData, setFormData] = useState(new FormData());
-  const backtohomebal = () => {
-    navigate(`/${type}/homepage`);
-    enqueueSnackbar("Back to Home", { variant: "default" });
+
+  const backtocart = (value) => {
+    navigate(`/${type}/${value}`);
+    enqueueSnackbar(`Back to ${value}`, { variant: "default" });
   }
-  const backtocart = () => {
-    navigate(`/${type}/cart`);
-    enqueueSnackbar("Back to Cart", { variant: "default" });
-  }
+
   const InputField = ({ type, placeholder, value, onChange }) => {
     return (
       <input
@@ -39,16 +37,14 @@ function Add() {
       />
     );
   };
-  const addDatadb = async () => {
-    const response = await fetch('http://localhost:8080/api/adddata', {
+
+  const addData = async (key) => {
+    const response = await fetch(`http://localhost:8080/api/${key}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify({ cat, cost, description, rating, url, topic, person, seller: Username }),
       credentials: 'include',
     });
-
     if (response.ok) {
       enqueueSnackbar("Data Added Sucessfully", { variant: "success" });
       navigate(`/${type}/homepage`);
@@ -66,45 +62,14 @@ function Add() {
       enqueueSnackbar(errorData.error, { variant: "error" });
     }
   };
-  const addData = async () => {
-    const response = await fetch('http://localhost:8080/api/adddatadraft', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ cat, cost, description, rating, url, topic, person, seller: Username }),
-      credentials: 'include',
-    });
 
-    if (response.ok) {
-      enqueueSnackbar("Data Added Sucessfully", { variant: "success" });
-      navigate(`/${type}/homepage`);
-      const response1 = await fetch('http://localhost:8080/api/mail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cat, cost, description, rating, url, topic, person, seller: Username }),
-        credentials: 'include',
-      });
-    }
-    else if (response.status === 409) {
-      const errorData = await response.json();
-      enqueueSnackbar(errorData.error, { variant: "error" });
-    }
-
-  };
   const addBalance = () => {
     const amountToAdd = parseFloat(inputValue);
-
     if (isNaN(amountToAdd) || amountToAdd <= 0 || amountToAdd.length < 1) {
       enqueueSnackbar("Please enter a valid positive number", { variant: "error" });
-
-    }
-    else if (Upi.length < 6 || !(Upi.includes("@"))) {
+    } else if (Upi.length < 6 || !(Upi.includes("@"))) {
       enqueueSnackbar("Enter a valid Upi")
-    }
-    else {
+    } else {
       const newBalance = Balance + amountToAdd;
       axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
         headers: {
@@ -116,12 +81,15 @@ function Add() {
       enqueueSnackbar("Back to Cart", { variant: "default" });
     }
   }
+
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   }
+
   const handleUpi = (e) => {
     setUpi(e.target.value);
   }
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -181,7 +149,6 @@ function Add() {
     axios.get(`http://localhost:8080/api/balance/${Username}`)
       .then((response) => {
         const data = response.data;
-
         setBalance(data);
       })
       .catch((error) => {
@@ -191,27 +158,24 @@ function Add() {
   return (
     <div style={{ backgroundColor: "#e5e5ff" }}>
       <div className="logout-button">
-        <button onClick={backtocart} >Cart</button>
-        <button onClick={backtohomebal} >Back To Home</button>
+        <button onClick={() => backtocart("cart")} >Cart</button>
+        <button onClick={() => backtocart("homepage")} >Back To Home</button>
       </div>
-      {localStorage.getItem('type') === 'buyer' && (
-        <>
-          <div className="app">
-            <div className="login" >
-              <h1>Balance: ${Balance}</h1>
-              <form >
-                Enter UPI ID:
-                <InputField type="text" placeholder="UPI" value={Upi} onChange={handleUpi} />
-                <label>
-                  Enter Amount to Add:
-                  <InputField type="number" placeholder="cost" value={inputValue} onChange={handleInputChange} />
-                </label>
-                <button onClick={addBalance} className="lob">Add to Balance</button>
-              </form>
-            </div>
+      {localStorage.getItem('type') === 'buyer' && (<>
+        <div className="app">
+          <div className="login" >
+            <h1>Balance: ${Balance}</h1>
+            <form >Enter UPI ID:
+              <InputField type="text" placeholder="UPI" value={Upi} onChange={handleUpi} />
+              <label>
+                Enter Amount to Add:
+                <InputField type="number" placeholder="cost" value={inputValue} onChange={handleInputChange} />
+              </label>
+              <button onClick={addBalance} className="lob">Add to Balance</button>
+            </form>
           </div>
-        </>
-      )}
+        </div>
+      </>)}
       {localStorage.getItem('type') !== "buyer" && (
         <div className='app'>
           <div className="login-page" style={{ backgroundColor: "white" }}>
@@ -225,15 +189,11 @@ function Add() {
               <InputField type="text" placeholder="Url" value={url} onChange={(e) => seturl(e.target.value)} />
               <InputField type="text" placeholder="person" value={person} onChange={(e) => setperson(e.target.value)} />
             </div>
-            <button className="lob" onClick={addDatadb} style={{ marginRight: "5px" }}>
-              Launch Product</button>
-            <button className="lob" onClick={addData} style={{ marginLeft: "5px" }}>
-              Add To Draft</button>
-            <div  >
-              <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} />
-              <br />
-              <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
-              <br />
+            <button className="lob" onClick={() => addData("adddata")} style={{ marginRight: "5px" }}>Launch Product</button>
+            <button className="lob" onClick={() => addData("adddatadraft")} style={{ marginLeft: "5px" }}>Add To Draft</button>
+            <div>
+              <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} /><br />
+              <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button><br />
             </div>
           </div>
         </div>
@@ -242,10 +202,9 @@ function Add() {
         <table>
           <thead>
             <tr>
-              {csvData.length > 0 &&
-                Object.keys(csvData[0]).map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
+              {csvData.length > 0 && Object.keys(csvData[0]).map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
             </tr>
           </thead>
           <tbody>

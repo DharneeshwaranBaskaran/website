@@ -19,8 +19,6 @@ function Help() {
       answer: 'We accept credit cards, PayPal, and more.',
     },
   ];
-  const jwtToken = localStorage.getItem('token');
-
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {

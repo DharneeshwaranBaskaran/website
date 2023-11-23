@@ -4,14 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
-  const jwtToken = localStorage.getItem('token');
-
- 
   const [Items,setItems]=useState([]);
   const navigate = useNavigate(); 
   const username=localStorage.getItem("username");
+
   useEffect(() => {
-    
       const logoutChannel = new BroadcastChannel('logoutChannel');
       logoutChannel.onmessage = () => {
         navigate("/start");
@@ -30,7 +27,6 @@ function Phone() {
   }, [username]);
 
   const removeItemFromCart = (id) => {
-    console.log(id);
     axios
       .put(`http://localhost:8080/api/updatewish/${id}/${username}`)
       .then((response) => {
@@ -40,37 +36,35 @@ function Phone() {
           }
           return item;
         });
-  
         setItems(updatedCartItems);
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
       })
       .catch((error) => {
         console.log(error);
       }); 
-      window.location.reload();
+      window.location.reload();localStorage.getItem("type")
       enqueueSnackbar(id+" removed from cart");
   };
-  const typeo=localStorage.getItem("type"); 
+
   const home=()=>{
-    navigate(`/${typeo}/homepage`);
+    navigate(`/${localStorage.getItem("type")}/homepage`);
   }
+
   const addtocart=(id)=>{
     axios.post(`http://localhost:8080/api/transferToCart/${id}`)
           .then((response) => {
               console.log(response.data);
-              navigate(`/${typeo}/cart`); 
+              navigate(`/${localStorage.getItem("type")}/cart`); 
           })
           .catch((error) => {
               console.error('Error transferring data:', error);
           });
-          
     console.log(id);
   }
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
         <div className="logout-button"> 
-        
         <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 
         </div>
       <h2>Wishlist Collection</h2>

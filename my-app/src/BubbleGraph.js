@@ -15,9 +15,9 @@ const BubbleGraph = ({ data }) => {
       x: "Topic: " + item[datadb[0]],
       y: item[datadb[2]],
       r: item[datadb[1]],
-    })); 
+    }));
 
-    setChartData({ 
+    setChartData({
       datasets: [
         {
           label: 'Bubble Chart',

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import './App.css'; 
 import HomePage from "./homepage";
 import Men from "./men";
@@ -18,7 +17,6 @@ import Help from "./help";
 import Phone from "./Wish";
 import User from "./User"; 
 import Address from "./address"; 
-// import Email from "./email";
 import Email from "./Email";
 function App() {
   let type=localStorage.getItem('type');

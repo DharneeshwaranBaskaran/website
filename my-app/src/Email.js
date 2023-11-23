@@ -7,8 +7,7 @@ import './App.css';
  const Email = () => { 
     const Username=localStorage.getItem("username");
     const navigate = useNavigate();  
-    const jwtToken = localStorage.getItem('token');
-
+    
     useEffect(() => {
       const logoutChannel = new BroadcastChannel('logoutChannel');
       logoutChannel.onmessage = () => {
