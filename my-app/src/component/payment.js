@@ -122,17 +122,15 @@ function Payment() {
         });
     }
   };
-
-  const InputField = ({ type, placeholder, value, onChange }) => {
-    return (
+  
+  const InputField = (type, placeholder, value, onChange ) => (
       <input
         type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
       />
-    );
-  };
+  );
   return (
     <div style={{
       backgroundColor: "#e5e5ff", minHeight: "100vh"
@@ -153,9 +151,10 @@ function Payment() {
         <div className="app">
           <div className="login-page" style={{ backgroundColor: "white" }}>
             <h2>Give Access</h2> {Username}
-            <InputField type="text" placeholder="Username" value={username} onChange={handleChange} />
-            <InputField type="text" placeholder="Email" value={email} onChange={handleChange3} />
-            <InputField type="text" placeholder="Type" value={type} onChange={handleChange2} />
+            {InputField("text", "Username", username, handleChange)} 
+            {InputField("text", "Email", email, handleChange3)}
+            {InputField("text", "Type", type, handleChange2)}
+          
             <button className="lob" onClick={handleRegister}>
               Give Access</button>
             {localStorage.getItem('type') === 'company' && (

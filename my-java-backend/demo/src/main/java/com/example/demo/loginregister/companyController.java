@@ -29,25 +29,17 @@ public class companyController {
 
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
-                    // Skip the header line
+                 
                     firstLine = false;
                     continue;
                 }
-
-                // Split the CSV line into individual fields
-                String[] fields = line.split(",");
-
-                // Assuming the order of fields matches the CSV file
-                
+                String[] fields = line.split(",");                
                 String email = fields[0].trim();
-                
                 String password = fields[1].trim();
                 String provider=fields[2].trim(); 
                 String type=fields[3].trim();
                 String username = fields[4].trim();
                 
-
-                // Use JdbcTemplate to insert data directly into the database
                 String insertSql = "INSERT INTO companyaccess (email, password,provider,type,username) " +
                         "VALUES (?, ?, ?, ?, ?)";
                 jdbcTemplate.update(insertSql,email, password,provider,type, username);
@@ -55,11 +47,11 @@ public class companyController {
 
             return "CSV data uploaded successfully.";
         } catch (DataAccessException e) {
-            // Handle database-related errors
+
             e.printStackTrace();
             return "Error uploading CSV data to the database: " + e.getMessage();
         } catch (Exception e) {
-            // Handle other general errors
+
             e.printStackTrace();
             return "Error uploading CSV data: " + e.getMessage();
         }

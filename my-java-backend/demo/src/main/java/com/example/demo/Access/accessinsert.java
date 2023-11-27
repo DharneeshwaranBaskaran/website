@@ -1,12 +1,9 @@
 package com.example.demo.Access;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Random;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -18,59 +15,55 @@ import java.util.Properties;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") 
 public class accessinsert {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "GBds@28102001";
-    @PostMapping("/register/access")   
-    public ResponseEntity<String> loginbuyer(@RequestBody access request){
-    String email=request.getEmail();
-    String username = request.getUsername(); 
-    String Provider=request.getProvider();  
-    String type=request.getType(); 
-    String password=generateRandomString(6);
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        String checkUsernameQuery = "SELECT * FROM access WHERE username = ?";
-        PreparedStatement checkUsernameStatement = connection.prepareStatement(checkUsernameQuery);
-        checkUsernameStatement.setString(1, username);
-        if (checkUsernameStatement.executeQuery().next()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
-        }
-        String findProviderIdQuery = "SELECT id FROM seller WHERE username = ?";
-        PreparedStatement findProviderIdStatement = connection.prepareStatement(findProviderIdQuery);
-        findProviderIdStatement.setString(1, Provider);
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-        ResultSet resultSet = findProviderIdStatement.executeQuery();
-        if (resultSet.next()) {
-            long providerId = resultSet.getLong("id");
-        String sql = "INSERT INTO access (username,password,type,email,provider,seller_id) VALUES (?,?,?,?,?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, username);
-        preparedStatement.setString(2, password); 
-        preparedStatement.setString(3, type);
-        preparedStatement.setString(4, email);
-        preparedStatement.setString(5, Provider);
-        preparedStatement.setLong(6, providerId);
-        int rowsAffected = preparedStatement.executeUpdate();
-        
-        if (rowsAffected > 0) {
-            System.out.println("Data inserted successfully.");
-            sendEmail(email,username,password,Provider);
-            return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
+    @PostMapping("/register/access")
+    public ResponseEntity<String> loginbuyer(@RequestBody access request) {
+        String email = request.getEmail();
+        String username = request.getUsername();
+        String provider = request.getProvider();
+        String type = request.getType();
+        String password = generateRandomString(6);
 
-        } else {
-            System.out.println("Data insertion failed.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
-        }
-    }
-    } catch (SQLException e) {
+        try {
+            if (checkUsernameExists(username)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
+            }
+            Long providerId = findProviderId(provider);
+            String sql = "INSERT INTO access (username,password,type,email,provider,seller_id) VALUES (?,?,?,?,?,?)";
+            int rowsAffected = jdbcTemplate.update(
+                    sql,
+                    username, password, type, email, provider, providerId
+            );
+
+            if (rowsAffected > 0) {
+                System.out.println("Data inserted successfully.");
+                sendEmail(email, username, password, provider);
+                return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
+            } else {
+                System.out.println("Data insertion failed.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
             String errorMessage = "An error occurred: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("{\"error\": \"" + errorMessage + "\"}");
         }
-    return null; 
     }
+
+    private boolean checkUsernameExists(String username) {
+        String checkUsernameQuery = "SELECT * FROM access WHERE username = ?";
+        return jdbcTemplate.queryForList(checkUsernameQuery, username).size() > 0;
+    }
+
+    private Long findProviderId(String provider) {
+        String findProviderIdQuery = "SELECT id FROM seller WHERE username = ?";
+        return jdbcTemplate.queryForObject(findProviderIdQuery, Long.class, provider);
+    }
+
     public static String generateRandomString(int length) {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder randomString = new StringBuilder();

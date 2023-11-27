@@ -91,16 +91,19 @@ function History() {
     </div>
     );
   } 
-useEffect(() => {
+useEffect(() => { 
+  
     fetchData(`http://localhost:8080/api/history/${Username}`, setItems, 'Error fetching history items:');
     fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
     fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
     fetchData(`http://localhost:8080/api/balance/${Username}`,setBalance,'error fetching balance')
-  }, [Username]);
+  console.log(Draft);
+  },
+   [Username]);
   
-  const removeItemFromCart = (topic) => {
+  const removeItemFromCart = (id) => {
     axios
-      .delete(`http://localhost:8080/api/deletecombo/${topic}/${Username}`)
+      .delete(`http://localhost:8080/api/deletecombo/${id}/${Username}`)
       .then((response) => {
         fetchData(`http://localhost:8080/api/history/view/${Username}`,setData,'Error fetching cart items:')
         fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`,setDraft,'Error fetching draft items:')
@@ -227,7 +230,7 @@ useEffect(() => {
                   <td>{item.id}</td>
                   <td>{item.topic}</td>
                   <td>${item.cost}</td>
-                  <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
+                  <td><button className="cart-button" onClick={() => removeItemFromCart(item.id)}>
                     Remove</button></td>
                   <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
                 </tr>
@@ -252,7 +255,7 @@ useEffect(() => {
                       <td>{item.id}</td>
                       <td>{item.topic}</td>
                       <td>${item.cost}</td>
-                      <td><button className="cart-button" onClick={() => removeItemFromCart(item.topic)}>
+                      <td><button className="cart-button" onClick={() => removeItemFromCart(item.id)}>
                         Remove</button></td>
                       <td><button className="cart-button" onClick={() => drafttodatabase(item.id)}>
                         Launch</button></td>

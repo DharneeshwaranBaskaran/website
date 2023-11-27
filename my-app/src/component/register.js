@@ -149,6 +149,7 @@ function RegisterPage() {
       setError(errorMessage);
     }
   };
+  
 
   const handleChange = (e) => {
     handleInputChange(e, setUsername, setValidUsername, 6, '*Username should contain a minimum of 6 characters', setIsClicked, setError);
@@ -175,13 +176,13 @@ function RegisterPage() {
     handleInputChange(e, setCompany, () => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange8 = (e) => {
-    handleInputChange(e, setcomAddress);
+    handleInputChange(e, setcomAddress,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange9 = (e) => {
-    handleInputChange(e, setWebsite);
+    handleInputChange(e, setWebsite,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange0 = (e) => {
-    handleInputChange(e, setmail);
+    handleInputChange(e, setmail,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
 
   const redirectinglogin = () => {

@@ -27,16 +27,15 @@ function Add() {
     enqueueSnackbar(`Back to ${value}`, { variant: "default" });
   }
 
-  const InputField = ({ type, placeholder, value, onChange }) => {
-    return (
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
-    );
-  };
+  
+  const InputField = (type, placeholder, value, onChange, style) => (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
+  );
 
   const addData = async (key) => {
     const response = await fetch(`http://localhost:8080/api/${key}`, {
@@ -166,10 +165,10 @@ function Add() {
           <div className="login" >
             <h1>Balance: ${Balance}</h1>
             <form >Enter UPI ID:
-              <InputField type="text" placeholder="UPI" value={Upi} onChange={handleUpi} />
+            {InputField("text", "UPI", Upi, handleUpi)}
               <label>
                 Enter Amount to Add:
-                <InputField type="number" placeholder="cost" value={inputValue} onChange={handleInputChange} />
+                {InputField("number", "cost", inputValue, handleInputChange)}
               </label>
               <button onClick={addBalance} className="lob">Add to Balance</button>
             </form>
@@ -181,14 +180,15 @@ function Add() {
           <div className="login-page" style={{ backgroundColor: "white" }}>
             <h2>LAUNCH PRODUCT</h2>
             <div className="con">
-              <InputField type="text" placeholder="category" value={cat} onChange={(e) => setcat(e.target.value)} />
-              <InputField type="integer" placeholder="cost" value={cost} onChange={(e) => setcost(e.target.value)} />
-              <InputField type="text" placeholder="Description" value={description} onChange={(e) => setdescription(e.target.value)} />
-              <InputField type="double" placeholder="Rating" value={rating} onChange={(e) => setrating(e.target.value)} />
-              <InputField type="text" placeholder="Topic" value={topic} onChange={(e) => settopic(e.target.value)} />
-              <InputField type="text" placeholder="Url" value={url} onChange={(e) => seturl(e.target.value)} />
-              <InputField type="text" placeholder="person" value={person} onChange={(e) => setperson(e.target.value)} />
-            </div>
+              
+            {InputField("text", "category", cat, (e) => setcat(e.target.value))}
+            {InputField("integer", "cost", cost, (e) => setcost(e.target.value))} 
+            {InputField("text", "Description", description, (e) => setdescription(e.target.value))}
+            {InputField("double", "Rating", rating, (e) => setrating(e.target.value))}
+            {InputField("text", "Topic", topic, (e) => settopic(e.target.value))} 
+            {InputField("text", "Url", url, (e) => seturl(e.target.value))}
+            {InputField("text", "person", person, (e) => setperson(e.target.value))}
+             </div>
             <button className="lob" onClick={() => addData("adddata")} style={{ marginRight: "5px" }}>Launch Product</button>
             <button className="lob" onClick={() => addData("adddatadraft")} style={{ marginLeft: "5px" }}>Add To Draft</button>
             <div>

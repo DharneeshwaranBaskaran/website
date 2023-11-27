@@ -1,20 +1,14 @@
 package com.example.demo.buynow;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,101 +18,66 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class paylaterinsertion {
-        String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-        String DB_USER = "root";
-        String DB_PASSWORD = "GBds@28102001";
-        @PostMapping("/transferToHistorypaylater/{username}")
-            public ResponseEntity<String> transferCartToHistory(@PathVariable String username) {
-                try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-                    // Select cart items for the specific username
-                    String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
-                    PreparedStatement selectStatement = connection.prepareStatement(selectSql);
-                    selectStatement.setString(1, username); 
-                    selectStatement.setBoolean(2, true);
-                    ResultSet resultSet = selectStatement.executeQuery();
+        private final JdbcTemplate jdbcTemplate;
 
-                    // Insert selected cart items into the history table
-                    String insertSql = "INSERT INTO history (topic, description, cost, count, username,state,rating,url,person,seller,combo_id,weekend) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-                    String updateComboSql = "UPDATE combo SET history_item_id = ?,stockcount=stockcount-?, count = count + ? WHERE topic = ?";
-                    String insertPayLaterSql = "INSERT INTO paylater (topic, description, cost, count, username, state, rating, url, person, seller) VALUES (?,?,?,?,?,?,?,?,?,?)";
-                    PreparedStatement insertStatement = connection.prepareStatement(insertSql);
-                    PreparedStatement insertPayLaterStatement = connection.prepareStatement(insertPayLaterSql);
+    @Autowired
+    public paylaterinsertion(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
-                    PreparedStatement updateComboStatement = connection.prepareStatement(updateComboSql);
-                    List<String> dataToSend = new ArrayList<>();
-                    while (resultSet.next()) {
-                        String getLastIdQuery = "SELECT MAX(id) FROM history";
-                        Statement statement = connection.createStatement();
-                        ResultSet resultSet1 = statement.executeQuery(getLastIdQuery);
-                        int lastId = 0;
-                        if (resultSet1.next()) {
-                            lastId = resultSet1.getInt(1);
-                        }
-                        String checkHistorySql = "SELECT * FROM history WHERE topic = ? AND description = ?";
-                        PreparedStatement checkHistoryStatement = connection.prepareStatement(checkHistorySql);
-                        checkHistoryStatement.setString(1, resultSet.getString("topic"));
-                        checkHistoryStatement.setString(2, resultSet.getString("description"));
-                        ResultSet historyResultSet = checkHistoryStatement.executeQuery();
-                    
-                        if (historyResultSet.next()) {
-                            // Matching record found in history, set cost without modification
-                            insertStatement.setDouble(3, resultSet.getDouble("cost"));
-                        } else {
-                            // No matching record found, set cost with modification
-                            insertStatement.setDouble(3, (resultSet.getDouble("cost")) * 10 / 9);
-                        }
-                        // Step 2: Increment the last ID to get the new ID
-                        int newId = lastId + 1;
-                        String itemName = resultSet.getString("topic");
-                        int itemCount = resultSet.getInt("count");
-                        insertStatement.setString(1, resultSet.getString("topic"));
-                        insertStatement.setString(2, resultSet.getString("description"));
-                        // insertStatement.setDouble(3, (resultSet.getDouble("cost"))*10/9);
-                        insertStatement.setInt(4, resultSet.getInt("count"));
-                        insertStatement.setString(5, resultSet.getString("username"));
-                        insertStatement.setBoolean(6, resultSet.getBoolean("state"));
-                        insertStatement.setDouble(7, resultSet.getDouble("rating"));
-                        insertStatement.setString(8, resultSet.getString("url"));
-                        insertStatement.setString(9, resultSet.getString("person"));
-                        insertStatement.setString(10, resultSet.getString("seller"));
-                        insertStatement.setInt(11, resultSet.getInt("combo_id"));
-                        insertStatement.setString(12, resultSet.getString("weekend"));
-                        insertStatement.executeUpdate(); // This line inserts the data once
-                        dataToSend.add("Topic: " + resultSet.getString("topic") +
-                                "\nDescription: " + resultSet.getString("description") +
-                                "\nCost: " + resultSet.getDouble("cost") +
-                                "\nCount: " + resultSet.getInt("count"));
-                        updateComboStatement.setLong(1, newId);       
-                        updateComboStatement.setInt(2, itemCount);
-                        updateComboStatement.setInt(3, itemCount);
-                        updateComboStatement.setString(4, itemName);
-                        updateComboStatement.executeUpdate(); 
-                        insertPayLaterStatement.setString(1, resultSet.getString("topic"));
-                        insertPayLaterStatement.setString(2, resultSet.getString("description"));
-                        insertPayLaterStatement.setDouble(3, resultSet.getDouble("cost"));
-                        insertPayLaterStatement.setInt(4, resultSet.getInt("count"));
-                        insertPayLaterStatement.setString(5, resultSet.getString("username"));
-                        insertPayLaterStatement.setBoolean(6, resultSet.getBoolean("state"));
-                        insertPayLaterStatement.setDouble(7, resultSet.getDouble("rating"));
-                        insertPayLaterStatement.setString(8, resultSet.getString("url"));
-                        insertPayLaterStatement.setString(9, resultSet.getString("person"));
-                        insertPayLaterStatement.setString(10, resultSet.getString("seller"));
-                        insertPayLaterStatement.executeUpdate();
-                    }
+    @PostMapping("/transferToHistorypaylater/{username}")
+    public ResponseEntity<String> transferCartToHistory(@PathVariable String username) {
+        String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
+        String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateComboSql = "UPDATE combo SET history_item_id = ?, stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
+        String insertPayLaterSql = "INSERT INTO paylater (topic, description, cost, count, username, state, rating, url, person, seller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
 
+        List<String> dataToSend = new ArrayList<>();
 
-                    String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
-                    PreparedStatement deleteStatement = connection.prepareStatement(updateSql);
-                    deleteStatement.setBoolean(1, false);
-                    deleteStatement.setString(2, username);
-                    deleteStatement.executeUpdate();
-                    sendEmail("gbdharneeshwaran@gmail.com", username, dataToSend);
-                    return ResponseEntity.ok("Cart items transferred to history for username: " + username);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        jdbcTemplate.query(selectSql, (resultSet) -> {
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("topic");
+                int itemCount = resultSet.getInt("count");
+
+                int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class);
+
+                if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM history WHERE topic = ? AND description = ?", Integer.class, itemName, resultSet.getString("description")) > 0) {
+                    jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
+                            resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
+                            resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
+                            resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
+                            resultSet.getString("weekend"));
+                } else {
+                    jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
+                            resultSet.getDouble("cost") * 10 / 9, resultSet.getInt("count"), resultSet.getString("username"),
+                            resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
+                            resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
+                            resultSet.getString("weekend"));
                 }
+
+                dataToSend.add("Topic: " + resultSet.getString("topic") +
+                        "\nDescription: " + resultSet.getString("description") +
+                        "\nCost: " + resultSet.getDouble("cost") +
+                        "\nCount: " + resultSet.getInt("count"));
+
+                int newId = lastId + 1;
+                jdbcTemplate.update(updateComboSql, newId, itemCount, itemCount, itemName);
+
+                jdbcTemplate.update(insertPayLaterSql, resultSet.getString("topic"), resultSet.getString("description"),
+                        resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
+                        resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
+                        resultSet.getString("person"), resultSet.getString("seller"));
             }
+            return null;
+        }, username, true);
+
+        jdbcTemplate.update(updateSql, false, username);
+
+        sendEmail("gbdharneeshwaran@gmail.com", username, dataToSend);
+
+        return ResponseEntity.ok("Cart items transferred to history for username: " + username);
+    }
             private void sendEmail(String toEmail, String username, List<String> data) {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
