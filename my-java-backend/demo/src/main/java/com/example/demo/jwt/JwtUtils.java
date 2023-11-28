@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.jwt;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;

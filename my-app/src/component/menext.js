@@ -224,7 +224,7 @@ function Menext() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ topic: imageData.topic, comment, username: Username }),
+        body: JSON.stringify({ topic: imageData.topic, comment, username: Username ,id:imageData.id}),
         credentials: 'include',
       });
 
@@ -241,16 +241,18 @@ function Menext() {
   };
 
   const view = async () => {
-    axios.get(`http://localhost:8080/api/comments/${imageData.topic}`)
+    axios.get(`http://localhost:8080/api/comments/${imageData.id}`)
       .then((response) => {
         setItem(response.data);
-        if (response.data.length < 1) {
+        if (response.data.length < 1) { 
           enqueueSnackbar("No Comments Available");
         }
       })
       .catch((error) => {
         console.error('Error fetching history items:', error);
       });
+      console.log(imageData.id); 
+
   };
 
   const renderDiscountAmount = () => {

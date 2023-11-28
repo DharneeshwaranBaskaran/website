@@ -1,54 +1,58 @@
 package com.example.demo.combo;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class Combostart {
-    private final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private final String DB_USER = "root";
-    private final String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public Combostart(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @GetMapping("/combodata")
     public ResponseEntity<List<Combo>> getCombo() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try {
             String sql = "SELECT * FROM combo WHERE state = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setBoolean(1, true);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            List<Combo> combos = new ArrayList<>();
+            List<Combo> combos = jdbcTemplate.query(sql, new Object[]{true}, new ComboRowMapper());
 
-            while (resultSet.next()) {
-                Combo combo = new Combo();
-                combo.setId(resultSet.getLong("id"));
-                combo.setTopic(resultSet.getString("topic"));
-                combo.setRating(resultSet.getDouble("rating"));
-                combo.setDescription(resultSet.getString("description"));
-                combo.setUrl(resultSet.getString("url"));
-                combo.setCost(resultSet.getInt("cost"));
-                combo.setCat(resultSet.getString("cat"));
-                combo.setPerson(resultSet.getString("person")); 
-                combo.setSeller(resultSet.getString("seller"));
-                combo.setCount(resultSet.getInt("count")); 
-                combo.setStockcount(resultSet.getInt("stockcount"));
-                combos.add(combo);
-            }
             return ResponseEntity.ok(combos);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private static class ComboRowMapper implements RowMapper<Combo> {
+        @Override
+        public Combo mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            Combo combo = new Combo();
+            combo.setId(resultSet.getLong("id"));
+            combo.setTopic(resultSet.getString("topic"));
+            combo.setRating(resultSet.getDouble("rating"));
+            combo.setDescription(resultSet.getString("description"));
+            combo.setUrl(resultSet.getString("url"));
+            combo.setCost(resultSet.getInt("cost"));
+            combo.setCat(resultSet.getString("cat"));
+            combo.setPerson(resultSet.getString("person"));
+            combo.setSeller(resultSet.getString("seller"));
+            combo.setCount(resultSet.getInt("count"));
+            combo.setStockcount(resultSet.getInt("stockcount"));
+            return combo;
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.History;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,10 +18,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor 
-
-
-
-
 @Table(name = "history")
 public class HistoryItem {
     @Id
@@ -39,8 +36,10 @@ public class HistoryItem {
     private String person; 
     private String seller;
     private String weekend;
-    @ManyToOne
-    @JoinColumn(name = "combo_id")
-    private Combo combo;
+
+
+@ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "combo_id")
+private Combo combo;
 
 }

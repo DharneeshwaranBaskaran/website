@@ -1,65 +1,51 @@
 package com.example.demo.Draft;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000") 
 public class AddDraft {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "GBds@28102001";
+    
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public AddDraft(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @PostMapping("/adddatadraft")
-    public ResponseEntity<String> addDraft(@RequestBody Draftrequest request) {
-            String topic = request.getTopic();
-            String description= request.getDescription(); 
-            String url=request.getUrl();
-            String cat=request.getCat();  
-            Integer cost=request.getCost();
-            Double rating=request.getRating(); 
-            String person=request.getPerson(); 
-            String seller=request.getSeller();
-            
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-           String getLastIdQuery = "SELECT MAX(id) FROM combo";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(getLastIdQuery);
-            int lastId = 0;
-            if (resultSet.next()) {
-                lastId = resultSet.getInt(1);
-            }
-            int newId = lastId + 1;
-            
-                String sql = "INSERT INTO combo (id,topic, description,url,cat,cost,rating,person,state,seller,count) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setLong(1, newId);
-                preparedStatement.setString(2, topic);
-                preparedStatement.setString(3, description); 
-                preparedStatement.setString(4, url); 
-                preparedStatement.setString(5, cat);  
-                preparedStatement.setInt(6, cost); 
-                preparedStatement.setDouble(7, rating);
-                preparedStatement.setString(8, person);
-                
-                preparedStatement.setBoolean(9, false); 
-                preparedStatement.setString(10, seller);  
-                preparedStatement.setInt(11, 0);
-            int rowsAffected = preparedStatement.executeUpdate();
+    public ResponseEntity<String> addData(@RequestBody Draft request) {
+        String topic = request.getTopic();
+        String description = request.getDescription();
+        String url = request.getUrl();
+        String cat = request.getCat();
+        Integer cost = request.getCost();
+        Double rating = request.getRating();
+        String person = request.getPerson();
+        String seller = request.getSeller();
+
+        try {
+            String getLastIdQuery = "SELECT MAX(id) FROM combo";
+            Integer lastId = jdbcTemplate.queryForObject(getLastIdQuery, Integer.class);
+
+            int newId = (lastId != null) ? lastId + 1 : 1;
+
+            String sql = "INSERT INTO combo (id, topic, description, url, cat, cost, rating, person, state, seller, count,stockcount) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            int rowsAffected = jdbcTemplate.update(sql, newId, topic, description, url, cat, cost, rating, person, false, seller, 0,0);
+
             if (rowsAffected > 0) {
-                System.out.println("Draft data inserted successfully.");
+                System.out.println("Data inserted successfully.");
+                return ResponseEntity.ok("Data Added Successfully");
             } else {
-                System.out.println("Draft data insertion failed.");
+                System.out.println("Data insertion failed.");
             }
-        } catch (SQLException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok("Draft Data Added Successfully");
+        return ResponseEntity.status(500).body("Internal Server Error");
     }
 }

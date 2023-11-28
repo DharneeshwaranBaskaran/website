@@ -1,39 +1,42 @@
 package com.example.demo.comment;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-@RestController
+
+@Controller
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-public class AddComment{
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "GBds@28102001";
+public class AddComment {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public AddComment(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @PostMapping("/addcomment")
-    public ResponseEntity<String> addDraft(@RequestBody Comment request) { 
-        String topic=request.getTopic();
-        String comment=request.getComment();
-        String username=request.getUsername();
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "INSERT INTO comment (topic,comment,username) VALUES (?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, topic);
-            preparedStatement.setString(2, comment);
-            preparedStatement.setString(3, username);
-            int rowsAffected = preparedStatement.executeUpdate();
+    public ResponseEntity<String> addComment(@RequestBody Comment request) {
+        String topic = request.getTopic();
+        String comment = request.getComment();
+        String username = request.getUsername();
+        Long id=request.getId();
+        try {
+            String sql = "INSERT INTO comment (topic, comment, username,comid) VALUES (?, ?, ?,?)";
+            int rowsAffected = jdbcTemplate.update(sql, topic, comment, username,id);
+
             if (rowsAffected > 0) {
                 System.out.println("Comment inserted successfully.");
                 return ResponseEntity.ok("CommentData Added Successfully");
             } else {
                 System.out.println("Commentdata insertion failed.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return ResponseEntity.status(500).body("Internal Server Error");
     }
 }

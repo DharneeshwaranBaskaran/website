@@ -3,7 +3,7 @@ public class GoogleUserRequest {
     private String username;
     private String email;
     private String password;
-    // Constructor
+
     public GoogleUserRequest(String username, String email) {
         this.username = username;
         this.email = email;
@@ -16,7 +16,7 @@ public class GoogleUserRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-    // Getters and setters
+    
     public String getUsername() {
         return username;
     }

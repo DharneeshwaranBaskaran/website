@@ -1,53 +1,32 @@
 package com.example.demo.History;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class Historytostart {
-    String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    String DB_USER = "root";
-    String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public Historytostart(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @GetMapping("/start")
-    public ResponseEntity<List<HistoryItem>> getHistoryItemsForUsername() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+    public ResponseEntity<List<HistoryItem>> getHistoryItems() {
+        try {
             String sql = "SELECT * FROM history";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            List<HistoryItem> historyItems = new ArrayList<>();
-
-            while (resultSet.next()) {
-                HistoryItem historyItem = new HistoryItem();
-                historyItem.setTopic(resultSet.getString("topic"));
-                historyItem.setDescription(resultSet.getString("description"));
-                historyItem.setCost(resultSet.getDouble("cost"));
-                historyItem.setCount(resultSet.getInt("count"));
-                historyItem.setUsername(resultSet.getString("username")); 
-                historyItem.setState(resultSet.getBoolean("state")); 
-                historyItem.setRating(resultSet.getDouble("rating")); 
-                historyItem.setUrl(resultSet.getString("url"));
-                historyItem.setPerson(resultSet.getString("person"));
-                historyItem.setSeller(resultSet.getString("seller"));
-                historyItems.add(historyItem);
-            }
+            List<HistoryItem> historyItems = jdbcTemplate.query(sql,
+                    new BeanPropertyRowMapper<>(HistoryItem.class));
 
             return ResponseEntity.ok(historyItems);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

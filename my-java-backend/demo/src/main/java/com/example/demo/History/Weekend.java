@@ -1,42 +1,41 @@
 package com.example.demo.History;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
+import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class Weekend {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public Weekend(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @PostMapping("/updateweekend")
-   public ResponseEntity<String> addDraft(@RequestBody HistoryItem request) {
-        
-            String weekend=request.getWeekend();
-            String username=request.getUsername();
-            
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String updateSql = "UPDATE history SET weekend =? WHERE username= ? AND state=?";
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setString(1, weekend);
-            updateStatement.setString(2,username);
-            updateStatement.setBoolean(3, true);
-            
-            int rowsAffected = updateStatement.executeUpdate();
+    public ResponseEntity<String> updateWeekend(@RequestBody HistoryItem request) {
+        String weekend = request.getWeekend();
+        String username = request.getUsername();
+
+        try {
+            String updateSql = "UPDATE history SET weekend = ? WHERE username = ? AND state = ?";
+            int rowsAffected = jdbcTemplate.update(updateSql, weekend, username, true);
+
             if (rowsAffected > 0) {
-                System.out.println("Cost updated successfully");
-                return ResponseEntity.ok("Cost updated successfully ");
-            } 
-        
-            } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println("Weekend updated successfully");
+                return ResponseEntity.ok("Weekend updated successfully");
+            } else {
+                System.out.println("No matching record found for username: " + username);
+                return ResponseEntity.badRequest().body("No matching record found for username: " + username);
             }
-             return ResponseEntity.ok("Registered successful"); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
 }
+
 

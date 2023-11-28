@@ -2,54 +2,44 @@ package com.example.demo.Draft;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class DataTransferController {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public DataTransferController(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @PostMapping("/transferdata/{id}")
     public ResponseEntity<String> transferDraftToCombo(@PathVariable Long id) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Check if the record with the given ID exists in the draft table
-            String checkIdQuery = "SELECT * FROM combo WHERE id = ? AND state = ?";
-            PreparedStatement checkIdStatement = connection.prepareStatement(checkIdQuery);
-            checkIdStatement.setLong(1, id);
-            checkIdStatement.setBoolean(2, false);
-            ResultSet resultSet = checkIdStatement.executeQuery();
-            if (!resultSet.next()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Draft record not found.\"}");
+        try {
+            // Check if the record with the given ID exists in the combo table
+            String checkIdQuery = "SELECT COUNT(*) FROM combo WHERE id = ? AND state = ?";
+            int rowCount = jdbcTemplate.queryForObject(checkIdQuery, Integer.class, id, false);
+
+            if (rowCount == 0) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Combo record not found.\"}");
             }
-            String updateSql = "UPDATE combo SET state = ? WHERE id = ? ";
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setBoolean(1, true);
-            updateStatement.setLong(2, id);
-            int rowsAffected = updateStatement.executeUpdate();
+
+            String updateSql = "UPDATE combo SET state = true WHERE id = ?";
+            int rowsAffected = jdbcTemplate.update(updateSql, id);
+
             if (rowsAffected > 0) {
-                
-                return ResponseEntity.ok("updated successfully");
+                return ResponseEntity.ok("Updated successfully");
             } else {
                 System.out.println("No product found with id " + id);
-                return ResponseEntity.badRequest().body("No product found with name: " + id);
+                return ResponseEntity.badRequest().body("No product found with id: " + id);
             }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"Database error: " +e+ "\"}");
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An error occurred: " +e+ "\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"An error occurred: " + e + "\"}");
         }
-        
     }
 }

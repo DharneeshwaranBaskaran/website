@@ -1,10 +1,7 @@
 package com.example.demo.Companyaccess;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,28 +12,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class companyaccessdelete {
-    String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    String DB_USER = "root";
-    String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public companyaccessdelete(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @DeleteMapping("/deletecompanyaccess/{id}")
     public ResponseEntity<String> deleteAccessItem(@PathVariable Long id) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Define SQL query to delete a product from the cart table based on its name
+        try {
+            // Define SQL query to delete a product from the companyaccess table based on its id
             String sql = "DELETE FROM companyaccess WHERE id=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);  
-            int rowsAffected = preparedStatement.executeUpdate();
+            int rowsAffected = jdbcTemplate.update(sql, id);
+
             if (rowsAffected > 0) {
-                System.out.println("Product deleted successfully: " +id);
-                return ResponseEntity.ok("Product deleted successfully: " + id);
+                System.out.println("Item deleted successfully: " + id);
+                return ResponseEntity.ok("Item deleted successfully: " + id);
             } else {
-                System.out.println("No product found with name: " + id);
-                return ResponseEntity.badRequest().body("No product found with name: " + id);
+                System.out.println("No item found with id: " + id);
+                return ResponseEntity.badRequest().body("No item found with id: " + id);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);
-            return ResponseEntity.status(500).body("Error deleting product");
+            return ResponseEntity.status(500).body("Error deleting item");
         }
     }
 }

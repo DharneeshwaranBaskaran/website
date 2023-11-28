@@ -29,8 +29,5 @@ public class Draft {
     private String person;  
     private Long refnum;
     private String seller;
-    // // getters and setters
-    // public void add(Combo combo) {
-    // }
   
 }
