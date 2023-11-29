@@ -16,7 +16,9 @@ import Help from "./component/help";
 import Phone from "./component/Wish";
 import User from "./component/User"; 
 import Address from "./component/address"; 
-import Email from "./component/Email";
+import Email from "./component/Email"; 
+import withLoader from "./component/loader" 
+const Load = withLoader(Start);
 function App() {
   let type=localStorage.getItem('type');
   return (
@@ -24,8 +26,9 @@ function App() {
   <SnackbarProvider>
     <Router>
       <Routes>
-      
-        <Route path="/start" element={<Start />} />
+{/*       
+        <Route path="/start" element={<load />} /> */}
+          <Route path="/start" element={<Load />} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
         <Route path={`/${type}/login`} element={<LoginPage />} /> 
         <Route path={`/${type}/homepage`} element={<HomePage />}/> 

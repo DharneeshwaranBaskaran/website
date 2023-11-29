@@ -34,8 +34,8 @@ public class wishlist {
     private String seller;
     private String weekend;
     @ManyToOne
-    @JoinColumn(name = "combo_id") // This is the foreign key column
-    private Combo combo; // This establishes the foreign key relationship
+    @JoinColumn(name = "combo_id") 
+    private Combo combo; 
 
 
 }

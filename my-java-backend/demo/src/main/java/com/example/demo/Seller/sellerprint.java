@@ -1,51 +1,36 @@
 package com.example.demo.Seller;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.posi.CartItem;
-@RestController
+@Controller
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class sellerprint {
-    String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    String DB_USER = "root";
-    String DB_PASSWORD = "GBds@28102001";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public sellerprint(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @GetMapping("/getperson/{username}")
-     public ResponseEntity<List<SellerInfo>> getCartItemsForUsername(@PathVariable String username) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+    public ResponseEntity<List<SellerInfo>> getSellerInfoForUsername(@PathVariable String username) {
+        try {
             String sql = "SELECT * FROM seller WHERE username = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            List<SellerInfo> sellerInfos = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(SellerInfo.class), username);
 
-            List<SellerInfo> sellerInfos = new ArrayList<>();
-
-        while (resultSet.next()) {
-            SellerInfo sellerInfo = new SellerInfo();
-            sellerInfo.setUsername(username);
-            sellerInfo.setPerson(resultSet.getString("person"));
-            
-            
-            sellerInfos.add(sellerInfo);
+            return ResponseEntity.ok(sellerInfos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
         }
-        return ResponseEntity.ok(sellerInfos);
-    } catch (SQLException e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 }
-
-}
-    

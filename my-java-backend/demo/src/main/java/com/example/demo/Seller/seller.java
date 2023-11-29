@@ -25,5 +25,4 @@ public class seller {
     private String company;
     private Long num;
 
-    // Constructors, getters, and setters
 }

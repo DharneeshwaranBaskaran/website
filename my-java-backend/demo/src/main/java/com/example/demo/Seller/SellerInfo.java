@@ -28,5 +28,4 @@ public class SellerInfo {
     private Long num;
 
 
-    // Constructors, getters, and setters
 }

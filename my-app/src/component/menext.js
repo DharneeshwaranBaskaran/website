@@ -72,7 +72,7 @@ function Menext() {
       const existingCartItems = (ty) || [];
       const existingIndex = existingCartItems.findIndex((item) => item.topic === cartItem.topic);
       if (existingIndex !== -1) {
-        fetch(`${updateurl}/${cartItem.topic}/${Username}`, {
+        fetch(`${updateurl}/${cartItem.id}/${Username}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ function Menext() {
     handleAction('http://localhost:8080/api/wish/add','http://localhost:8080/api/update/wish', 'added to the wish', 'Error adding to wish',wish,"phone");
   };
   const handlecart = () => {
-    handleAction('http://localhost:8080/api/cart/add','http://localhost:8080/api/update', 'added to the cart', 'Error adding to cart',Items,"cart");
+    handleAction('http://localhost:8080/api/cart/add','http://localhost:8080/api/update/cart', 'added to the cart', 'Error adding to cart',Items,"cart");
   };
 
   const handleSubmit = (event) => {

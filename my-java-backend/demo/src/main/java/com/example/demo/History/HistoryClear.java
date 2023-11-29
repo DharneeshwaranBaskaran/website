@@ -4,9 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")

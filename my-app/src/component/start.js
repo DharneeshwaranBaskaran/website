@@ -1,4 +1,4 @@
-import React, {useRef,useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import backpic from "./images/backpic.jpg"; 
 import axios from "axios";
 import ReactPlayer from 'react-player'; 
@@ -100,7 +100,7 @@ function Start(){
         <div className="logout-button" style={{marginLeft:"800px"}}>
         <RegistrationOption type={2} handleRegister={handletoregister} handleLogin={handletologin} />
         </div>             
-        <h2 style={{textAlign:"center"}}> MOST PURCHASED PRODUCTS: </h2>
+        <h2 style={{textAlign:"center"}}> PRODUCTS: </h2>
         <div className="search-container"> 
         <Autosuggest
           suggestions={suggestionsList}

@@ -7,8 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-
 @Controller
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")

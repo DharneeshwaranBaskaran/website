@@ -24,5 +24,4 @@ public class company {
     private Long num;
     private String website;
 
-    // Constructors, getters, and setters
 }

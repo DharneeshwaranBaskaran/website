@@ -1,42 +1,33 @@
 package com.example.demo.loginregister;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
-public class userpic {
-    String DB_URL = "jdbc:mysql://localhost:3306/ecom";
-    String DB_USER = "root";
-    String DB_PASSWORD = "GBds@28102001"; 
+public class userpic{
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @PostMapping("/userpic/{username}")
-    
-     public ResponseEntity<String> Updateuser(@RequestBody User User,@PathVariable String username) {
-     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-     String profilepic=User.getProfilepic();
-     String updateSql = "UPDATE users SET profilepic = ? WHERE username = ?";
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql);
-            updateStatement.setString(1, profilepic);
-            updateStatement.setString(2, username); 
-            
-            int rowsAffected = updateStatement.executeUpdate();
+    public ResponseEntity<String> updateUserProfilePic(@RequestBody User user, @PathVariable String username) {
+        try {
+            String profilePic = user.getProfilepic();
+
+            String updateSql = "UPDATE users SET profilepic = ? WHERE username = ?";
+            int rowsAffected = jdbcTemplate.update(updateSql, profilePic, username);
+
             if (rowsAffected > 0) {
                 return ResponseEntity.ok("Updated successfully");
-            } else {    
-                return ResponseEntity.badRequest().body("No User found");
+            } else {
+                return ResponseEntity.badRequest().body("No user found with the given username");
             }
-        
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-             return ResponseEntity.ok("Registered successful"); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred while updating the user profile pic");
         }
     }
+}
