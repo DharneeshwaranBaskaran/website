@@ -8,10 +8,12 @@ function Edit() {
   const type = localStorage.getItem('type');
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
   const handleChange5 = (e) => {
     const value = e.target.value;
     setcost(value);
   };
+
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -22,6 +24,7 @@ function Edit() {
       enqueueSnackbar("Logout Successful");
     };
   }, []);
+
   const handleedit = async (event) => {
     const response = await fetch("http://localhost:8080/api/editdata", {
       method: 'POST',
@@ -43,15 +46,15 @@ function Edit() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   }
+
   const back = () => {
     navigate(`/${type}/homepage`);
   }
+
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
       <div className="logout-button">
-        <button onClick={back}>
-          Back To Home 🏠
-        </button>
+        <button onClick={back}>Back To Home 🏠</button>
       </div>
       <div className="app">
         <div className="login-page">
@@ -62,9 +65,7 @@ function Edit() {
             value={cost}
             onChange={handleChange5}
           />
-          <button onClick={handleedit} className="lob">
-            Edit</button>
-
+          <button onClick={handleedit} className="lob">Edit</button>
         </div>
       </div>
     </div>

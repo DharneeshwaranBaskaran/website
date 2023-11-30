@@ -23,7 +23,7 @@ function Men() {
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-  
+
   const handlemenex = (id, topic, sc) => {
     if (sc == 0) {
       console.log(id, sc);
@@ -105,7 +105,7 @@ function Men() {
 
   const f = filterdata.filter(item => item.count == 0);
   return (
-    <div style={{backgroundColor: "#e5e5ff",overflowX: 'hidden'}}>
+    <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}>
       <div className="logout-button">
         <Select
           style={{ height: '30px' }}
@@ -137,9 +137,9 @@ function Men() {
       <div className='class-contain'>
         {showModal && (<>
           {(filteredData && filterdata).length === 0 ? (<>
-              <DissatisfiedSymbol />
-              <h2>No products Found</h2>
-            </>) : 
+            <DissatisfiedSymbol />
+            <h2>No products Found</h2>
+          </>) :
             ((filteredData && f).map((item, index) => (
               <CustomCard
                 key={index}
@@ -148,14 +148,14 @@ function Men() {
                 showButton={true}
               />
             ))
-          )}
+            )}
         </>)}
         {!showModal && (<>
           {filteredData && filterdata.length === 0 ? (<>
-              <DissatisfiedSymbol />
-              <h2>No products Found</h2>
-            </>) :
-             (filterdata.map((item, index) => (
+            <DissatisfiedSymbol />
+            <h2>No products Found</h2>
+          </>) :
+            (filterdata.map((item, index) => (
               <CustomCard
                 key={index}
                 item={item}
@@ -163,7 +163,7 @@ function Men() {
                 showButton={true}
               />
             ))
-          )}
+            )}
         </>)}
       </div>
       <br />

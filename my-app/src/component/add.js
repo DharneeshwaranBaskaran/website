@@ -27,7 +27,6 @@ function Add() {
     enqueueSnackbar(`Back to ${value}`, { variant: "default" });
   }
 
-  
   const InputField = (type, placeholder, value, onChange, style) => (
     <input
       type={type}
@@ -137,6 +136,7 @@ function Add() {
         });
     }
   };
+
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -165,7 +165,7 @@ function Add() {
           <div className="login" >
             <h1>Balance: ${Balance}</h1>
             <form >Enter UPI ID:
-            {InputField("text", "UPI", Upi, handleUpi)}
+              {InputField("text", "UPI", Upi, handleUpi)}
               <label>
                 Enter Amount to Add:
                 {InputField("number", "cost", inputValue, handleInputChange)}
@@ -180,15 +180,14 @@ function Add() {
           <div className="login-page" style={{ backgroundColor: "white" }}>
             <h2>LAUNCH PRODUCT</h2>
             <div className="con">
-              
-            {InputField("text", "category", cat, (e) => setcat(e.target.value))}
-            {InputField("integer", "cost", cost, (e) => setcost(e.target.value))} 
-            {InputField("text", "Description", description, (e) => setdescription(e.target.value))}
-            {InputField("double", "Rating", rating, (e) => setrating(e.target.value))}
-            {InputField("text", "Topic", topic, (e) => settopic(e.target.value))} 
-            {InputField("text", "Url", url, (e) => seturl(e.target.value))}
-            {InputField("text", "person", person, (e) => setperson(e.target.value))}
-             </div>
+              {InputField("text", "category", cat, (e) => setcat(e.target.value))}
+              {InputField("integer", "cost", cost, (e) => setcost(e.target.value))}
+              {InputField("text", "Description", description, (e) => setdescription(e.target.value))}
+              {InputField("double", "Rating", rating, (e) => setrating(e.target.value))}
+              {InputField("text", "Topic", topic, (e) => settopic(e.target.value))}
+              {InputField("text", "Url", url, (e) => seturl(e.target.value))}
+              {InputField("text", "person", person, (e) => setperson(e.target.value))}
+            </div>
             <button className="lob" onClick={() => addData("adddata")} style={{ marginRight: "5px" }}>Launch Product</button>
             <button className="lob" onClick={() => addData("adddatadraft")} style={{ marginLeft: "5px" }}>Add To Draft</button>
             <div>

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 function withLoader(LoaderComponent) {
   return (props) => {
     const [load, setLoad] = useState(true);
-
     setTimeout(() => {
       setLoad(false);
     }, 3000);

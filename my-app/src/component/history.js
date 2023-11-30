@@ -90,23 +90,22 @@ function History() {
       <button onClick={handleHistoryClear}>Clear History</button>
     </div>
     );
-  } 
-useEffect(() => { 
-  
+  }
+  useEffect(() => {
     fetchData(`http://localhost:8080/api/history/${Username}`, setItems, 'Error fetching history items:');
     fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
     fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
-    fetchData(`http://localhost:8080/api/balance/${Username}`,setBalance,'error fetching balance')
-  console.log(Draft);
+    fetchData(`http://localhost:8080/api/balance/${Username}`, setBalance, 'error fetching balance')
+    console.log(Draft);
   },
-   [Username]);
-  
+    [Username]);
+
   const removeItemFromCart = (id) => {
     axios
       .delete(`http://localhost:8080/api/deletecombo/${id}/${Username}`)
       .then((response) => {
-        fetchData(`http://localhost:8080/api/history/view/${Username}`,setData,'Error fetching cart items:')
-        fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`,setDraft,'Error fetching draft items:')
+        fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:')
+        fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:')
       })
       .catch((error) => {
       });
@@ -153,7 +152,7 @@ useEffect(() => {
     navigate(`/${type}/edit`);
   }
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
-  
+
   const drafttodatabase = async (id) => {
     axios.post(`http://localhost:8080/api/transferdata/${id}`)
       .then((response) => {
@@ -165,7 +164,7 @@ useEffect(() => {
       .catch((error) => {
         if (error.response) {
           enqueueSnackbar(error.response.data.error);
-        }else
+        } else
           enqueueSnackbar(error.message);
       });
   }
@@ -213,7 +212,32 @@ useEffect(() => {
       </table>
       {backButton}
       {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
-          <h2>PRODUCTS:</h2>
+        <h2>PRODUCTS:</h2>
+        <table className="purchase-history-table">
+          <thead>
+            <tr>
+              <th>Referance Number</th>
+              <th>Topic</th>
+              <th>Cost</th>
+              <th>Remove</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Data.map((item, index) => (
+              <tr key={index}>
+                <td>{item.id}</td>
+                <td>{item.topic}</td>
+                <td>${item.cost}</td>
+                <td><button className="cart-button" onClick={() => removeItemFromCart(item.id)}>
+                  Remove</button></td>
+                <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {Draft.length > 0 && (<>
+          <h2>DRAFT:</h2>
           <table className="purchase-history-table">
             <thead>
               <tr>
@@ -221,50 +245,25 @@ useEffect(() => {
                 <th>Topic</th>
                 <th>Cost</th>
                 <th>Remove</th>
-                <th>Edit</th>
+                <th>Launch</th>
               </tr>
             </thead>
             <tbody>
-              {Data.map((item, index) => (
+              {Draft.map((item, index) => (
                 <tr key={index}>
                   <td>{item.id}</td>
                   <td>{item.topic}</td>
                   <td>${item.cost}</td>
                   <td><button className="cart-button" onClick={() => removeItemFromCart(item.id)}>
                     Remove</button></td>
-                  <td><button className="cart-button" onClick={() => handleEdit(item.id)} >Edit</button></td>
+                  <td><button className="cart-button" onClick={() => drafttodatabase(item.id)}>
+                    Launch</button></td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {Draft.length > 0 && (<>
-              <h2>DRAFT:</h2>
-              <table className="purchase-history-table">
-                <thead>
-                  <tr>
-                    <th>Referance Number</th>
-                    <th>Topic</th>
-                    <th>Cost</th>
-                    <th>Remove</th>
-                    <th>Launch</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Draft.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.id}</td>
-                      <td>{item.topic}</td>
-                      <td>${item.cost}</td>
-                      <td><button className="cart-button" onClick={() => removeItemFromCart(item.id)}>
-                        Remove</button></td>
-                      <td><button className="cart-button" onClick={() => drafttodatabase(item.id)}>
-                        Launch</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>)}
         </>)}
+      </>)}
     </div>
   );
 }

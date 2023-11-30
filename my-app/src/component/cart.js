@@ -149,7 +149,7 @@ function Cart() {
   const handleChange4 = (e) => {
     setaddress(e.target.value);
   };
-  
+
   const handlehistory = (key) => {
     navigate(`/${type}/${key}`);
     enqueueSnackbar(`Redirecting to ${key} page`, { variant: "default" });
@@ -186,7 +186,7 @@ function Cart() {
 
   let backButton = null;
   if (localStorage.getItem('type') == 'buyer') {
-    backButton = (<button style={{ backgroundColor: "#713ABE" }} onClick={()=>handlehistory("history")}>Purchase History📜</button>
+    backButton = (<button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehistory("history")}>Purchase History📜</button>
     );
   }
 
@@ -212,7 +212,7 @@ function Cart() {
     window.location.reload();
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
-  
+
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
       <div className="logout-button">
@@ -220,79 +220,34 @@ function Cart() {
         {backButton}
       </div>
       {localStorage.getItem('type') === 'buyer' && (<>
-          {It.length > 10 && (
-              <h2 style={{ marginLeft: "10px" }}>You Are A Premium User</h2>
-          )}
-          <div>
-            <h1 className="cart-header" style={{ marginLeft: "15px" }}>Cart for {Username}</h1>
-            {(Address == undefined || Address == " " || Address == "") && (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <p style={{ marginLeft: "15px" }}>Enter Your Address Before placing order:</p>
-                <input
-                  style={{ width: "200px", marginLeft: "20px" }}
-                  type="text"
-                  placeholder="Personal Address"
-                  value={address}
-                  onChange={handleChange4}
-                /><button style={{ marginLeft: "20px" }} className="lob" onClick={handleaddress}>Confirm</button>
-              </div>
-            )}
-          </div>
-          <p style={{ marginLeft: "20px" }}>Delivery Address:{Address}</p>
-          <input
-            type="text"
-            placeholder="Search Items"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="search-bar"
-            style={{ marginLeft: "15px" }}
-          />
-          <div>
-            <table className="purchase-history-table">
-              <thead>
-                <tr>
-                  <th>Topic</th>
-                  <th>Count</th>
-                  <th>Cost</th>
-                  <th>Total Cost</th>
-                  <th>Remove</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.length > 0 ? (
-                  filteredItems.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.topic}</td>
-                      <td>{item.count}</td>
-                      <td>${item.cost}</td>
-                      <td>${item.cost * item.count}</td>
-                      <td>
-                        <button className="cart-button" onClick={() => removeItemFromCart(item.id)}>Remove🗑️</button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="5" style={{ textAlign: "center" }}>
-                      <h1>Cart is empty🛒</h1>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-            <div className="cart-total" style={{ marginRight: "87px" }}>Total: $ {calculateTotal(Items)}</div>
-            <div className="cart-item-count" style={{ marginLeft: "10px" }}>Available Balance:${Balance}</div>
-            <div className="cart-buttons">
-              <button className="cart-button" style={{ backgroundColor: "#5B0888" }} onClick={() => handlePayment("later")}>Buy Now pay Later💳</button>
-              <button className="cart-button" style={{ backgroundColor: "#713ABE" }} onClick={() => handlePayment("express")}>Express Delivery🚚</button>
-              <button className="cart-button" style={{ backgroundColor: "#793FDF" }} onClick={() => handlePayment("retain")}>Pay And Retain🛍️</button>
-              <button className="cart-button" style={{ backgroundColor: "#7752FE" }} onClick={() => handlePayment("pay")}>Pay💸</button>
-              <button onClick={()=>handlehistory("add")} className="cart-button">Add Balance💰</button>
-              <button onClick={()=>handlehistory("address")} className="lob" style={{ marginLeft: "10px", marginRight: "10px" }}>Alter Address📍</button>
+        {It.length > 10 && (
+          <h2 style={{ marginLeft: "10px" }}>You Are A Premium User</h2>
+        )}
+        <div>
+          <h1 className="cart-header" style={{ marginLeft: "15px" }}>Cart for {Username}</h1>
+          {(Address == undefined || Address == " " || Address == "") && (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p style={{ marginLeft: "15px" }}>Enter Your Address Before placing order:</p>
+              <input
+                style={{ width: "200px", marginLeft: "20px" }}
+                type="text"
+                placeholder="Personal Address"
+                value={address}
+                onChange={handleChange4}
+              /><button style={{ marginLeft: "20px" }} className="lob" onClick={handleaddress}>Confirm</button>
             </div>
-          </div>
-        </>)}
-      {localStorage.getItem('type') !== 'buyer' && (<>
+          )}
+        </div>
+        <p style={{ marginLeft: "20px" }}>Delivery Address:{Address}</p>
+        <input
+          type="text"
+          placeholder="Search Items"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="search-bar"
+          style={{ marginLeft: "15px" }}
+        />
+        <div>
           <table className="purchase-history-table">
             <thead>
               <tr>
@@ -300,20 +255,64 @@ function Cart() {
                 <th>Count</th>
                 <th>Cost</th>
                 <th>Total Cost</th>
+                <th>Remove</th>
               </tr>
             </thead>
             <tbody>
-              {Data.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.topic}</td>
-                  <td>{item.count}</td>
-                  <td>${item.cost}</td>
-                  <td>${item.cost * item.count}</td>
-                </tr>
-              ))}
+              {filteredItems.length > 0 ? (
+                filteredItems.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.topic}</td>
+                    <td>{item.count}</td>
+                    <td>${item.cost}</td>
+                    <td>${item.cost * item.count}</td>
+                    <td>
+                      <button className="cart-button" onClick={() => removeItemFromCart(item.id)}>Remove🗑️</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (<tr>
+                <td colSpan="5" style={{ textAlign: "center" }}>
+                  <h1>Cart is empty🛒</h1>
+                </td>
+              </tr>
+              )}
             </tbody>
           </table>
-        </>)}
+          <div className="cart-total" style={{ marginRight: "87px" }}>Total: $ {calculateTotal(Items)}</div>
+          <div className="cart-item-count" style={{ marginLeft: "10px" }}>Available Balance:${Balance}</div>
+          <div className="cart-buttons">
+            <button className="cart-button" style={{ backgroundColor: "#5B0888" }} onClick={() => handlePayment("later")}>Buy Now pay Later💳</button>
+            <button className="cart-button" style={{ backgroundColor: "#713ABE" }} onClick={() => handlePayment("express")}>Express Delivery🚚</button>
+            <button className="cart-button" style={{ backgroundColor: "#793FDF" }} onClick={() => handlePayment("retain")}>Pay And Retain🛍️</button>
+            <button className="cart-button" style={{ backgroundColor: "#7752FE" }} onClick={() => handlePayment("pay")}>Pay💸</button>
+            <button onClick={() => handlehistory("add")} className="cart-button">Add Balance💰</button>
+            <button onClick={() => handlehistory("address")} className="lob" style={{ marginLeft: "10px", marginRight: "10px" }}>Alter Address📍</button>
+          </div>
+        </div>
+      </>)}
+      {localStorage.getItem('type') !== 'buyer' && (<>
+        <table className="purchase-history-table">
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Count</th>
+              <th>Cost</th>
+              <th>Total Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Data.map((item, index) => (
+              <tr key={index}>
+                <td>{item.topic}</td>
+                <td>{item.count}</td>
+                <td>${item.cost}</td>
+                <td>${item.cost * item.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </>)}
       <p style={{ marginLeft: 20 }}>*$10 Extra for Non Premium Users in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*Products will be delivered within 24 hours in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*The total should be less than $50 for payment later</p>

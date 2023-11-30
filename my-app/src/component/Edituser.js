@@ -8,6 +8,7 @@ function Edituser() {
   const type = localStorage.getItem('type');
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+
   const handleChange5 = (e) => {
     const value = e.target.value;
     settyp(value);
@@ -16,6 +17,7 @@ function Edituser() {
   const back = () => {
     navigate(`/${type}/homepage`);
   }
+
   const handleedit = async (event) => {
     const response = await fetch(`http://localhost:8080/api/edit/${type}`, {
       method: 'POST',
@@ -37,6 +39,7 @@ function Edituser() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   }
+  
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -59,19 +62,14 @@ function Edituser() {
           <select
             value={typ}
             onChange={handleChange5}
-            style={{
-              backgroundColor: "#713ABE", color: "white",
-              border: "none", padding: "5px", borderRadius: "5px", marginRight: "5px"
-            }}
+            style={{backgroundColor: "#713ABE", color: "white",border: "none", padding: "5px", borderRadius: "5px", marginRight: "5px"}}
           >
             <option value="">Select Type</option>
             <option value="cost">Cost</option>
             <option value="count">Count</option>
             <option value="revenue">Revenue</option>
           </select>
-          <button onClick={handleedit} className="lob">
-            Edit</button>
-
+          <button onClick={handleedit} className="lob">Edit</button>
         </div>
       </div>
     </div>

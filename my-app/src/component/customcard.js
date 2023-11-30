@@ -21,22 +21,18 @@ function CustomCard({ item, handleView }) {
           <Typography gutterBottom variant="h6">
             <p style={{ textAlign: "center" }}>{item.topic}</p>
           </Typography>
-
           <div className="containcard">
             <Typography gutterBottom fontWeight="bold">
               <p>${item.cost}</p>
             </Typography>
-
             <Typography gutterBottom fontWeight="bold">
               <div className='star-Rating'>
                 <FaStar size={15} color="black" />{item.rating}
               </div>
             </Typography>
-
             <Typography>{renderDiscountLabel()}</Typography>
           </div>
         </CardContent>
-
         <CardActions className="card-actions">
           <Button
             variant="contained"

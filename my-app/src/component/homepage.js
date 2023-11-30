@@ -8,12 +8,12 @@ import BubbleGraph from "./BubbleGraph";
 import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
 import { Card } from "@mui/material";
-import PieChart from "./piechart"; 
+import PieChart from "./piechart";
 function HomePage() {
-  const renderInputField = (type, placeholder, value, onChange, style,classs) => (
+  const renderInputField = (type, placeholder, value, onChange, style, classs) => (
     <input
-      type={type}  placeholder={placeholder}  value={value}
-      onChange={onChange} style={style} className={classs}/>
+      type={type} placeholder={placeholder} value={value}
+      onChange={onChange} style={style} className={classs} />
   );
 
   const navigate = useNavigate();
@@ -84,7 +84,6 @@ function HomePage() {
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     };
-    const username = localStorage.getItem("username");
     axios.get(`http://localhost:8080/api/user/${username}`)
       .then(response => {
         setforpic(response.data[0].profilepic);
@@ -173,13 +172,13 @@ function HomePage() {
     if (event.target.value == "Back") {
       navigate(`/${typeo}/cart`);
       enqueueSnackbar("Redirecting to cart", { variant: "default" });
-    }else if (event.target.value == "Add")
+    } else if (event.target.value == "Add")
       navigate(`/${typeo}/history`);
     else if (event.target.value == "Draft") {
       navigate(`/${typeo}/add`);
     } else if (event.target.value == "Access") {
       navigate(`/${typeo}/payment`);
-    }else {
+    } else {
       const broadcastChannel = new BroadcastChannel('logoutChannel');
       broadcastChannel.postMessage('logout');
       navigate("/start");
@@ -392,7 +391,7 @@ function HomePage() {
           <div style={{ marginLeft: "10px", backgroundColor: "#793FDF", borderRadius: "5px" }}>
             🛒{cart.length}
           </div>
-            <button onClick={() => handlehelp("phone")} style={{ backgroundColor: "#7752FE" }}>Wishlist ⭐</button>
+          <button onClick={() => handlehelp("phone")} style={{ backgroundColor: "#7752FE" }}>Wishlist ⭐</button>
         </>)}
         {(localStorage.getItem('type') === 'access' || localStorage.getItem('type') === 'companyaccess') && (
           <button onClick={handlelogout}>Logout</button>
@@ -436,7 +435,7 @@ function HomePage() {
         {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
           <h2 style={{ marginLeft: "10px" }}>SOLD HISTORY:</h2>
           <div className="search-container">
-          {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
+            {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
             <select
               value={sortingCriteria}
               onChange={handleSortingChange}
@@ -476,7 +475,7 @@ function HomePage() {
                   <td>{item.topic}</td>
                   <td>{item.count}</td>
                   <td>{item.stockcount}</td>
-                  <td>{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), {backgroundColor: "#713ABE",color: "white",border: "none",padding: "5px",width: "50px",borderRadius: "5px",marginTop: "10px",marginLeft: "10px",})}
+                  <td>{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), { backgroundColor: "#E4F1FF", color: "black", border: "none", padding: "5px", width: "50px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px", })}
                     <button onClick={() => handlestock(item.id, item.topic, index)} className="cart-button" >Add</button></td>
                 </tr>
               ))}
