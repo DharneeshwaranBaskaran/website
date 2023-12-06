@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import CustomCard from "./customcard";
-import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';
@@ -9,13 +8,11 @@ import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
 import { Card } from "@mui/material";
 import PieChart from "./piechart";
+import { BroadcastChannel } from 'broadcast-channel';
 function HomePage() {
   const renderInputField = (type, placeholder, value, onChange, style, classs) => (
-    <input
-      type={type} placeholder={placeholder} value={value}
-      onChange={onChange} style={style} className={classs} />
-  );
-
+    <input type={type} placeholder={placeholder} value={value}
+      onChange={onChange} style={style} className={classs} />);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [Items, setItems] = useState([]);
@@ -37,44 +34,37 @@ function HomePage() {
   const [typ, settye] = useState('');
   const [later, setLater] = useState('');
   const [forpic, setforpic] = useState('');
-
   const sel = (typeo == "seller" ? "access" : "companyaccess");
   let count = 0;
   const fetchData = async (url, setDataCallback) => {
     try {
-      const response = await axios.get(url);
-      setDataCallback(response.data);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error fetching data from ${url}: ${response.statusText}`);
+      }const data = await response.json();
+      setDataCallback(data);
     } catch (error) {
       console.error(`Error fetching data from ${url}:`, error);
     }
   };
-
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);}, [username]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/${sel}/${username}`, setuser);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/${sel}/${username}`, setuser);}, [username]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/balance/${username}`, setBalance);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/balance/${username}`, setBalance);}, [username]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/historyhome/${username}`, setItems);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/historyhome/${username}`, setItems);}, [username]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/history/view/${username}`, setData);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/history/view/${username}`, setData);}, [username]);
   useEffect(() => {
     if (prov) {
       fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);
-    }
-  }, [prov]);
+    }}, [prov]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/reminder/getItems/${username}`, setremider);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/reminder/getItems/${username}`, setremider);}, [username]);
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);
-  }, [username]);
+    fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);}, [username]);
 
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
@@ -84,90 +74,100 @@ function HomePage() {
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     };
-    axios.get(`http://localhost:8080/api/user/${username}`)
-      .then(response => {
-        setforpic(response.data[0].profilepic);
-        console.log(response.data[0].profilepic);
-      })
-      .catch(error => {
+    fetch(`http://localhost:8080/api/user/${username}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error fetching user data: ${response.statusText}`);
+        } return response.json();
+      }).then((data) => {
+        setforpic(data[0].profilepic);
+        console.log(data[0].profilepic);
+      }).catch((error) => {
         console.error("Error fetching user data:", error);
       });
     return () => {
       logoutChannel.close();
     };
   }, []);
-
-  const handleRecommendation = (id, topic) => {
+  const handleRecommendation = (id) => {
     localStorage.setItem('myID', id);
     console.log(id);
     localStorage.setItem('rec', "true");
     navigate(`/${typeo}/menext`);
   }
-
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/ty/${typeo}/${username}`)
+    fetch(`http://localhost:8080/api/ty/${typeo}/${username}`)
       .then((response) => {
-        setprov(response.data[0]?.provider);
-        settye(response.data[0]?.type);
-        console.log(response.data[0].type);
-      })
-      .catch((error) => {
+        if (!response.ok) {
+          throw new Error(`Error fetching cart items: ${response.statusText}`);
+        } return response.json();
+      }).then((data) => {
+        setprov(data[0]?.provider);
+        settye(data[0]?.type);
+      }).catch((error) => {
         console.error('Error fetching cart items:', error);
       });
   }, [username]);
-
   const uniqueItems = Items.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic));
   const Uniquereminder = reminder.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic));
-
   const handleCategoryChange = (event) => {
     const categoryMap = { Men: 1, Women: 2 };
     const myRef = categoryMap[event.target.value] || 3;
     localStorage.setItem("myRef", myRef);
     navigate(`/${typeo}/men`);
   };
-
   const handlePay = (id) => {
     enqueueSnackbar("id:" + id);
-    console.log("id:" + id);
-    axios.get(`http://localhost:8080/api/paylater/getpaylat/${id}`)
+    fetch(`http://localhost:8080/api/paylater/getpaylat/${id}`)
       .then((response) => {
-        const cur = response.data;
+        if (!response.ok) {
+          throw new Error(`Error fetching cart items: ${response.statusText}`);
+        } return response.json();
+      }).then((cur) => {
         let total = 0;
         if (cur.length > 0) {
           total = cur[0].cost * cur[0].count;
-        }
-        enqueueSnackbar("total:$" + total);
+        } enqueueSnackbar("total:$" + total);
         if (Balance > total) {
           const newBalance = Balance - total;
-          axios.post(`http://localhost:8080/api/paidlater/${username}/${id}`)
-            .then((response) => {
-              console.log(response.data);
-            })
-            .catch((error) => {
-              console.error('Error transferring data:', error);
-            });
-          axios.post(`http://localhost:8080/api/updateUserBalance/${username}`, newBalance, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          fetch(`http://localhost:8080/api/paidlater/${username}/${id}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`Error transferring data: ${response.statusText}`);
+            } return response.json();
+          }).then((data) => {
+            console.log(data);
+          }).catch((error) => {
+            console.error('Error transferring data:', error);
+          });
+          fetch(`http://localhost:8080/api/updateUserBalance/${username}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(newBalance),
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`Error updating user balance: ${response.statusText}`);
+            } return response.json();
+          }).then(() => {
+            console.log('User balance updated successfully');
+          }).catch((error) => {
+            console.error('Error updating user balance:', error);
+          });
           navigate(`/${typeo}/payment`);
           enqueueSnackbar("Payment Successful", { variant: "success" });
+        } else {
+          enqueueSnackbar("Insufficient Balance" + Balance + "  " + total, { variant: "warning" });
         }
-        else {
-          enqueueSnackbar("Insuficient Balance" + Balance + "  " + total, { variant: "warning" });
-        }
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error('Error fetching cart items:', error);
         enqueueSnackbar('Error fetching cart items:', error);
       });
   }
-
   const handleChange = (event) => {
     localStorage.setItem("weekend", event.target.value === "No" ? "No" : "Yes");
   }
-
   const handleActionChange = (event) => {
     if (event.target.value == "Back") {
       navigate(`/${typeo}/cart`);
@@ -187,32 +187,24 @@ function HomePage() {
       enqueueSnackbar("Logout Successful");
     }
   };
-
   const handlelogout = () => {
     navigate("/start");
     localStorage.clear();
     window.location.reload()
     enqueueSnackbar("Logout Successful");
   }
-
   const handleSortingChange = (event) => {
     setSortingCriteria(event.target.value);
     count = count + 1;
   };
-
   const handleSortingChange1 = (event) => {
     setAccSortingCriteria(event.target.value);
     count = count + 1;
   };
-
   const filterData = (data, query) => {
     return data.filter((item) => item.topic.toLowerCase().includes(query.toLowerCase()));
   };
-
-  useEffect(() => {
-    setpatch(filterData(Data, searchQuery));
-  }, [Data, searchQuery])
-
+  useEffect(() => {setpatch(filterData(Data, searchQuery));}, [Data, searchQuery])
   useEffect(() => {
     const sorted = [...(patch)].sort((a, b) => {
       if (sortingCriteria === "cost") {
@@ -229,19 +221,21 @@ function HomePage() {
     });
     setSortedData(sorted);
   }, [sortingCriteria, patch])
-
   const handleRemove = (id) => {
-    axios
-      .delete(`http://localhost:8080/api/delete${sel}/${id}`)
-      .then((response) => {
-        window.location.reload()
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error('Error transferring data:', error);
+    fetch(`http://localhost:8080/api/delete${sel}/${id}`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json',},
+    }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error deleting data: ${response.statusText}`);
+        } return response.json();
+      }).then((data) => {
+        window.location.reload();
+        console.log(data);
+      }).catch((error) => {
+        console.error('Error deleting data:', error);
       });
   }
-
   useEffect(() => {
     const sortByCriteria = (a, b) => {
       if (accsortingCriteria === "des") {
@@ -265,17 +259,13 @@ function HomePage() {
     });
     setsorted(sorted)
   }, [accsortingCriteria, pro])
-
   const handlehelp = (str) => {
     navigate(`/${typeo}/${str}`);
   }
-
   const handleEdit = async (id, index) => {
     const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json',},
       body: JSON.stringify({ id, type: selectValues[index] }),
       credentials: 'include',
     });
@@ -290,76 +280,73 @@ function HomePage() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   }
-
   const [inputValues, setInputValues] = useState(Array(sortedData.length).fill(''));
   const handleChangein = (index, e) => {
     const newInputValues = [...inputValues];
     newInputValues[index] = e.target.value;
     setInputValues(newInputValues);
   };
-
   const handlestock = (id, topic, index) => {
     const inputValue = inputValues[index];
     if (inputValue <= 0) {
       enqueueSnackbar("Enter a Number greater than 0")
     }
     else {
-      axios
-        .post(`http://localhost:8080/api/updatestock/${id}/${inputValue}/${topic}`)
-        .then((response) => {
-          enqueueSnackbar('Stock count updated successfully', { variant: 'success' });
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error('Error updating stock count:', error);
-          enqueueSnackbar('Error updating stock count', { variant: 'error' });
-        });
+      fetch(`http://localhost:8080/api/updatestock/${id}/${inputValue}/${topic}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error updating stock count: ${response.statusText}`);
+        } return response.json();
+      }).then(() => {
+        enqueueSnackbar('Stock count updated successfully', { variant: 'success' });
+        window.location.reload();
+      }).catch((error) => {
+        console.error('Error updating stock count:', error);
+        enqueueSnackbar('Error updating stock count', { variant: 'error' });
+      });
     }
-    console.log(topic);
   }
-
   const [selectValues, setSelectValues] = useState(user.map((item) => ""));
   const handleSelectChange = (index, value) => {
     const newSelectValues = [...selectValues];
     newSelectValues[index] = value;
-    console.log(newSelectValues)
     setSelectValues(newSelectValues);
   };
-
   const handleview = (comid, id, topic) => {
     localStorage.setItem('myID', comid);
-    console.log(comid);
     localStorage.setItem('rec', "");
     localStorage.removeItem('value');
-    console.log(localStorage.getItem("count"));
-    axios.delete(`http://localhost:8080/api/reminderdelete`, {
-      data: { id: id, username: localStorage.getItem('username') }
-    })
-      .then(response => {
-        console.log(response.data);
-        navigate(`/${typeo}/menext`);
-        enqueueSnackbar("Reminder deleted successfully");
-      })
-      .catch(error => {
-        console.error('Error sending id to the backend:', error);
-      });
+    fetch(`http://localhost:8080/api/reminderdelete`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify({ id: id, username: localStorage.getItem('username') }),
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error deleting reminder: ${response.statusText}`);
+      } return response.json();
+    }).then((data) => {
+      console.log(data);
+      navigate(`/${typeo}/menext`);
+      enqueueSnackbar("Reminder deleted successfully");
+    }).catch((error) => {
+      console.error('Error deleting reminder:', error);
+    });
   }
-
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} data-testid="Card">
       <div className="logout-button">
         {localStorage.getItem('type') === 'buyer' && (<>
           <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
           <button style={{ backgroundColor: "#5B0888" }} onClick={() => handlehelp("user")}>{username}</button>
-          <select
-            onChange={handleChange}
+          <select onChange={handleChange}
             style={{ backgroundColor: "#5B0888", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginRight: "5px" }}>
             <option>Weekend Delivery</option>
             <option value="Yes">Yes ✅</option>
             <option value="No">No ❌</option>
           </select>
-          <select
-            onChange={handleCategoryChange}
+          <select onChange={handleCategoryChange}
             style={{ backgroundColor: "#713ABE", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginRight: "5px" }}>
             <option>Category</option>
             <option value="Men">Men 👨</option>
@@ -369,8 +356,7 @@ function HomePage() {
           <button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehelp("help")}>Help❓</button>
         </>)}
         {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
-          <select
-            onChange={handleActionChange}
+          <select onChange={handleActionChange}
             style={{ backgroundColor: "#451952", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginLeft: "5px" }}>
             <option>Menu</option>
             <option value="Back">Cart</option>
@@ -381,8 +367,7 @@ function HomePage() {
           </select>
         </>)}
         {localStorage.getItem('type') === 'buyer' && (<>
-          <select
-            onChange={handleActionChange}
+          <select onChange={handleActionChange}
             style={{ backgroundColor: "#793FDF", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginLeft: "5px" }}>
             <option>Menu</option>
             <option value="Back">Cart🛒</option>
@@ -419,13 +404,13 @@ function HomePage() {
           </div>
         )}
         {uniqueItems.length > 0 && (
-          <><h2 style={{ marginLeft: "10px" }}>RECOMMENDED PRODUCTS:</h2>
+          <><h2 style={{ marginLeft: "10px" }} >RECOMMENDED PRODUCTS:</h2>
             <div className='class-contain' >
               {uniqueItems.map((item, index) => (
                 <CustomCard
                   key={index}
                   item={item}
-                  handleView={(itemid, itemName) => handleRecommendation(itemid, itemName)}
+                  handleView={(itemid) => handleRecommendation(itemid)}
                   showButton={true} />
               ))}
             </div>
@@ -436,13 +421,10 @@ function HomePage() {
           <h2 style={{ marginLeft: "10px" }}>SOLD HISTORY:</h2>
           <div className="search-container">
             {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
-            <select
-              value={sortingCriteria}
+            <select value={sortingCriteria}
               onChange={handleSortingChange}
-              style={{
-                height: '35px', backgroundColor: "#6666ff", borderRadius: "5px"
-                , marginRight: "5px", color: "white", marginLeft: "800px"
-              }}
+              style={{height: '35px', backgroundColor: "#6666ff", borderRadius: "5px"
+                , marginRight: "5px", color: "white", marginLeft: "800px"}}
             > <option value="">Sort</option>
               <option value="cost">By Cost</option>
               <option value="count">By Count</option>
@@ -450,15 +432,17 @@ function HomePage() {
             </select>
           </div>
           <div>
-            <BarGraph data={sortedData} />
-            <div style={{ width: "600px" }}>
-              <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
-              <PieChart data={sortedData} />
-            </div>
-            <div>
-              <BubbleGraph data={sortedData} />
-            </div>
-          </div>
+  <BarGraph data={sortedData} data-testid="BarGraph" />
+  <div style={{ width: "600px" }}>
+    <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
+    <PieChart data={sortedData} data-testid="PieChart" />
+  </div>
+  <div>
+    <BubbleGraph data={sortedData} data-testid="BubbleGraph" />
+  </div>
+</div>
+
+
           {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
           <table className="purchase-history-table">
             <thead>

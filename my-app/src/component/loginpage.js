@@ -132,7 +132,7 @@ function LoginPage() {
     <div style={{ backgroundImage: `url(${backpic})` }}>
       <div className="app">
         <div className="login-page">
-          <h2>Login</h2>
+          <h2 data-testid="Title">Login</h2>
           <div className="con">
             {renderInput("text", "Username", username, handleChange, error, "username")}
             {renderInput("password", "Password", password, handleChange1, error1, "password")}

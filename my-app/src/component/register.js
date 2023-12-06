@@ -205,9 +205,9 @@ function RegisterPage() {
     <div style={{backgroundImage: `url(${backpic})`, minHeight: "130vh"}}>
       <div style={{ padding: "35px" }}></div>
       <div className="app" >
-        <div className="login-page" >
-          <h2>Register</h2>
-          <div className="con">
+        <div className="login-page"  >
+          <h2 data-testid="Title">Register</h2>
+          <div className="con" data-text="form">
             {type === 'seller' && renderInputField("text", "Name", name, handleChange5, inputStyle4)}
             <div style={errorStyle}>{error4}</div>
             {type !== 'buyer' && renderInputField("text", "Contact Number", num, handleChange6, inputStyle5)}

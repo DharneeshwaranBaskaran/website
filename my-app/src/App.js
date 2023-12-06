@@ -26,8 +26,6 @@ function App() {
   <SnackbarProvider>
     <Router>
       <Routes>
-{/*       
-        <Route path="/start" element={<load />} /> */}
           <Route path="/start" element={<Load />} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
         <Route path={`/${type}/login`} element={<LoginPage />} /> 

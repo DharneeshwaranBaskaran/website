@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import DissatisfiedSymbol from './DissatisfiedSymbol';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from "notistack";
 import CustomCard from './customcard';
-import './App.css';
+import './App.css'; 
+import { BroadcastChannel } from 'broadcast-channel';
 import { useNavigate } from 'react-router-dom';
 function Men() {
   const { enqueueSnackbar } = useSnackbar();
@@ -19,55 +19,47 @@ function Men() {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const username = localStorage.getItem('username');
-
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-
   const handlemenex = (id, topic, sc) => {
     if (sc == 0) {
-      console.log(id, sc);
-      axios.post('http://localhost:8080/api/reminder', { combo_id: id, topic: topic, username })
-        .then(response => {
-          console.log(response.data);
+      fetch('http://localhost:8080/api/reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({ combo_id: id, topic: topic, username }),
+      }).then(response => response.json())
+        .then(data => {
+          console.log(data);
           navigate(`/${type}/homepage`);
-          enqueueSnackbar("You will be Reminded if the stock arrives")
-        })
-        .catch(error => {
+          enqueueSnackbar("You will be Reminded if the stock arrives");
+        }).catch(error => {
           console.error('Error sending id to the backend:', error);
         });
     }
     else {
       localStorage.setItem('myID', id);
-      console.log(typeof (id));
       localStorage.setItem('rec', "");
       localStorage.removeItem('value');
-      console.log(localStorage.getItem("count"));
       navigate(`/${type}/menext`);
     }
   }
-
   const handlebackhome = () => {
     navigate(`/${type}/homepage`);
   }
-
   const targetMappings = {
     1: { per: "men", fil1: "shirt", fil2: "pant", fil3: "tshirt", num: 1 },
     2: { per: "women", fil1: "top", fil2: "access", fil3: "bag", num: 2 },
     3: { per: "kid", fil1: "cloth", fil2: "foot", fil3: "bag", num: 3 },
   };
-
   const selectedMapping = targetMappings[target] || {};
   const { per, fil1, fil2, fil3, num } = selectedMapping;
-
   const toggleSorting = () => {
     setAscending(!ascending);
   };
-
   const toggleCountSorting = () => {
     setCountSortAscending(!countSortAscending);
   };
-
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -76,9 +68,14 @@ function Men() {
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     };
-    axios.get(`http://localhost:8080/api/combo/${per}`)
-      .then((response) => {
-        let sortedData = response.data;
+    fetch(`http://localhost:8080/api/combo/${per}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        } return response.json();
+      })
+      .then(data => {
+        let sortedData = data;
         if (!ascending) {
           sortedData = sortedData.sort((a, b) => b.cost - a.cost);
         } else {
@@ -89,11 +86,10 @@ function Men() {
         }
         setData(sortedData);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error fetching history items:', error);
       });
   }, [per, ascending, countSortAscending]);
-
   const filteredData = data.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   const filterdata = data.filter(item => {
     const lowerCaseTopic = item.topic.toLowerCase();
@@ -102,7 +98,6 @@ function Men() {
     const matchesCategory = selectedCategory === '' || lowerCaseCategory === selectedCategory;
     return matchesSearchQuery && matchesCategory;
   });
-
   const f = filterdata.filter(item => item.count == 0);
   return (
     <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}>
@@ -125,7 +120,7 @@ function Men() {
           {countSortAscending ? "Most Purchased💎" : ""}
         </button>
       </div>
-      <div className="search-container">
+      <div className="search-container" data-testid="search-container">
         <input
           type="text"
           placeholder="Search..."
@@ -134,7 +129,7 @@ function Men() {
           className="search-bar"
         />
       </div>
-      <div className='class-contain'>
+      <div className='class-contain' data-testid="custom-card">
         {showModal && (<>
           {(filteredData && filterdata).length === 0 ? (<>
             <DissatisfiedSymbol />

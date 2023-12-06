@@ -3,10 +3,10 @@ import { Box, Card } from '@mui/material';
 import { FaStar } from 'react-icons/fa';
 import ReactImageMagnify from "react-image-magnify";
 import { useSnackbar } from "notistack";
-import axios from 'axios';
 import './App.css';
 import { FiVideo } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
+import { BroadcastChannel } from 'broadcast-channel';
 function Menext() {
   const navigate = useNavigate();
   const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
@@ -25,44 +25,43 @@ function Menext() {
   let Username = localStorage.getItem("username");
   let state = localStorage.getItem('rec');
   let type = localStorage.getItem('type');
-
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-
   const handleback = (page) => {
     navigate(`/${type}/${page}`);
   }
-
   const tostart = () => {
     navigate(`/buyer/register`);
     localStorage.setItem('type', "buyer");
     enqueueSnackbar("Register", { variant: "default" });
     window.location.reload();
   }
-
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
-      .then((response) => {
-        setItems(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching cart items:', error);
-      });
+    fetch(`http://localhost:8080/api/cart/getItems/${Username}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    } return response.json();
+  }).then(data => {
+    setItems(data);
+  }).catch(error => {
+    console.error('Error fetching cart items:', error);
+  });
   }, [Username]);
-
   const weekends = localStorage.getItem("weekend") === "Yes" ? "Yes" : "No";
-
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/wishlist/${Username}`)
-      .then((response) => {
-        setwish(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching cart items:', error);
-      });
+    fetch(`http://localhost:8080/api/wishlist/${Username}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    } return response.json();
+  }).then(data => {
+    setwish(data);
+  }).catch(error => {
+    console.error('Error fetching wishlist items:', error);
+  });
   }, [Username]);
-
   const handleAction = (url,updateurl, successMessage, errorMessage,ty,page) => {
     if (count > 0) {
       const cartItem = {
@@ -129,19 +128,16 @@ function Menext() {
       });
     }
   };
-  
   const handlewish = () => {
     handleAction('http://localhost:8080/api/wish/add','http://localhost:8080/api/update/wish', 'added to the wish', 'Error adding to wish',wish,"phone");
   };
   const handlecart = () => {
     handleAction('http://localhost:8080/api/cart/add','http://localhost:8080/api/update/cart', 'added to the cart', 'Error adding to cart',Items,"cart");
   };
-
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Form submitted with data:', formData);
   };
-
   const divStyle = {backgroundColor: '#ccccff', padding: '12px', border: '2px solid black', width: '300px', height: 'auto', borderRadius: '5px'};
   function increment() {
     setCount((prevCount) => prevCount + 1);
@@ -149,7 +145,6 @@ function Menext() {
   function decrement() {
     setCount((prevCount) => Math.max(prevCount - 1, 0));
   }
-
   const handleToggleImage = () => {
     setIsImage(true);
   };
@@ -169,10 +164,8 @@ function Menext() {
       .then(response => response.json())
       .then(data => {
         const image = data.find(item => item.id == (localStorage.getItem('myID')));
-        console.log(image);
         if (image) {
           setImageData(image);
-          console.log(image);
         } else {
           console.error(`Image data for id ${typeof (targetImageId)} not found.`);
         }
@@ -227,8 +220,6 @@ function Menext() {
         body: JSON.stringify({ topic: imageData.topic, comment, username: Username ,id:imageData.id}),
         credentials: 'include',
       });
-
-      console.log(Item);
       if (response.ok) {
         enqueueSnackbar("Comment Added Sucessfully", { variant: "success" });
         setShowModal(!showModal);
@@ -241,18 +232,19 @@ function Menext() {
   };
 
   const view = async () => {
-    axios.get(`http://localhost:8080/api/comments/${imageData.id}`)
-      .then((response) => {
-        setItem(response.data);
-        if (response.data.length < 1) { 
-          enqueueSnackbar("No Comments Available");
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching history items:', error);
-      });
-      console.log(imageData.id); 
-
+    fetch(`http://localhost:8080/api/comments/${imageData.id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }return response.json();
+    }) .then(data => {
+      setItem(data);
+      if (data.length < 1) {
+        enqueueSnackbar("No Comments Available");
+      }
+    }) .catch(error => {
+      console.error('Error fetching comments:', error);
+    });
   };
 
   const renderDiscountAmount = () => {
@@ -318,7 +310,7 @@ function Menext() {
             )}
           </div>
         </div>
-        <div>
+        <div data-testid="custom-card">
           <Card onSubmit={handleSubmit} style={divStyle}>
             <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>{imageData.topic} </h1>
             <h2 style={{ fontSize: '18px', color: '#333' }}>{imageData.description}</h2>
