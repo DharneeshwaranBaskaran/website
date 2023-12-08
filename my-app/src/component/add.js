@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import { BroadcastChannel } from "broadcast-channel";
 import { enqueueSnackbar } from "notistack";
 import './App.css';
 import Papa from 'papaparse';
@@ -61,7 +61,7 @@ function Add() {
     }
   };
 
-  const addBalance = () => {
+  const addBalance = async () => {
     const amountToAdd = parseFloat(inputValue);
     if (isNaN(amountToAdd) || amountToAdd <= 0 || amountToAdd.length < 1) {
       enqueueSnackbar("Please enter a valid positive number", { variant: "error" });
@@ -69,11 +69,31 @@ function Add() {
       enqueueSnackbar("Enter a valid Upi")
     } else {
       const newBalance = Balance + amountToAdd;
-      axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      try {
+        const url = `http://localhost:8080/api/updateUserBalance/${Username}`;
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newBalance),
+        };
+      
+        const response = await fetch(url, options);
+      
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          // Handle success, if needed
+        } else {
+          console.log('Error updating user balance');
+          // Handle error, if needed
+        }
+      } catch (error) {
+        console.log('Error updating user balance catch');
+        // Handle error, if needed
+      }
+      
       navigate(`/${type}/cart`);
       enqueueSnackbar(`Balance Updated to ${newBalance}`, { variant: "success" });
       enqueueSnackbar("Back to Cart", { variant: "default" });
@@ -144,18 +164,27 @@ function Add() {
       localStorage.clear();
       window.location.reload();
       enqueueSnackbar("Logout Successful");
-    };
-    axios.get(`http://localhost:8080/api/balance/${Username}`)
+  }});
+  useEffect(() => {
+    const url = `http://localhost:8080/api/balance/${Username}`;
+  
+    fetch(url)
       .then((response) => {
-        const data = response.data;
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
         setBalance(data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
   }, [Username]);
+  
   return (
-    <div style={{ backgroundColor: "#e5e5ff" }}>
+    <div style={{ backgroundColor: "#e5e5ff" }} >
       <div className="logout-button">
         <button onClick={() => backtocart("cart")} >Cart</button>
         <button onClick={() => backtocart("homepage")} >Back To Home</button>
@@ -163,7 +192,7 @@ function Add() {
       {localStorage.getItem('type') === 'buyer' && (<>
         <div className="app">
           <div className="login" >
-            <h1>Balance: ${Balance}</h1>
+            <h1 data-testid="PRODUCTS:">Balance: ${Balance}</h1>
             <form >Enter UPI ID:
               {InputField("text", "UPI", Upi, handleUpi)}
               <label>
@@ -178,7 +207,7 @@ function Add() {
       {localStorage.getItem('type') !== "buyer" && (
         <div className='app'>
           <div className="login-page" style={{ backgroundColor: "white" }}>
-            <h2>LAUNCH PRODUCT</h2>
+            <h2 data-testid="PRODUCT">LAUNCH PRODUCT</h2>
             <div className="con">
               {InputField("text", "category", cat, (e) => setcat(e.target.value))}
               {InputField("integer", "cost", cost, (e) => setcost(e.target.value))}

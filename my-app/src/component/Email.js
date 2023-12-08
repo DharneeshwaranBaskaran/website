@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
-import axios from "axios";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';
+import { BroadcastChannel } from "broadcast-channel";
 const Email = () => {
   const Username = localStorage.getItem("username");
   const navigate = useNavigate();
@@ -29,17 +29,15 @@ const Email = () => {
     }
     else {
       try {
-        const response = await axios.post(
-          `http://localhost:8080/api/updateEmail/${Username}`,
-          email,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        if (response.status === 200) {
-          console.log(response.data);
+        const response = await fetch(`http://localhost:8080/api/updateEmail/${Username}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(email),
+        });
+      
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(responseData);
           enqueueSnackbar("Updated Successfully");
         } else {
           console.log('Error updating user email');
@@ -47,6 +45,7 @@ const Email = () => {
       } catch (error) {
         console.log('Error updating user email catch');
       }
+      
       navigate(`/${localStorage.getItem("type")}/homepage`);
     }
   }
@@ -61,7 +60,7 @@ const Email = () => {
       </div>
       <div className="app"  >
         <div className="logins" >
-          <h3 style={{ textAlign: "center" }}>Alter Delivery Email</h3>
+          <h3 style={{ textAlign: "center" }}data-testid="PRODUCTS:">Alter Delivery Email</h3>
           <input
             style={{ width: "200px", marginLeft: "45px" }}
             type="text"

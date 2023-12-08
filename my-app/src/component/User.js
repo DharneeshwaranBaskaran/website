@@ -6,7 +6,7 @@ const User = () => {
   const [user, setUser] = useState({});
   const navigate = useNavigate();
   const handlehome = (key) => {
-    navigate(`/${localStorage.getItem("type")}/homepage`);
+    navigate(`/${localStorage.getItem("type")}/${key}`);
   }
   
   useEffect(() => {

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import './App.css';
+import { BroadcastChannel } from "broadcast-channel";
 import { useNavigate } from 'react-router-dom';
 function Edit() {
   const [cost, setcost] = useState('');
@@ -54,11 +55,11 @@ function Edit() {
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
       <div className="logout-button">
-        <button onClick={back}>Back To Home 🏠</button>
+        <button onClick={back} >Back To Home 🏠</button>
       </div>
       <div className="app">
         <div className="login-page">
-          <h2>Edit</h2>
+          <h2 data-testid="PRODUCTS:">Edit</h2>
           <input
             type="text"
             placeholder="cost"

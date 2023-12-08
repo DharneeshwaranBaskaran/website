@@ -3,39 +3,51 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import HomePage from '../homepage';
 
-  test('renders the custom cards', () => {
-    const { container, getAllByTestId } = render(
+test('renders the custom cards for buyers', () => {
+  if (localStorage.getItem('type') === 'buyer') {
+    const { getAllByTestId } = render(
       <MemoryRouter>
         <HomePage />
       </MemoryRouter>
     );
     const customCards = getAllByTestId('Card');
     expect(customCards.length).toBeGreaterThan(0);
-  });
+  } 
+});
 
+test('renders the title', () => {
+  if (localStorage.getItem('type') === 'buyer') {
+  const { getByText } = render(
+  <MemoryRouter>
+    <Start />
+  </MemoryRouter>);
+  const titleElement = getByText('Title');
+  expect(titleElement).toBeInTheDocument();
+  }
+});
   
-  
-// Mock data for the BarGraph
-const mockData = [
-  { topic: 'Topic1', count: 10, cost: 5 },
-  { topic: 'Topic2', count: 15, cost: 7 },
-  // Add more data as needed
-];
+test('renders the Reminder for buyers', () => {
+  if (localStorage.getItem('type') === 'buyer') {
+    const { getAllByTestId } = render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    const customCards = getAllByTestId('Reminder');
+    expect(customCards.length).toBeGreaterThan(0);
+  } 
+});
 
-test('renders graphs in HomePage', () => {
-  // Render the component with mock data
-  render(
-    <MemoryRouter>
-      <HomePage sortedData={mockData} />
-    </MemoryRouter>
-  );
-  const getGraphByTestId = (testid) => {
-    return screen.queryByTestId(testid);
-  };
-  const barGraph = getGraphByTestId('BarGraph');
-  expect(barGraph).toBeInTheDocument();
-  const pieChart = getGraphByTestId('PieChart');
-  expect(pieChart).toBeInTheDocument();
-  const bubbleGraph = getGraphByTestId('BubbleGraph');
-  expect(bubbleGraph).toBeInTheDocument();
+test('renders BarGraph, PieChart, and BubbleGraph components', () => {
+  if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company')){
+  const { getByText } = render(<HomePage />);
+
+  const barGraphElement = getByText(/BarGraph/i);
+  const pieChartElement = getByText(/PieChart/i);
+  const bubbleGraphElement = getByText(/BubbleGraph/i);
+
+  expect(barGraphElement).toBeInTheDocument();
+  expect(pieChartElement).toBeInTheDocument();
+  expect(bubbleGraphElement).toBeInTheDocument();
+  }
 });

@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import { enqueueSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-
+import { BroadcastChannel } from "broadcast-channel";
 const fetchData = (url, setDataFunction, errorMessage) => {
-  axios.get(url)
+  fetch(url)
     .then((response) => {
-      setDataFunction(response.data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setDataFunction(data);
     })
     .catch((error) => {
       console.error(`Error fetching items from ${url}:`, error);
       errorMessage && console.error(errorMessage);
     });
+
 };
 function History() {
   const navigate = useNavigate();
@@ -43,21 +49,44 @@ function History() {
       enqueueSnackbar("Insuficient Balance", { variant: "warning" });
     }
     else {
-      axios.post(`http://localhost:8080/api/repeatHistory/${id}`)
+      fetch(`http://localhost:8080/api/repeatHistory/${id}`, {
+        method: 'POST',
+      })
         .then((response) => {
-          console.log(response.data);
-          enqueueSnackbar(response.data)
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          enqueueSnackbar(data);
           navigate(`/${type}/payment`);
         })
         .catch((error) => {
           console.error('Error transferring data:', error);
-          enqueueSnackbar('Error transferring data:', error);
+          enqueueSnackbar(`Error transferring data: ${error}`);
         });
-      axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+      fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(newBalance),
       })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error('Error updating user balance:', error);
+        });
+
     }
   }
 
@@ -71,9 +100,17 @@ function History() {
       enqueueSnackbar("Your History Page Is Empty", { variant: "info" });
     }
     else {
-      axios.post(`http://localhost:8080/api/HistoryClear/${Username}`)
+      fetch(`http://localhost:8080/api/HistoryClear/${Username}`, {
+        method: 'POST',
+      })
         .then((response) => {
-          console.log(response.data);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
         })
         .catch((error) => {
           console.error('Error transferring data:', error);
@@ -101,13 +138,21 @@ function History() {
     [Username]);
 
   const removeItemFromCart = (id) => {
-    axios
-      .delete(`http://localhost:8080/api/deletecombo/${id}/${Username}`)
+    fetch(`http://localhost:8080/api/deletecombo/${id}/${Username}`, {
+      method: 'DELETE',
+    })
       .then((response) => {
-        fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:')
-        fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:')
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
+        fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
       })
       .catch((error) => {
+        console.error('Error deleting combo:', error);
       });
   };
 
@@ -138,11 +183,26 @@ function History() {
         console.error('Error cancelling order:', error);
         enqueueSnackbar('Failed to cancel order', { variant: 'error' });
       });
-    axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
+    fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(newBalance),
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error updating user balance:', error);
+      });
+
     console.log(id, cost, count);
     navigate(`/${type}/homepage`);
   }
@@ -154,18 +214,28 @@ function History() {
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const drafttodatabase = async (id) => {
-    axios.post(`http://localhost:8080/api/transferdata/${id}`)
+    fetch(`http://localhost:8080/api/transferdata/${id}`, {
+      method: 'POST',
+    })
       .then((response) => {
-        console.log(response.data);
-        console.log(response.status);
-        enqueueSnackbar(response.data);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        enqueueSnackbar(data);
         navigate(`/${type}/homepage`);
       })
       .catch((error) => {
-        if (error.response) {
-          enqueueSnackbar(error.response.data.error);
-        } else
-          enqueueSnackbar(error.message);
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          console.error('Network error:', error);
+          enqueueSnackbar('Network error. Please check your internet connection.');
+        } else {
+          console.error('Error transferring data:', error);
+          enqueueSnackbar(error.message || 'Error transferring data');
+        }
       });
   }
 
@@ -177,6 +247,7 @@ function History() {
       {localStorage.getItem('type') == "buyer" && (
         <input
           type="text"
+          data-testid="search-container"
           placeholder="Search Items"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -212,7 +283,7 @@ function History() {
       </table>
       {backButton}
       {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
-        <h2>PRODUCTS:</h2>
+        <h2 data-testid="PRODUCTS">PRODUCTS:</h2>
         <table className="purchase-history-table">
           <thead>
             <tr>

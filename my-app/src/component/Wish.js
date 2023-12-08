@@ -1,47 +1,62 @@
-import React, { useEffect,useState } from 'react';
-import axios from "axios";
+import React, { useEffect,useState ,useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSnackbar } from "notistack";
+import { useSnackbar } from "notistack"; 
+import { BroadcastChannel } from 'broadcast-channel';
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const navigate = useNavigate(); 
   const username=localStorage.getItem("username");
 
-  useEffect(() => {
-      const logoutChannel = new BroadcastChannel('logoutChannel');
-      logoutChannel.onmessage = () => {
-        navigate("/start");
-        localStorage.clear();
-        window.location.reload();
-        enqueueSnackbar("Logout Successful");
-      };
-    
-    axios.get(`http://localhost:8080/api/wishlist/${username}`)
-        .then((response) => {
-            setItems(response.data);
-        })
-        .catch((error) => {
-            console.error('Error fetching wish items:', error);
-        });
+  const fetchWishlist = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/wishlist/${username}`);
+      if (response.ok) {
+        const data = await response.json();
+        setItems(data);
+      } else {
+        console.error('Error fetching wish items:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching wish items:', error);
+    }
   }, [username]);
 
-  const removeItemFromCart = (id) => {
-    axios
-      .put(`http://localhost:8080/api/updatewish/${id}/${username}`)
-      .then((response) => {
-        const updatedCartItems = Items.map((item) => {
-          if (item.id === id) {
-            return { ...item, state: true };
-          }
-          return item;
+  useEffect(() => {
+    const logoutChannel = new BroadcastChannel('logoutChannel');
+    logoutChannel.onmessage = () => {
+      navigate("/start");
+      localStorage.clear();
+      window.location.reload();
+      enqueueSnackbar("Logout Successful");
+    };
+  }, []);
+  
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
+  
+  const removeItemFromCart = async (id) => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/updatewish/${id}/${username}`, {
+          method: 'PUT',
         });
-        setItems(updatedCartItems);
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
-      })
-      .catch((error) => {
-        console.log(error);
-      }); 
+    
+        if (response.ok) {
+          const updatedCartItems = Items.map((item) => {
+            if (item.id === id) {
+              return { ...item, state: true };
+            }
+            return item;
+          });
+          setItems(updatedCartItems);
+          localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        } else {
+          console.error('Error updating wish item:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error updating wish item:', error);
+      }
       window.location.reload();localStorage.getItem("type")
       enqueueSnackbar(id+" removed from cart");
   };
@@ -50,16 +65,22 @@ function Phone() {
     navigate(`/${localStorage.getItem("type")}/homepage`);
   }
 
-  const addtocart=(id)=>{
-    axios.post(`http://localhost:8080/api/transferToCart/${id}`)
-          .then((response) => {
-              console.log(response.data);
-              navigate(`/${localStorage.getItem("type")}/cart`); 
-          })
-          .catch((error) => {
-              console.error('Error transferring data:', error);
-          });
-    console.log(id);
+  const addtocart=async (id)=>{
+  try {
+    const response = await fetch(`http://localhost:8080/api/transferToCart/${id}`, {
+      method: 'POST',
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log(responseData);
+      navigate(`/${localStorage.getItem("type")}/cart`);
+    } else {
+      console.error('Error transferring data:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error transferring data:', error);
+  }
   }
 
   return (
@@ -67,7 +88,7 @@ function Phone() {
         <div className="logout-button"> 
         <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 
         </div>
-      <h2>Wishlist Collection</h2>
+      <h2 data-testid="PRODUCTS">Wishlist Collection</h2>
       <div  className='class-contain' >
       <table className="purchase-history-table">
         <thead>

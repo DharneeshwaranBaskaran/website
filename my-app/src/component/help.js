@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
+import { BroadcastChannel } from "broadcast-channel";
 function Help() {
   let type = localStorage.getItem('type');
   const navigate = useNavigate();
   const handleback = () => {
-    navigate(`/${type}/homepage`);
+    navigate("/buyer/homepage");
   }
 
   const sendEmail = () => {
@@ -32,16 +33,16 @@ function Help() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
       <div className="logout-button">
         <button onClick={handleback}>Home 🏠</button>
       </div>
-      <div className="help-page">
-        <div className="faq-section">
-          <h2>Frequently Asked Questions</h2>
+      <div className="help-page" >
+        <div className="faq-section" >
+          <h2 data-testid="PRODUCTS:" >Frequently Asked Questions</h2>
           <ul>
             {faqData.map((item, index) => (
-              <li key={index}>
+              <li key={index} data-testid="faq-item">
                 <strong>{item.question}</strong>
                 <p>{item.answer}</p>
               </li>

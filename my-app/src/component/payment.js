@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import axios from 'axios';
 import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
+import { BroadcastChannel } from "broadcast-channel";
 function Payment() {
   const navigate = useNavigate();
   let Username = localStorage.getItem('username');
@@ -19,7 +19,6 @@ function Payment() {
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
     navigate(`/${typeo}/homepage`);
   }
-
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -28,14 +27,18 @@ function Payment() {
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     };
-    axios.get(`http://localhost:8080/api/balance/${Username}`)
+    fetch(`http://localhost:8080/api/balance/${Username}`)
       .then((response) => {
-        const data = response.data;
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      }).then((data) => {
         setBalance(data);
-      })
-      .catch((error) => { });
+      }).catch((error) => {
+        console.error('Error fetching balance:', error);
+      });
   }, [Username]);
-
   const handleRegister = async (event) => {
     let endpoint = "";
     if (localStorage.getItem("type") === "seller") {
@@ -45,13 +48,10 @@ function Payment() {
     }
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json' },
       body: JSON.stringify({ username, email, type, provider: Username }),
-      credentials: 'include',
+      credentials: 'include'
     });
-
     if (response.ok) {
       enqueueSnackbar("Access Given Successfully", { variant: "success" });
       navigate(`/${typeo}/homepage`);
@@ -63,7 +63,6 @@ function Payment() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   };
-
   const handleChange3 = (e) => {
     setEmail(e.target.value);
   }
@@ -73,7 +72,6 @@ function Payment() {
   const handleChange2 = (e) => {
     setType(e.target.value);
   }
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -93,7 +91,6 @@ function Payment() {
           header: true,
         });
       };
-
       reader.readAsText(file);
     } else {
       enqueueSnackbar("Please select a CSV file first", { variant: "error" });
@@ -105,8 +102,7 @@ function Payment() {
         method: 'POST',
         body: formData,
         credentials: 'include',
-      })
-        .then(async response => {
+      }).then(async response => {
           if (response.ok) {
             enqueueSnackbar("CSV data uploaded successfully", { variant: "success" });
             setCsvData([]);
@@ -116,57 +112,46 @@ function Payment() {
             enqueueSnackbar(errorData, { variant: "error" });
             console.log(errorData, { variant: "error" });
           }
-        })
-        .catch(error => {
+        }).catch(error => {
           console.error(error);
         });
     }
   };
-  
-  const InputField = (type, placeholder, value, onChange ) => (
-      <input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
+  const InputField = (type, placeholder, value, onChange) => (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+    />
   );
   return (
-    <div style={{
-      backgroundColor: "#e5e5ff", minHeight: "100vh"
-    }}>
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh"}}>
       <div className="logout-button">
         <button onClick={handlebacktohomefrompay} >Back To Home 🏠</button>
       </div>
-      {localStorage.getItem('type') === 'buyer' && (
-        <div >
-          <div>
+      {localStorage.getItem('type') === 'buyer' && (<>
             <h2 className='balance-header'>Thank you for shopping with us</h2>
             <h2 className='balance-header'>Your Balance:</h2>
-            <p className="balance-amount">${Balance}</p>
-          </div>
-        </div>
-      )}
+            <p className="balance-amount" data-testid="Balance">${Balance}</p> 
+            </> )}
       {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (
-        <div className="app">
-          <div className="login-page" style={{ backgroundColor: "white" }}>
-            <h2>Give Access</h2> {Username}
-            {InputField("text", "Username", username, handleChange)} 
+        <div className="app"  style={{overflowY: "hidden" }}>
+          <div className="login-page" style={{ backgroundColor: "white" ,paddingRight:"30px",paddingLeft:"20px" }}>
+            <h2 data-testid="PRODUCTS">Give Access</h2> {Username}
+            {InputField("text", "Username", username, handleChange)}
             {InputField("text", "Email", email, handleChange3)}
             {InputField("text", "Type", type, handleChange2)}
-          
             <button className="lob" onClick={handleRegister}>
               Give Access</button>
-            {localStorage.getItem('type') === 'company' && (
-              <>
-                <div  >
-                  <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} />
-                  <br />
-                  <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
-                  <br />
-                </div>
-              </>
-            )}
+            {localStorage.getItem('type') === 'company' && (<>
+              <div>
+                <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} />
+                <br />
+                <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
+                <br />
+              </div>
+            </> )}
           </div>
         </div>
       )}

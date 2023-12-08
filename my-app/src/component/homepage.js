@@ -11,8 +11,8 @@ import PieChart from "./piechart";
 import { BroadcastChannel } from 'broadcast-channel';
 function HomePage() {
   const renderInputField = (type, placeholder, value, onChange, style, classs) => (
-    <input type={type} placeholder={placeholder} value={value}
-      onChange={onChange} style={style} className={classs} />);
+    <input type={type} placeholder={placeholder} value={value} onChange={onChange} style={style} className={classs} 
+    />);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [Items, setItems] = useState([]);
@@ -41,31 +41,22 @@ function HomePage() {
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Error fetching data from ${url}: ${response.statusText}`);
-      }const data = await response.json();
+      } const data = await response.json();
       setDataCallback(data);
     } catch (error) {
       console.error(`Error fetching data from ${url}:`, error);
     }
   };
   useEffect(() => {
-    fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);}, [username]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/${sel}/${username}`, setuser);}, [username]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/balance/${username}`, setBalance);}, [username]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/historyhome/${username}`, setItems);}, [username]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/history/view/${username}`, setData);}, [username]);
-  useEffect(() => {
-    if (prov) {
-      fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);
-    }}, [prov]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/reminder/getItems/${username}`, setremider);}, [username]);
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);}, [username]);
-
+    fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);
+    fetchData(`http://localhost:8080/api/${sel}/${username}`, setuser);
+    fetchData(`http://localhost:8080/api/balance/${username}`, setBalance);
+    fetchData(`http://localhost:8080/api/historyhome/${username}`, setItems);
+    fetchData(`http://localhost:8080/api/history/view/${username}`, setData);
+    if (prov) {fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);}
+    fetchData(`http://localhost:8080/api/reminder/getItems/${username}`, setremider);
+    fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);
+  }, []);
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -81,7 +72,6 @@ function HomePage() {
         } return response.json();
       }).then((data) => {
         setforpic(data[0].profilepic);
-        console.log(data[0].profilepic);
       }).catch((error) => {
         console.error("Error fetching user data:", error);
       });
@@ -91,7 +81,6 @@ function HomePage() {
   }, []);
   const handleRecommendation = (id) => {
     localStorage.setItem('myID', id);
-    console.log(id);
     localStorage.setItem('rec', "true");
     navigate(`/${typeo}/menext`);
   }
@@ -169,10 +158,7 @@ function HomePage() {
     localStorage.setItem("weekend", event.target.value === "No" ? "No" : "Yes");
   }
   const handleActionChange = (event) => {
-    if (event.target.value == "Back") {
-      navigate(`/${typeo}/cart`);
-      enqueueSnackbar("Redirecting to cart", { variant: "default" });
-    } else if (event.target.value == "Add")
+    if (event.target.value == "Add")
       navigate(`/${typeo}/history`);
     else if (event.target.value == "Draft") {
       navigate(`/${typeo}/add`);
@@ -204,7 +190,7 @@ function HomePage() {
   const filterData = (data, query) => {
     return data.filter((item) => item.topic.toLowerCase().includes(query.toLowerCase()));
   };
-  useEffect(() => {setpatch(filterData(Data, searchQuery));}, [Data, searchQuery])
+  useEffect(() => { setpatch(filterData(Data, searchQuery)); }, [Data, searchQuery])
   useEffect(() => {
     const sorted = [...(patch)].sort((a, b) => {
       if (sortingCriteria === "cost") {
@@ -224,17 +210,17 @@ function HomePage() {
   const handleRemove = (id) => {
     fetch(`http://localhost:8080/api/delete${sel}/${id}`, {
       method: 'DELETE',
-      headers: {'Content-Type': 'application/json',},
+      headers: { 'Content-Type': 'application/json', },
     }).then((response) => {
-        if (!response.ok) {
-          throw new Error(`Error deleting data: ${response.statusText}`);
-        } return response.json();
-      }).then((data) => {
-        window.location.reload();
-        console.log(data);
-      }).catch((error) => {
-        console.error('Error deleting data:', error);
-      });
+      if (!response.ok) {
+        throw new Error(`Error deleting data: ${response.statusText}`);
+      } return response.json();
+    }).then((data) => {
+      window.location.reload();
+      console.log(data);
+    }).catch((error) => {
+      console.error('Error deleting data:', error);
+    });
   }
   useEffect(() => {
     const sortByCriteria = (a, b) => {
@@ -265,7 +251,7 @@ function HomePage() {
   const handleEdit = async (id, index) => {
     const response = await fetch(`http://localhost:8080/api/edit/${typeo}`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json',},
+      headers: { 'Content-Type': 'application/json', },
       body: JSON.stringify({ id, type: selectValues[index] }),
       credentials: 'include',
     });
@@ -335,7 +321,7 @@ function HomePage() {
     });
   }
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} data-testid="Card">
+    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
       <div className="logout-button">
         {localStorage.getItem('type') === 'buyer' && (<>
           <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
@@ -359,7 +345,6 @@ function HomePage() {
           <select onChange={handleActionChange}
             style={{ backgroundColor: "#451952", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginLeft: "5px" }}>
             <option>Menu</option>
-            <option value="Back">Cart</option>
             <option value="Add">Remove</option>
             <option value="Draft">Add</option>
             <option value="Access">Access</option>
@@ -391,7 +376,7 @@ function HomePage() {
           </>)}
         </div>
         {Uniquereminder.length > 0 && (
-          <div className="conrem">
+          <div className="conrem" data-testid="Reminder">
             <Card style={{ backgroundColor: "#ccccff", paddingLeft: "20px", paddingRight: "20px", paddingBottom: "10px" }}>
               <p style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}> Product Arrived</p>
               {(Uniquereminder).map((item, index) => (
@@ -404,8 +389,8 @@ function HomePage() {
           </div>
         )}
         {uniqueItems.length > 0 && (
-          <><h2 style={{ marginLeft: "10px" }} >RECOMMENDED PRODUCTS:</h2>
-            <div className='class-contain' >
+          <><h2 style={{ marginLeft: "10px" }} data-testid="Title">RECOMMENDED PRODUCTS:</h2>
+            <div className='class-contain' data-testid="Card">
               {uniqueItems.map((item, index) => (
                 <CustomCard
                   key={index}
@@ -423,8 +408,10 @@ function HomePage() {
             {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
             <select value={sortingCriteria}
               onChange={handleSortingChange}
-              style={{height: '35px', backgroundColor: "#6666ff", borderRadius: "5px"
-                , marginRight: "5px", color: "white", marginLeft: "800px"}}
+              style={{
+                height: '35px', backgroundColor: "#6666ff", borderRadius: "5px"
+                , marginRight: "5px", color: "white", marginLeft: "800px"
+              }}
             > <option value="">Sort</option>
               <option value="cost">By Cost</option>
               <option value="count">By Count</option>
@@ -432,17 +419,13 @@ function HomePage() {
             </select>
           </div>
           <div>
-  <BarGraph data={sortedData} data-testid="BarGraph" />
-  <div style={{ width: "600px" }}>
-    <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
-    <PieChart data={sortedData} data-testid="PieChart" />
-  </div>
-  <div>
-    <BubbleGraph data={sortedData} data-testid="BubbleGraph" />
-  </div>
-</div>
-
-
+            <BarGraph data={sortedData} />
+            <div style={{ width: "600px" }}>
+              <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
+              <PieChart data={sortedData} />
+            </div>
+              <BubbleGraph data={sortedData} />
+          </div>
           {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
           <table className="purchase-history-table">
             <thead>

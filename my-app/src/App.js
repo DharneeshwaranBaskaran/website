@@ -11,7 +11,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import LoginPage from './component/loginpage';
 import RegisterPage from './component/register';
-import Edituser from "./component/Edituser"; 
 import Help from "./component/help";  
 import Phone from "./component/Wish";
 import User from "./component/User"; 
@@ -37,7 +36,6 @@ function App() {
         <Route path={`/${type}/history`} element={<History/>}/>
         <Route path={`/${type}/add`}element={<Add/>}/>
         <Route path={`/${type}/edit`} element={<Edit/>}/>
-        <Route path={`/${type}/edituser`} element={<Edituser/>}/> 
         <Route path={`/${type}/help`} element={<Help/>}/>
         <Route path={`/${type}/phone`} element={<Phone/>}/>
         <Route path={`/${type}/user`}element={<User/>}/>

@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import axios from 'axios';
 import './App.css';
 import { useNavigate } from 'react-router-dom';
+import { BroadcastChannel } from "broadcast-channel";
 const useDataFetching = (url, setter, dependencies = []) => {
   useEffect(() => {
-    axios.get(url)
-      .then((response) => {
-        const data = response.data;
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
         setter(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
+      }
+    };
+    fetchData();
   }, dependencies);
 };
 function Cart() {
@@ -23,7 +28,6 @@ function Cart() {
   const [address, setaddress] = useState('');
   let Username = localStorage.getItem('username');
   const [Items, setItems] = useState([]);
-  const [Data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const type = localStorage.getItem("type")
@@ -31,7 +35,6 @@ function Cart() {
     navigate(`/${type}/homepage`);
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
   }
-
   useEffect(() => {
     const logoutChannel = new BroadcastChannel('logoutChannel');
     logoutChannel.onmessage = () => {
@@ -40,21 +43,11 @@ function Cart() {
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     };
-    axios.get(`http://localhost:8080/api/cart/getItems/${Username}`)
-      .then((response) => {
-        setItems(response.data);
-
-      })
-      .catch((error) => {
-        console.error('Error fetching cart items:', error);
-      });
   }, [Username]);
   useDataFetching(`http://localhost:8080/api/cart/getItems/${Username}`, setItems);
   useDataFetching(`http://localhost:8080/api/balance/${Username}`, setBalance);
   useDataFetching(`http://localhost:8080/api/address/${Username}`, setAddress);
   useDataFetching(`http://localhost:8080/api/historyhome/${Username}`, setIt);
-  useDataFetching(`http://localhost:8080/api/cart/sellerview/${Username}`, setData);
-
   const handlePayment = (val) => {
     if (Address == undefined || Address == " " || Address == "") {
       enqueueSnackbar("Enter your Address for Delivery");
@@ -72,64 +65,79 @@ function Cart() {
       else if (Balance > total) {
         const newBalance = Balance - (total * 9 / 10);
         if (val === "retain") {
-          axios.post(`http://localhost:8080/api/HistoryRetainCart/${Username}`)
-            .then((response) => {
-              console.log(response.data);
-            })
-            .catch((error) => {
-              console.error('Error transferring data:', error);
-            });
-          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          fetch(`http://localhost:8080/api/HistoryRetainCart/${Username}`, {
+            method: 'POST',
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          }).then((data) => {
+            console.log(data);
+          }).catch((error) => {
+            console.error('Error transferring data:', error);
+          });
+          fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBalance),
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          }).catch((error) => {
+            console.error('Error updating user balance:', error);
+          });
         }
-        else if (val === "express") {
-          if (It.length < 10) {
+        else if (val === "express" || val === "pay") {
+          if (It.length < 10 && (val === "express")) {
             newBalance = newBalance - 10;
           }
-          axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
-            .then((response) => {
-              console.log(response.data);
-            })
-            .catch((error) => {
-              console.error('Error transferring data:', error);
-            });
-          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-
-        }
-        else if (val === "pay") {
-          axios.post(`http://localhost:8080/api/transferToHistory/${Username}`)
-            .then((response) => {
-              console.log(response.data);
-            })
-            .catch((error) => {
-              console.error('Error transferring data:', error);
-            });
-          axios.post(`http://localhost:8080/api/updateUserBalance/${Username}`, newBalance, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
+          fetch(`http://localhost:8080/api/transferToHistory/${Username}`, {
+            method: 'POST',
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          }).then((data) => {
+            console.log(data);
+          }).catch((error) => {
+            console.error('Error transferring data:', error);
+          });
+          fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBalance),
+          }).then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          }).then((data) => {
+            console.log(data);
+          }).catch((error) => {
+            console.error('Error updating user balance:', error);
+          });
         }
         else {
           if (total < 50) {
-            axios.post(`http://localhost:8080/api/transferToHistorypaylater/${Username}`)
+            fetch(`http://localhost:8080/api/transferToHistorypaylater/${Username}`, {
+              method: 'POST'
+            })
               .then((response) => {
-                console.log(response.data);
-              })
-              .catch((error) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+              }).then((data) => {
+                console.log(data);
+              }).catch((error) => {
                 console.error('Error transferring data:', error);
               });
-
             navigate(`/${type}/payment`);
             enqueueSnackbar("Purchase Successful", { variant: "success" });
-
           }
           else {
             enqueueSnackbar("The total should be less than $50 for payment later", { variant: "warning" });
@@ -143,18 +151,14 @@ function Cart() {
         enqueueSnackbar("Insuficient Balance", { variant: "warning" });
       }
     }
-    console.log(val);
   }
-
   const handleChange4 = (e) => {
     setaddress(e.target.value);
   };
-
   const handlehistory = (key) => {
     navigate(`/${type}/${key}`);
     enqueueSnackbar(`Redirecting to ${key} page`, { variant: "default" });
   }
-
   const calculateTotal = (cartItems) => {
     let total = 0;
     for (const item of cartItems) {
@@ -162,12 +166,16 @@ function Cart() {
     }
     return total;
   };
-
   const removeItemFromCart = (id) => {
-    console.log(id);
-    axios
-      .put(`http://localhost:8080/api/update/${id}/${Username}`)
+    fetch(`http://localhost:8080/api/update/${id}/${Username}`, {
+      method: 'PUT'
+    })
       .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      }).then(() => {
         const updatedCartItems = Items.map((item) => {
           if (item.id === id) {
             return { ...item, state: true };
@@ -176,33 +184,30 @@ function Cart() {
         });
         setItems(updatedCartItems);
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
-      })
-      .catch((error) => {
-        console.log(error);
+      }).catch((error) => {
+        console.error('Error updating item:', error);
       });
     window.location.reload();
     enqueueSnackbar(id + " removed from cart");
   };
-
   let backButton = null;
   if (localStorage.getItem('type') == 'buyer') {
     backButton = (<button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehistory("history")}>Purchase History📜</button>
     );
   }
-
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
-
   const handleaddress = async () => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/updateAddress/${Username}`, address, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch(`http://localhost:8080/api/updateAddress/${Username}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(address),
       });
-      if (response.status === 200) {
-        console.log(response.data);
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
       } else {
         console.log('Error updating user address');
       }
@@ -212,7 +217,6 @@ function Cart() {
     window.location.reload();
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
-
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
       <div className="logout-button">
@@ -224,7 +228,7 @@ function Cart() {
           <h2 style={{ marginLeft: "10px" }}>You Are A Premium User</h2>
         )}
         <div>
-          <h1 className="cart-header" style={{ marginLeft: "15px" }}>Cart for {Username}</h1>
+          <h1 className="cart-header" style={{ marginLeft: "15px" }} data-testid="PRODUCTS">Cart for {Username}</h1>
           {(Address == undefined || Address == " " || Address == "") && (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <p style={{ marginLeft: "15px" }}>Enter Your Address Before placing order:</p>
@@ -239,14 +243,16 @@ function Cart() {
           )}
         </div>
         <p style={{ marginLeft: "20px" }}>Delivery Address:{Address}</p>
-        <input
-          type="text"
-          placeholder="Search Items"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="search-bar"
-          style={{ marginLeft: "15px" }}
-        />
+        <div data-testid="search-container">
+          <input
+            type="text"
+            placeholder="Search Items"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="search-bar"
+            style={{ marginLeft: "15px" }}
+          />
+        </div>
         <div>
           <table className="purchase-history-table">
             <thead>
@@ -291,33 +297,10 @@ function Cart() {
           </div>
         </div>
       </>)}
-      {localStorage.getItem('type') !== 'buyer' && (<>
-        <table className="purchase-history-table">
-          <thead>
-            <tr>
-              <th>Topic</th>
-              <th>Count</th>
-              <th>Cost</th>
-              <th>Total Cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Data.map((item, index) => (
-              <tr key={index}>
-                <td>{item.topic}</td>
-                <td>{item.count}</td>
-                <td>${item.cost}</td>
-                <td>${item.cost * item.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </>)}
       <p style={{ marginLeft: 20 }}>*$10 Extra for Non Premium Users in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*Products will be delivered within 24 hours in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*The total should be less than $50 for payment later</p>
     </div>
   )
 }
-
 export default Cart;
