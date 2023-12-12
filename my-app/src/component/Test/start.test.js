@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom'; 
 import Start from '../start';
 import userEvent from '@testing-library/user-event';
-import withLoader from '../loader';
 test('renders the title', () => {
   const { getByText } = render(
   <MemoryRouter>
@@ -12,7 +11,6 @@ test('renders the title', () => {
   const titleElement = getByText('PRODUCTS:');
   expect(titleElement).toBeInTheDocument();
 });
-
 test('renders the search container and checks search functionality', () => {
   const { getByTestId, getByPlaceholderText } = render(
     <MemoryRouter>

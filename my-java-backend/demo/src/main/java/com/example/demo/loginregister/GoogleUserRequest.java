@@ -4,7 +4,7 @@ public class GoogleUserRequest {
     private String email;
     private String password;
 
-    public GoogleUserRequest(String username, String email) {
+    public GoogleUserRequest() {
         this.username = username;
         this.email = email;
     }

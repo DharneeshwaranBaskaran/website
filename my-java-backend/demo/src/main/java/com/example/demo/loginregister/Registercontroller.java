@@ -21,7 +21,6 @@ public class Registercontroller {
     public Registercontroller(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    
 
     @PostMapping("/register/buyer")
     public ResponseEntity<String> loginBuyer(@RequestBody LoginRequest request) {
@@ -124,7 +123,6 @@ public class Registercontroller {
         if (checkUserExistsByEmail(email)) {
             return ResponseEntity.ok("{\"message\": \"User already registered successfully\"}");
         }
-
         try {
             String sql = "INSERT INTO users (username, password, address, email, balance) VALUES (?, ?, ?, ?, ?)";
             int rowsAffected = jdbcTemplate.update(sql, username, generatedPassword, address, email, 1000);
@@ -132,7 +130,7 @@ public class Registercontroller {
             if (rowsAffected > 0) {
                 System.out.println("Data inserted successfully.");
                 sendEmail(email, username, generatedPassword);
-                return ResponseEntity.ok("{\"message\": \"Registered successfully\"}");
+                return ResponseEntity.ok("Registered successfully");
             } else {
                 System.out.println("Data insertion failed.");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
