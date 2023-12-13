@@ -41,11 +41,9 @@ test('renders the Reminder for buyers', () => {
 test('renders BarGraph, PieChart, and BubbleGraph components', () => {
   if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company')){
   const { getByText } = render(<HomePage />);
-
   const barGraphElement = getByText(/BarGraph/i);
   const pieChartElement = getByText(/PieChart/i);
   const bubbleGraphElement = getByText(/BubbleGraph/i);
-
   expect(barGraphElement).toBeInTheDocument();
   expect(pieChartElement).toBeInTheDocument();
   expect(bubbleGraphElement).toBeInTheDocument();

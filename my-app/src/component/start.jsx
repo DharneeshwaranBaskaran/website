@@ -115,7 +115,7 @@ function Start() {
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
           onSuggestionsClearRequested={onSuggestionsClearRequested}
           getSuggestionValue={suggestion => suggestion}
-         
+
           renderSuggestion={suggestion => (
             <div data-testid="Search Products">{suggestion}</div>
           )}
@@ -141,22 +141,22 @@ function Start() {
           </>
         ) : (<>
           <DissatisfiedSymbol />
-          <h2>No products Found</h2>
+          <h2 data-testid="no products">No products Found</h2>
         </>)}
       </div >
       <div className="pagination" data-testid="pagination">
         <ul>
-          {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
-            <li
-              key={i}
-              onClick={() => paginate(i + 1)}
-              className={currentPage === i + 1 ? 'active' : ''}
-              data-testid="pagination-button" 
-
-            >
-              {i + 1}
-            </li>
-          ))}
+          <div data-testid="pagination-button" >
+            {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
+              <li
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className={currentPage === i + 1 ? 'active' : ''}
+              >
+                {i + 1}
+              </li>
+            ))}
+          </div>
 
         </ul>
       </div><br />

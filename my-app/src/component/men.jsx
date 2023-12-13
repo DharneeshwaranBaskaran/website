@@ -131,9 +131,10 @@ function Men() {
       </div>
       <div className='class-contain' data-testid="custom-card">
         {showModal && (<>
-          {(filteredData && filterdata).length === 0 ? (<>
+          {(filteredData && filterdata).length === 0 ? (<> 
+          
             <DissatisfiedSymbol />
-            <h2>No products Found</h2>
+            <h2 data-testid="no products">No products Found</h2>
           </>) :
             ((filteredData && f).map((item, index) => (
               <CustomCard
