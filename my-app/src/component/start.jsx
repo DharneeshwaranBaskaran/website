@@ -24,7 +24,7 @@ function Start() {
   const RegistrationOption = ({ type, header, handleRegister, handleLogin }) => (
     <div className="individual-registration">
       <h4>{header}</h4>
-      <button className="lob" onClick={() => handleLogin(type)}>Login</button>
+      <button className="lob"  data-testid="login-button" onClick={() => handleLogin(type)}>Login</button>
       {handleRegister && <button className="lob" onClick={() => handleRegister(type)}>Register</button>}
     </div>
   );
@@ -39,7 +39,6 @@ function Start() {
       localStorage.setItem('type', type);
       navigate(`/${type}/register`);
     }
-    window.location.reload();
   };
 
   const handletologin = (key) => {
@@ -58,7 +57,7 @@ function Start() {
         return response.json();
       })
       .then(data => {
-        setData(data);
+        setData(data); 
       })
       .catch(error => {
         console.error('Error fetching history items:', error);

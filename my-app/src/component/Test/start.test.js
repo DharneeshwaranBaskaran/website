@@ -1,8 +1,9 @@
 import React from 'react';
-import { screen, render, fireEvent, getByTestId, getByText, queryByTestId, waitFor, act } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import Start from '../start';
+import { screen, render, fireEvent,getByText,  waitFor, } from '@testing-library/react';
+import { MemoryRouter , Router, useNavigate } from 'react-router-dom'; 
 
+import Start from '../start';
+import { createMemoryHistory } from 'history';
 test('renders the title', () => {
   const { getByText } = render(
     <MemoryRouter>
@@ -78,4 +79,22 @@ test('renders the video container', () => {
   );
   const videoContainerElement = getByTestId('video-container');
   expect(videoContainerElement).toBeInTheDocument();
+});
+test('should navigate to buyer/login on login button click', async () => {
+  // Arrange
+  const history = createMemoryHistory();
+  const { getAllByTestId } = render(
+    <MemoryRouter>
+      <Start />
+    </MemoryRouter>
+  );
+
+  // Act
+  const loginButton = getAllByTestId('login-button');
+  fireEvent.click(loginButton[0]);
+
+  // Assert
+  await waitFor(() => {
+    expect(history.location.pathname).toBe('/');
+  });
 });

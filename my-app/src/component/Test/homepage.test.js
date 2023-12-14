@@ -38,6 +38,24 @@ test('renders the Reminder for buyers', () => {
   } 
 });
 
+test('should filter items based on search query', async () => {
+  if (localStorage.getItem('type') === 'seller') {
+   render(<MemoryRouter>
+    <HomePage />
+  </MemoryRouter>);
+
+  const searchInput = screen.getByPlaceholderText('Search...');
+  fireEvent.change(searchInput, { target: { value: 't' } });
+
+  await waitFor(() => {
+
+    const table = screen.getByClassName('purchase-history-table');
+    const tableRows = table.querySelectorAll('tbody > tr');
+    expect(tableRows.length).toBeGreaterThan(0);
+  });
+}
+});
+
 test('renders BarGraph, PieChart, and BubbleGraph components', () => {
   if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company')){
   const { getByText } = render(<HomePage />);
@@ -49,3 +67,4 @@ test('renders BarGraph, PieChart, and BubbleGraph components', () => {
   expect(bubbleGraphElement).toBeInTheDocument();
   }
 });
+

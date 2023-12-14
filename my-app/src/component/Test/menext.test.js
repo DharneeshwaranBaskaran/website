@@ -1,6 +1,6 @@
 import React from 'react';
 import { render ,fireEvent,waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom'; // Import MemoryRouter
+import { MemoryRouter } from 'react-router-dom'; 
 import Menext from '../menext'; 
 
 test('renders the custom cards', () => {
