@@ -5,8 +5,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useSnackbar } from "notistack";
 import CustomCard from './customcard';
 import './App.css'; 
-import { BroadcastChannel } from 'broadcast-channel';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
+import withLogoutHandler from './withLogouthandler';
 function Men() {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -61,13 +61,6 @@ function Men() {
     setCountSortAscending(!countSortAscending);
   };
   useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
     fetch(`http://localhost:8080/api/combo/${per}`)
       .then(response => {
         if (!response.ok) {
@@ -167,4 +160,4 @@ function Men() {
   )
 }
 
-export default Men;
+export default withLogoutHandler(Men);

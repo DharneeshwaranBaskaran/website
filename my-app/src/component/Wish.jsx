@@ -1,7 +1,7 @@
 import React, { useEffect,useState ,useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack"; 
-import { BroadcastChannel } from 'broadcast-channel';
+import withLogoutHandler from './withLogouthandler';
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
@@ -21,16 +21,6 @@ function Phone() {
       console.error('Error fetching wish items:', error);
     }
   }, [username]);
-
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, []);
   
   useEffect(() => {
     fetchWishlist();
@@ -121,4 +111,4 @@ function Phone() {
   );
 }
 
-export default Phone;
+export default withLogoutHandler(Phone);

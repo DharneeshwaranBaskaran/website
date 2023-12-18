@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 const Address = () => {
   const Username = localStorage.getItem("username");
   const navigate = useNavigate();
@@ -26,9 +26,7 @@ const Address = () => {
           },
           body: JSON.stringify(address),
         };
-      
         const response = await fetch(url, options);
-      
         if (response.ok) {
           const data = await response.json();
           console.log(data);
@@ -39,20 +37,10 @@ const Address = () => {
       } catch (error) {
         console.log('Error updating user address catch');
       }
-      
       navigate(`/${localStorage.getItem("type")}/homepage`);
     }
   }
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, []);
+  
   const handlehome = () => {
     navigate(`/${localStorage.getItem("type")}/homepage`);
   }
@@ -76,4 +64,4 @@ const Address = () => {
     </div>
   );
 }
-export default Address;
+export default withLogoutHandler(Address);

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { BroadcastChannel } from "broadcast-channel";
 import { enqueueSnackbar } from "notistack";
 import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-
+import withLogoutHandler from "./withLogouthandler";
 function Add() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
@@ -78,20 +77,16 @@ function Add() {
           },
           body: JSON.stringify(newBalance),
         };
-      
         const response = await fetch(url, options);
-      
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          // Handle success, if needed
         } else {
           console.log('Error updating user balance');
-          // Handle error, if needed
         }
       } catch (error) {
         console.log('Error updating user balance catch');
-        // Handle error, if needed
+
       }
       
       navigate(`/${type}/cart`);
@@ -157,14 +152,6 @@ function Add() {
     }
   };
 
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-  }});
   useEffect(() => {
     const url = `http://localhost:8080/api/balance/${Username}`;
   
@@ -249,4 +236,4 @@ function Add() {
     </div>
   );
 }
-export default Add;
+export default withLogoutHandler(Add);

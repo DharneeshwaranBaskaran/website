@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import { FiVideo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom'; 
-import { BroadcastChannel } from 'broadcast-channel';
+import withLogoutHandler from './withLogouthandler';
 function Menext() {
   const navigate = useNavigate();
   const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
@@ -153,13 +153,7 @@ function Menext() {
   };
   let link = "http://localhost:8080/api/combodata";
   useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
+    
     fetch(link)
       .then(response => response.json())
       .then(data => {
@@ -182,7 +176,7 @@ function Menext() {
       );
     } else {
       backButton = (
-        <button onClick={()=>handleback("men")} style={{ backgroundColor: "#713ABE" }}>Back 🏠</button>
+        <button onClick={()=>handleback("homepage")} style={{ backgroundColor: "#713ABE" }}>Back 🏠</button>
       );
     }}
   else {
@@ -360,4 +354,4 @@ function Menext() {
     </div>
   )
 }
-export default Menext;
+export default withLogoutHandler(Menext);

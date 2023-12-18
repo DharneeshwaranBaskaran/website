@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom'; 
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 function Help() {
   let type = localStorage.getItem('type');
   const navigate = useNavigate();
@@ -22,15 +22,6 @@ function Help() {
       answer: 'We accept credit cards, PayPal, and more.',
     },
   ];
-
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-    };
-  }, []);
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
@@ -59,4 +50,4 @@ function Help() {
   );
 }
 
-export default Help;
+export default withLogoutHandler(Help);

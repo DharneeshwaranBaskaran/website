@@ -2,20 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 const Email = () => {
   const Username = localStorage.getItem("username");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, []);
 
   const [email, setemail] = useState('');
   const handleChange4 = (e) => {
@@ -73,4 +63,4 @@ const Email = () => {
     </div>
   );
 }
-export default Email;
+export default withLogoutHandler(Email);

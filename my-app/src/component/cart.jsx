@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 const useDataFetching = (url, setter, dependencies = []) => {
   useEffect(() => {
     const fetchData = async () => {
@@ -35,15 +35,6 @@ function Cart() {
     navigate(`/${type}/homepage`);
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
   }
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, [Username]);
   useDataFetching(`http://localhost:8080/api/cart/getItems/${Username}`, setItems);
   useDataFetching(`http://localhost:8080/api/balance/${Username}`, setBalance);
   useDataFetching(`http://localhost:8080/api/address/${Username}`, setAddress);
@@ -303,4 +294,4 @@ function Cart() {
     </div>
   )
 }
-export default Cart;
+export default withLogoutHandler(Cart);

@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 function Payment() {
   const navigate = useNavigate();
   let Username = localStorage.getItem('username');
@@ -20,13 +20,6 @@ function Payment() {
     navigate(`/${typeo}/homepage`);
   }
   useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
     fetch(`http://localhost:8080/api/balance/${Username}`)
       .then((response) => {
         if (!response.ok) {
@@ -179,4 +172,4 @@ function Payment() {
     </div>
   )
 }
-export default Payment;
+export default withLogoutHandler(Payment);

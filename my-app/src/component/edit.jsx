@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import './App.css';
-import { BroadcastChannel } from "broadcast-channel";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
+import withLogoutHandler from "./withLogouthandler";
 function Edit() {
   const [cost, setcost] = useState('');
   const id = localStorage.getItem('edit');
@@ -14,17 +14,6 @@ function Edit() {
     const value = e.target.value;
     setcost(value);
   };
-
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, []);
 
   const handleedit = async (event) => {
     const response = await fetch("http://localhost:8080/api/editdata", {
@@ -72,4 +61,4 @@ function Edit() {
     </div>
   );
 }
-export default Edit;
+export default withLogoutHandler(Edit);

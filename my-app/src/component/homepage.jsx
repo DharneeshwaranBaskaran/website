@@ -8,7 +8,8 @@ import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
 import { Card } from "@mui/material";
 import PieChart from "./piechart";
-import { BroadcastChannel } from 'broadcast-channel';
+import withLogoutHandler from "./withLogouthandler"; 
+import { BroadcastChannel } from "broadcast-channel";
 function HomePage() {
   const renderInputField = (type, placeholder, value, onChange, style, classs) => (
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} style={style} className={classs} 
@@ -58,13 +59,6 @@ function HomePage() {
     fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);
   }, []);
   useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
     fetch(`http://localhost:8080/api/user/${username}`)
       .then((response) => {
         if (!response.ok) {
@@ -75,9 +69,6 @@ function HomePage() {
       }).catch((error) => {
         console.error("Error fetching user data:", error);
       });
-    return () => {
-      logoutChannel.close();
-    };
   }, []);
   const handleRecommendation = (id) => {
     localStorage.setItem('myID', id);
@@ -163,7 +154,9 @@ function HomePage() {
     else if (event.target.value == "Draft") {
       navigate(`/${typeo}/add`);
     } else if (event.target.value == "Access") {
-      navigate(`/${typeo}/payment`);
+      navigate(`/${typeo}/payment`); 
+    }else if(event.target.value =="Back"){
+      navigate(`/${typeo}/cart`); 
     } else {
       const broadcastChannel = new BroadcastChannel('logoutChannel');
       broadcastChannel.postMessage('logout');
@@ -514,4 +507,4 @@ function HomePage() {
     </div>
   );
 }
-export default HomePage;
+export default withLogoutHandler(HomePage);

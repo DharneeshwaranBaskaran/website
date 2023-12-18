@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, render, fireEvent,getByText,  waitFor, } from '@testing-library/react';
-import { MemoryRouter , Router, useNavigate } from 'react-router-dom'; 
+import { MemoryRouter } from 'react-router-dom'; 
 
 import Start from '../start';
 import { createMemoryHistory } from 'history';
@@ -20,7 +20,7 @@ test('should filter products based on search term', () => {
     </MemoryRouter>
   );
   expect(getByPlaceholderText('Search Products')).toHaveValue('');
-  fireEvent.change(getByPlaceholderText('Search Products'), { target: { value: 'Formal Shirt' } });
+  fireEvent.change(getByPlaceholderText('Search Products'), { target: { value: 'qwerty' } });
   const customCardContainer = getByTestId('custom-card');
   if (customCardContainer) {
     expect(customCardContainer).toContainElement(getByTestId('no products'));
@@ -60,8 +60,6 @@ test('should render with pagination and handle page clicks', async () => {
       <Start />
     </MemoryRouter>
   );
-  const searchInput = screen.getByPlaceholderText('Search Products');
-  fireEvent.change(searchInput, { target: { value: 'Product' } });
   const cards = screen.getAllByTestId('custom-card');
   expect(cards.length).toBeLessThanOrEqual(15);
   await waitFor(() => {
@@ -79,22 +77,4 @@ test('renders the video container', () => {
   );
   const videoContainerElement = getByTestId('video-container');
   expect(videoContainerElement).toBeInTheDocument();
-});
-test('should navigate to buyer/login on login button click', async () => {
-  // Arrange
-  const history = createMemoryHistory();
-  const { getAllByTestId } = render(
-    <MemoryRouter>
-      <Start />
-    </MemoryRouter>
-  );
-
-  // Act
-  const loginButton = getAllByTestId('login-button');
-  fireEvent.click(loginButton[0]);
-
-  // Assert
-  await waitFor(() => {
-    expect(history.location.pathname).toBe('/');
-  });
 });

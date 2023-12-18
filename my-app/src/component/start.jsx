@@ -8,12 +8,17 @@ import Autosuggest from 'react-autosuggest';
 import './App.css';
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function Start() {
+
+//Initialisation
+
   const [type, setType] = useState(localStorage.getItem('type'));
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [value, setValue] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
+
+//Event handling
 
   const handletomenex = (id) => {
     localStorage.setItem('myID', id);
@@ -38,7 +43,8 @@ function Start() {
     } else if (action === 'register') {
       localStorage.setItem('type', type);
       navigate(`/${type}/register`);
-    }
+    } 
+    window.location.reload();
   };
 
   const handletologin = (key) => {
@@ -48,6 +54,8 @@ function Start() {
   const handletoregister = (key) => {
     handleAuthentication(key, 'register');
   };
+ 
+//mounting phase
 
   useEffect(() => {
     fetch('http://localhost:8080/api/combodata')
@@ -76,6 +84,8 @@ function Start() {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const onSuggestionsFetchRequested = ({ value }) => {
     const inputValue = (value || '').toLowerCase();
+
+      //updating phase
     setSuggestionsList(getSuggestions(inputValue));
   };
 
@@ -99,7 +109,7 @@ function Start() {
   const currentItems = filteredItems.slice(((currentPage * itemsPerPage) - itemsPerPage), currentPage * itemsPerPage);
   const paginate = pageNumber => {
     setCurrentPage(pageNumber);
-    window.scrollTo(0, 0); // Scroll to top on page change
+    window.scrollTo(0, 0); 
   };
 
   return (
@@ -108,7 +118,10 @@ function Start() {
         <RegistrationOption type={2} handleRegister={handletoregister} handleLogin={handletologin} />
       </div>
       <h2 style={{ textAlign: "center" }} data-testid="PRODUCTS:"> PRODUCTS: </h2>
-      <div className="search-container" data-testid="search-container">
+      <div className="search-container" data-testid="search-container"> 
+
+{/* rendering phase */}
+
         <Autosuggest
           suggestions={suggestionsList}
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -128,10 +141,9 @@ function Start() {
       </div>
       <div className='class-contain' data-testid="custom-card">
         {(currentItems).length !== 0 ? (
-          <>
+       <>
             {(currentItems).map(item => (
               <CustomCard
-
                 key={item.id}
                 item={item}
                 handleView={(itemName) => handletomenex(itemName)}

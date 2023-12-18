@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import axios from "axios";
-
+import withLogoutHandler from "./withLogouthandler";
 import { useNavigate } from 'react-router-dom';
 const User = () => {
   const [user, setUser] = useState({});
@@ -10,13 +10,6 @@ const User = () => {
   }
   
   useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-    };
-
     const username = localStorage.getItem("username");
     axios.get(`http://localhost:8080/api/user/${username}`)
       .then(response => {
@@ -45,4 +38,4 @@ const User = () => {
 }
 
 
-export default User;
+export default withLogoutHandler(User);

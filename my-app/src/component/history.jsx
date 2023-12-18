@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-import { BroadcastChannel } from "broadcast-channel";
+import withLogoutHandler from "./withLogouthandler";
 const fetchData = (url, setDataFunction, errorMessage) => {
   fetch(url)
     .then((response) => {
@@ -29,16 +29,6 @@ function History() {
   let type = localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
   const [Balance, setBalance] = useState(0);
-
-  useEffect(() => {
-    const logoutChannel = new BroadcastChannel('logoutChannel');
-    logoutChannel.onmessage = () => {
-      navigate("/start");
-      localStorage.clear();
-      window.location.reload();
-      enqueueSnackbar("Logout Successful");
-    };
-  }, []);
 
   const handlerepeat = (id, cost, count) => {
     console.log(id, cost, count);
@@ -339,4 +329,4 @@ function History() {
   );
 }
 
-export default History;
+export default withLogoutHandler(History);
