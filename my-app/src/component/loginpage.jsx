@@ -106,7 +106,7 @@ function LoginPage() {
   };
   const handleChange1 = (e) => {
     const value = e.target.value;
-    if (username.length == 0) {
+    if (username.length <6) {
       setError("*Enter Username");
     } else {
       setError('')
@@ -135,6 +135,7 @@ function LoginPage() {
           <h2 data-testid="Title">Login</h2>
           <div className="con">
             {renderInput("text", "Username", username, handleChange, error, "username")}
+           
             {renderInput("password", "Password", password, handleChange1, error1, "password")}
             <div style={errorStyle}>{error1}</div>
           </div>

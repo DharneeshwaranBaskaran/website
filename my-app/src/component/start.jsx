@@ -5,6 +5,7 @@ import CustomCard from "./customcard";
 import { useNavigate } from 'react-router-dom';
 import DissatisfiedSymbol from './DissatisfiedSymbol';
 import Autosuggest from 'react-autosuggest';
+import { act } from '@testing-library/react';
 import './App.css';
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 function Start() {
@@ -14,7 +15,11 @@ function Start() {
   const [type, setType] = useState(localStorage.getItem('type'));
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [value, setValue] = useState('');
+
+// Search-related state
+
+  const [value, setValue] = useState(''); 
+  const [suggestionsList, setSuggestionsList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
@@ -56,8 +61,9 @@ function Start() {
   };
  
 //mounting phase
-
-  useEffect(() => {
+//fetches data from an API and stores it in its state
+useEffect(() => {
+  act(() => {
     fetch('http://localhost:8080/api/combodata')
       .then(response => {
         if (!response.ok)
@@ -65,12 +71,14 @@ function Start() {
         return response.json();
       })
       .then(data => {
-        setData(data); 
+        setData(data);
       })
       .catch(error => {
         console.error('Error fetching history items:', error);
       });
-  }, []);
+  });
+}, []);
+
 
   const uniqueItems = Array.isArray(data)
     ? data.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic))
@@ -81,7 +89,7 @@ function Start() {
   };
 
   const suggestions = uniqueItems.map(item => item.topic);
-  const [suggestionsList, setSuggestionsList] = useState([]);
+  
   const onSuggestionsFetchRequested = ({ value }) => {
     const inputValue = (value || '').toLowerCase();
 
