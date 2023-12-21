@@ -1,7 +1,8 @@
 import backpic from "./images/backpic.jpg";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react"; 
+import { useLoginContext } from "../contexts/LoginContext";
 import './App.css';
 function LoginPage() {
   const errorStyle = {
@@ -22,46 +23,17 @@ function LoginPage() {
   );
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [username1, setUsername1] = useState('');
-  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [error1, setError1] = useState('');
   const [error2, setError2] = useState('');
   const { enqueueSnackbar } = useSnackbar();
   const type = localStorage.getItem('type');
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-
+  
+  const { showModal, setShowModal } = useLoginContext();
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-
-  const handlemail = async (event) => {
-    if (username1 == "" || email == "") {
-      enqueueSnackbar("Enter the Required data");
-    }
-    const selectedValue = localStorage.getItem('type');
-    try {
-      const response = await fetch(`http://localhost:8080/api/pass/${selectedValue}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: username1, email }),
-        credentials: 'include',
-      });
-      if (response.ok) {
-        setShowModal(!showModal);
-        enqueueSnackbar("Username and password sent to email", { variant: "success" });
-      }
-      else {
-        console.log(response);
-        enqueueSnackbar("Invalid Credentials");
-      }
-    } catch (error) {
-      enqueueSnackbar("An error occurred", { variant: "error" });
-    }
-  }
 
   const handleLogin = async (event) => {
     if (password == "") {
@@ -115,14 +87,6 @@ function LoginPage() {
     setError2('');
     setPassword(value);
   }
-  const handleChangepass = (event) => {
-    const { name, value } = event.target;
-    if (name === "username1") {
-      setUsername1(value);
-    } else if (name === "email") {
-      setEmail(value);
-    }
-  };
 
   const handlebackRegister = () => {
     navigate(`/${type}/register`);
@@ -135,7 +99,6 @@ function LoginPage() {
           <h2 data-testid="Title">Login</h2>
           <div className="con">
             {renderInput("text", "Username", username, handleChange, error, "username")}
-           
             {renderInput("password", "Password", password, handleChange1, error1, "password")}
             <div style={errorStyle}>{error1}</div>
           </div>
@@ -145,16 +108,6 @@ function LoginPage() {
           <div>
             <p>forgot password:</p>
             <button onClick={toggleModal} className="lob">Reset</button>
-            {showModal && (
-              <div>
-                <h2>Enter Username and Email:</h2>
-                <div className="con">
-                  {renderInput("text", "Username", username1, handleChangepass, "", "username1")}
-                  {renderInput("text", "Email", email, handleChangepass, "", "email")}
-                  <button type="submit" className="lob" onClick={handlemail}>Submit</button>
-                </div>
-              </div>
-            )}
           </div>
           <div style={errorStyle}>{error2}</div>
           {(localStorage.getItem('type') !== 'access' && localStorage.getItem('type') !== 'companyaccess') && (

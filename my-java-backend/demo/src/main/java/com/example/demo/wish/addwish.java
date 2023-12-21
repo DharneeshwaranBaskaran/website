@@ -59,14 +59,4 @@ public class addwish {
         }
     }
 
-    // Method to get combo_id by topic using JdbcTemplate
-    // private Long getComboIdByTopic(String topic) {
-    //     String sql = "SELECT id FROM combo WHERE topic = ?";
-    //     try {
-    //         return jdbcTemplate.queryForObject(sql, Long.class, topic);
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         return null;
-    //     }
-    // }
 }

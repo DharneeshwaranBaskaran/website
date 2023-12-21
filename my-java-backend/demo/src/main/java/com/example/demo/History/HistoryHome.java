@@ -2,6 +2,7 @@ package com.example.demo.History;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.*;
@@ -29,19 +30,8 @@ public class HistoryHome {
     private static class HistoryItemRowMapper implements RowMapper<HistoryItem> {
         @Override
         public HistoryItem mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            HistoryItem historyItem = new HistoryItem();
-            historyItem.setId(resultSet.getLong("combo_id"));
-            historyItem.setTopic(resultSet.getString("topic"));
-            historyItem.setDescription(resultSet.getString("description"));
-            historyItem.setCost(resultSet.getDouble("cost"));
-            historyItem.setCount(resultSet.getInt("count"));
-            historyItem.setUsername(resultSet.getString("username"));
-            historyItem.setState(resultSet.getBoolean("state"));
-            historyItem.setRating(resultSet.getDouble("rating"));
-            historyItem.setUrl(resultSet.getString("url"));
-            historyItem.setPerson(resultSet.getString("person"));
-            historyItem.setSeller(resultSet.getString("seller"));
-            return historyItem;
+             BeanPropertyRowMapper<HistoryItem> rowMapper = new BeanPropertyRowMapper<>(HistoryItem.class);
+        return rowMapper.mapRow(resultSet, rowNum);
         }
     }
 }

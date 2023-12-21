@@ -30,15 +30,11 @@ public class companyaccessinsertion {
         String password = generateRandomString(6);
 
         try {
-            // Check if the username already exists
             if (isUsernameExists(username)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
             }
 
-            // Find the provider ID
             Long providerId = findProviderId(provider);
-
-            // Insert data using JDBC template
             String sql = "INSERT INTO companyaccess (username, password, type, email, provider, company_id) VALUES (?, ?, ?, ?, ?, ?)";
             int rowsAffected = jdbcTemplate.update(sql, username, password, type, email, provider, providerId);
 

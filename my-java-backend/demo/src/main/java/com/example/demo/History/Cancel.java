@@ -3,7 +3,6 @@ package com.example.demo.History;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ public class Cancel {
         try {
             String updateSql = "UPDATE history SET state = ? WHERE id = ?";
             int rowsAffected = jdbcTemplate.update(updateSql, false, id);
-
             if (rowsAffected > 0) {
                 System.out.println("Product cancelled:" + id);
                 Map<String, String> response = new HashMap<>();

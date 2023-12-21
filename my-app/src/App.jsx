@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import HomePage from './component/homepage';
 import Men from './component/men';
 import Menext from './component/menext';
@@ -17,17 +18,22 @@ import User from "./component/User";
 import Address from "./component/address"; 
 import Email from "./component/Email"; 
 import withLoader from "./component/loader" 
+import Reset from "./component/reset"; 
+import { LoginContext } from "./contexts/LoginContext";
 const Load = withLoader(Start);
 function App() {
   let type=localStorage.getItem('type');
+  const [showModal,setShowModal]=useState(false); 
+  
   return (
   <div >
   <SnackbarProvider>
     <Router>
-      <Routes>
+      <LoginContext.Provider value={{ showModal, setShowModal }}>
+      <Routes> 
         <Route path="/start" element={<Load />} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
-        <Route path={`/${type}/login`} element={<LoginPage />} /> 
+        <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
         <Route path={`/${type}/homepage`} element={<HomePage />}/> 
         <Route path={`/${type}/men`} element={<Men />}/>
         <Route path={`/${type}/menext`} element={<Menext />}/> 
@@ -41,7 +47,9 @@ function App() {
         <Route path={`/${type}/user`}element={<User/>}/>
         <Route path={`/${type}/address`}element={<Address/>}/> 
         <Route path={`/${type}/mail`}element={<Email/>}/>
-      </Routes>
+        </Routes>
+        </LoginContext.Provider>
+      
     </Router>
   </SnackbarProvider>
 </div>

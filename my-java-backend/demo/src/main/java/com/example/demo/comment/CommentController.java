@@ -3,6 +3,7 @@ package com.example.demo.comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +26,8 @@ public class CommentController {
     public ResponseEntity<List<Comment>> getCommentsForItem(@PathVariable Long comid) {
         try {
             String sql = "SELECT * FROM comment WHERE comid = ?";
-            List<Comment> comments = jdbcTemplate.query(sql, (resultSet, rowNum) -> {
-                Comment comment = new Comment();
-                comment.setId(resultSet.getLong("id"));
-                comment.setTopic(resultSet.getString("topic"));
-                comment.setComment(resultSet.getString("comment"));
-                comment.setUsername(resultSet.getString("username"));
-                return comment;
-            }, comid);
+            BeanPropertyRowMapper<Comment> commentRowMapper = new BeanPropertyRowMapper<>(Comment.class);
+List<Comment> comments = jdbcTemplate.query(sql, commentRowMapper, comid);
 
             return ResponseEntity.ok(comments);
         } catch (Exception e) {

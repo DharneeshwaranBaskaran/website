@@ -31,7 +31,7 @@ public class companyaccess {
     private String provider;
     // Constructors, getters, and setters
     @ManyToOne
-    @JoinColumn(name = "company_id")  // Create a foreign key column named seller_id
+    @JoinColumn(name = "company_id") 
     private company company;
 
 }

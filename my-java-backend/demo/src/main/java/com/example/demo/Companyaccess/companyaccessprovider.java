@@ -2,9 +2,9 @@ package com.example.demo.Companyaccess;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -22,14 +22,7 @@ public class companyaccessprovider {
     public ResponseEntity<List<companyaccess>> getComboByPerson(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM companyaccess WHERE username = ?";
-            List<companyaccess> accessList = jdbcTemplate.query(sql, (resultSet, rowNum) -> {
-                companyaccess accesss = new companyaccess();
-                accesss.setId(resultSet.getLong("id"));
-                accesss.setUsername(resultSet.getString("username"));
-                accesss.setType(resultSet.getString("type"));
-                accesss.setProvider(resultSet.getString("provider"));
-                return accesss;
-            }, username);
+             List<companyaccess> accessList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(companyaccess.class), username);
 
             return ResponseEntity.ok(accessList);
         } catch (Exception e) {
@@ -42,14 +35,7 @@ public class companyaccessprovider {
     public ResponseEntity<List<companyaccess>> getComByPerson(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM companyaccess WHERE provider = ?";
-            List<companyaccess> accessList = jdbcTemplate.query(sql, (resultSet, rowNum) -> {
-                companyaccess accesss = new companyaccess();
-                accesss.setId(resultSet.getLong("id"));
-                accesss.setUsername(resultSet.getString("username"));
-                accesss.setType(resultSet.getString("type"));
-                accesss.setProvider(resultSet.getString("provider"));
-                return accesss;
-            }, username);
+            List<companyaccess> accessList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(companyaccess.class), username);
 
             return ResponseEntity.ok(accessList);
         } catch (Exception e) {
