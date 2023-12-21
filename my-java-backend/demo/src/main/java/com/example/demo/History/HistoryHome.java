@@ -28,10 +28,16 @@ public class HistoryHome {
     }
 
     private static class HistoryItemRowMapper implements RowMapper<HistoryItem> {
-        @Override
-        public HistoryItem mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-             BeanPropertyRowMapper<HistoryItem> rowMapper = new BeanPropertyRowMapper<>(HistoryItem.class);
-        return rowMapper.mapRow(resultSet, rowNum);
-        }
+    @Override
+    public HistoryItem mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        BeanPropertyRowMapper<HistoryItem> rowMapper = new BeanPropertyRowMapper<>(HistoryItem.class);
+        HistoryItem historyItem = rowMapper.mapRow(resultSet, rowNum);
+
+        // Set the comboId from the resultSet
+        historyItem.setId(resultSet.getLong("combo_id"));
+
+        return historyItem;
     }
+}
+
 }

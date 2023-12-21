@@ -37,7 +37,7 @@ public class stock{
 
             if (rowsAffected > 0) {
                 System.out.println("Count updated successfully for product: " + id);
-                return ResponseEntity.ok("Count updated successfully for product: " + id);
+                return ResponseEntity.ok().body("{\"message\": \"Count updated successfully for product: " + id + "\"}");
             } else {
                 System.out.println("No product found with id: " + id);
                 return ResponseEntity.badRequest().body("No product found with id: " + id);

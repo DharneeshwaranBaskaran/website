@@ -55,23 +55,24 @@ function Phone() {
     navigate(`/${localStorage.getItem("type")}/homepage`);
   }
 
-  const addtocart=async (id)=>{
-  try {
-    const response = await fetch(`http://localhost:8080/api/transferToCart/${id}`, {
-      method: 'POST',
-    });
-
-    if (response.ok) {
-      const responseData = await response.json();
-      console.log(responseData);
-      navigate(`/${localStorage.getItem("type")}/cart`);
-    } else {
-      console.error('Error transferring data:', response.statusText);
+  const addtocart = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/transferToCart/${id}`, {
+        method: 'POST',
+      });
+  
+      if (response.ok) {
+        const responseData = await response.text();  
+        console.log(responseData);
+        navigate(`/${localStorage.getItem("type")}/cart`);
+      } else {
+        console.error('Error transferring data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error transferring data:', error);
     }
-  } catch (error) {
-    console.error('Error transferring data:', error);
-  }
-  }
+  };
+  
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>

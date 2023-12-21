@@ -17,10 +17,9 @@ import Phone from "./component/Wish";
 import User from "./component/User"; 
 import Address from "./component/address"; 
 import Email from "./component/Email"; 
-import withLoader from "./component/loader" 
 import Reset from "./component/reset"; 
 import { LoginContext } from "./contexts/LoginContext";
-const Load = withLoader(Start);
+
 function App() {
   let type=localStorage.getItem('type');
   const [showModal,setShowModal]=useState(false); 
@@ -31,7 +30,7 @@ function App() {
     <Router>
       <LoginContext.Provider value={{ showModal, setShowModal }}>
       <Routes> 
-        <Route path="/start" element={<Load />} />
+        <Route path="/start" element={<Start/>} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
         <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
         <Route path={`/${type}/homepage`} element={<HomePage />}/> 

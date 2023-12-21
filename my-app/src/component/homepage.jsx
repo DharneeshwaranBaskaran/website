@@ -277,15 +277,16 @@ function HomePage() {
       }).then((response) => {
         if (!response.ok) {
           throw new Error(`Error updating stock count: ${response.statusText}`);
-        } return response.json();
-      }).then(() => {
-        enqueueSnackbar('Stock count updated successfully', { variant: 'success' });
+        }
+        return response.json();
+      }).then((data) => {
+        enqueueSnackbar(data.message, { variant: 'success' });
         window.location.reload();
       }).catch((error) => {
         console.error('Error updating stock count:', error);
         enqueueSnackbar('Error updating stock count', { variant: 'error' });
       });
-    }
+    }      
   }
   const [selectValues, setSelectValues] = useState(user.map((item) => ""));
   const handleSelectChange = (index, value) => {
@@ -384,13 +385,14 @@ function HomePage() {
         {uniqueItems.length > 0 && (
           <><h2 style={{ marginLeft: "10px" }} data-testid="Title">RECOMMENDED PRODUCTS:</h2>
             <div className='class-contain' data-testid="Card">
-              {uniqueItems.map((item, index) => (
+              {uniqueItems.map((item, index) => ( 
+                <>
                 <CustomCard
                   key={index}
                   item={item}
                   handleView={(itemid) => handleRecommendation(itemid)}
                   showButton={true} />
-              ))}
+              {uniqueItems.combo_id}</>))}
             </div>
           </>)}
       </> </>)}
