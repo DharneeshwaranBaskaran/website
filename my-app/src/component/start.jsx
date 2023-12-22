@@ -162,7 +162,7 @@ useEffect(() => {
       </div >
       <div className="pagination" data-testid="pagination">
         <ul>
-          <div data-testid="pagination-button" >
+          <div data-testid="pagination-button" style={{ display: 'flex', justifyContent: 'center' }}>
             {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
               <li
                 key={i}
