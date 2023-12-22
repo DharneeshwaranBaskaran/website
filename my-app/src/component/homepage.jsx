@@ -214,6 +214,8 @@ function HomePage() {
     }).catch((error) => {
       console.error('Error deleting data:', error);
     });
+    window.location.reload();
+    enqueueSnackbar("Removed Successfully");
   }
   useEffect(() => {
     const sortByCriteria = (a, b) => {
@@ -313,6 +315,7 @@ function HomePage() {
     }).catch((error) => {
       console.error('Error deleting reminder:', error);
     });
+    navigate(`/${typeo}/menext`);
   }
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >

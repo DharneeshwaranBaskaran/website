@@ -79,7 +79,6 @@ useEffect(() => {
   });
 }, []);
 
-
   const uniqueItems = Array.isArray(data)
     ? data.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic))
     : [];
@@ -135,11 +134,9 @@ useEffect(() => {
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
           onSuggestionsClearRequested={onSuggestionsClearRequested}
           getSuggestionValue={suggestion => suggestion}
-
           renderSuggestion={suggestion => (
             <div data-testid="Search Products">{suggestion}</div>
           )}
-
           inputProps={{
             placeholder: "Search Products",
             value: value,
@@ -176,7 +173,6 @@ useEffect(() => {
               </li>
             ))}
           </div>
-
         </ul>
       </div><br />
       <div className="video-container" data-testid="video-container">

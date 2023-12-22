@@ -152,10 +152,8 @@ function Add() {
     }
   };
 
-  useEffect(() => {
-    const url = `http://localhost:8080/api/balance/${Username}`;
-  
-    fetch(url)
+  useEffect(() => {  
+    fetch(`http://localhost:8080/api/balance/${Username}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');

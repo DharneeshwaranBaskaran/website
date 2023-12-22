@@ -24,9 +24,7 @@ const GoogleSignInButton = ({ onGoogleSignIn }) => {
                 };
                 fetch('http://localhost:8080/api/register/google', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userData),
                 })
                     .then(response => response.json())

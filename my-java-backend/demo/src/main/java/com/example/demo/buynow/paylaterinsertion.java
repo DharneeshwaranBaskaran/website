@@ -29,7 +29,7 @@ public class paylaterinsertion {
     public ResponseEntity<String> transferCartToHistory(@PathVariable String username) {
         String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
         String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String updateComboSql = "UPDATE combo SET history_item_id = ?, stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
+        String updateComboSql = "UPDATE combo SET stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
         String insertPayLaterSql = "INSERT INTO paylater (topic, description, cost, count, username, state, rating, url, person, seller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
 
@@ -62,7 +62,7 @@ public class paylaterinsertion {
                         "\nCount: " + resultSet.getInt("count"));
 
                 int newId = lastId + 1;
-                jdbcTemplate.update(updateComboSql, newId, itemCount, itemCount, itemName);
+                jdbcTemplate.update(updateComboSql, itemCount, itemCount, itemName);
 
                 jdbcTemplate.update(insertPayLaterSql, resultSet.getString("topic"), resultSet.getString("description"),
                         resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),

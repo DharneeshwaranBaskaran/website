@@ -149,7 +149,6 @@ function RegisterPage() {
       setError(errorMessage);
     }
   };
-  
 
   const handleChange = (e) => {
     handleInputChange(e, setUsername, setValidUsername, 6, '*Username should contain a minimum of 6 characters', setIsClicked, setError);

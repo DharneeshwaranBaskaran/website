@@ -28,65 +28,52 @@ public class History {
 
     @PostMapping("/transferToHistory/{username}")
     public ResponseEntity<String> transferCartToHistory(@PathVariable String username) {
-        try {
-            String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
-            List<HistoryItem> cartItems = jdbcTemplate.query(selectSql, new Object[]{username, true}, new HistoryItemRowMapper());
+        String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
+        String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String updateComboSql = "UPDATE combo SET stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
+        String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
 
-            String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            String updateComboSql = "UPDATE combo SET history_item_id = ?, stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
+        List<String> dataToSend = new ArrayList<>();
 
-            List<String> dataToSend = new ArrayList<>();
+        jdbcTemplate.query(selectSql, (resultSet) -> {
+            while (resultSet.next()) {
+                String itemName = resultSet.getString("topic");
+                int itemCount = resultSet.getInt("count");
 
-            for (HistoryItem cartItem : cartItems) {
-                int newId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class) + 1;
+                int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class);
 
-                String checkHistorySql = "SELECT * FROM history WHERE topic = ? AND description = ?";
-                List<HistoryItem> historyItems = jdbcTemplate.query(checkHistorySql, new Object[]{cartItem.getTopic(), cartItem.getDescription()}, new HistoryItemRowMapper());
+                if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM history WHERE topic = ? AND description = ?", Integer.class, itemName, resultSet.getString("description")) > 0) {
+                    jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
+                            resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
+                            resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
+                            resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
+                            resultSet.getString("weekend"));
+                } else {
+                    jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
+                            resultSet.getDouble("cost") * 10 / 9, resultSet.getInt("count"), resultSet.getString("username"),
+                            resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
+                            resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
+                            resultSet.getString("weekend"));
+                }
 
-                double modifiedCost = historyItems.isEmpty() ? cartItem.getCost() * 10 / 9 : cartItem.getCost();
+                dataToSend.add("Topic: " + resultSet.getString("topic") +
+                        "\nDescription: " + resultSet.getString("description") +
+                        "\nCost: " + resultSet.getDouble("cost") +
+                        "\nCount: " + resultSet.getInt("count"));
 
-                jdbcTemplate.update(insertSql,
-                        cartItem.getTopic(),
-                        cartItem.getDescription(),
-                        modifiedCost,
-                        cartItem.getCount(),
-                        cartItem.getUsername(),
-                        cartItem.getState(),
-                        cartItem.getRating(),
-                        cartItem.getUrl(),
-                        cartItem.getPerson(),
-                        cartItem.getSeller(),
-                        cartItem.getId(),
-                        cartItem.getWeekend());
+                int newId = lastId + 1;
+                jdbcTemplate.update(updateComboSql, itemCount, itemCount, itemName);
+}
+            return null;
+        }, username, true);
 
-                dataToSend.add("Topic: " + cartItem.getTopic() +
-                        "\nDescription: " + cartItem.getDescription() +
-                        "\nCost: " + modifiedCost +
-                        "\nCount: " + cartItem.getCount());
+        jdbcTemplate.update(updateSql, false, username);
 
-                jdbcTemplate.update(updateComboSql, newId, cartItem.getCount(), cartItem.getCount(), cartItem.getTopic());
-            }
+        sendEmail("gbdharneeshwaran@gmail.com", username, dataToSend);
 
-            String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
-            jdbcTemplate.update(updateSql, false, username);
-
-            sendEmail("gbdharneeshwaran@gmail.com", username, dataToSend);
-
-            return ResponseEntity.ok("Cart items transferred to history for username: " + username);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok("Cart items transferred to history for username: " + username);
     }
-
-    private static class HistoryItemRowMapper implements RowMapper<HistoryItem> {
-        @Override
-        public HistoryItem mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-             BeanPropertyRowMapper<HistoryItem> rowMapper = new BeanPropertyRowMapper<>(HistoryItem.class);
-        return rowMapper.mapRow(resultSet, rowNum);
-        }
-    }
-
+    
             private void sendEmail(String toEmail, String username, List<String> data) {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server

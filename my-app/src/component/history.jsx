@@ -144,6 +144,8 @@ function History() {
       .catch((error) => {
         console.error('Error deleting combo:', error);
       });
+      window.location.reload();
+      enqueueSnackbar("Product Removed Successfully");
   };
 
   const handleSearchChange = (e) => {

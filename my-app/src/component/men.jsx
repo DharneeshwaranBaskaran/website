@@ -31,11 +31,11 @@ function Men() {
       }).then(response => response.json())
         .then(data => {
           console.log(data);
-          navigate(`/${type}/homepage`);
-          enqueueSnackbar("You will be Reminded if the stock arrives");
         }).catch(error => {
           console.error('Error sending id to the backend:', error);
         });
+        navigate(`/${type}/homepage`);
+          enqueueSnackbar("You will be Reminded if the stock arrives");
     }
     else {
       localStorage.setItem('myID', id);

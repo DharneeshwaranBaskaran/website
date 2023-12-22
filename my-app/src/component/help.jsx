@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "./withLogouthandler";
 function Help() {
-  let type = localStorage.getItem('type');
   const navigate = useNavigate();
   const handleback = () => {
     navigate("/buyer/homepage");
