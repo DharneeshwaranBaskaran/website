@@ -3,10 +3,11 @@ import { enqueueSnackbar, useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
 const Email = () => {
   const Username = localStorage.getItem("username");
   const navigate = useNavigate();
-
+  const { jwt, setjwt } = useLoginContext();
   const [email, setemail] = useState('');
   const handleChange4 = (e) => {
     const value = e.target.value;
@@ -44,7 +45,10 @@ const Email = () => {
   }
 
   return (
+    
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+      {jwt && ( 
+      <>
       <div className="logout-button"   >
         <button onClick={handlehome} style={{ backgroundColor: "#713ABE", color: "white" }}>Home 🏠</button>
       </div>
@@ -59,7 +63,9 @@ const Email = () => {
             onChange={handleChange4}
           /><button style={{ marginLeft: "110px" }} className="lob" onClick={updateemail}>Confirm</button>
         </div>
-      </div>
+      </div> 
+      </> 
+    )}
     </div>
   );
 }

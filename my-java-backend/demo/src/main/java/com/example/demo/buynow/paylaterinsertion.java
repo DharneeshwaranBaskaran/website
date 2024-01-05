@@ -40,7 +40,7 @@ public class paylaterinsertion {
                 String itemName = resultSet.getString("topic");
                 int itemCount = resultSet.getInt("count");
 
-                int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class);
+                //int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class);
 
                 if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM history WHERE topic = ? AND description = ?", Integer.class, itemName, resultSet.getString("description")) > 0) {
                     jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
@@ -61,7 +61,6 @@ public class paylaterinsertion {
                         "\nCost: " + resultSet.getDouble("cost") +
                         "\nCount: " + resultSet.getInt("count"));
 
-                int newId = lastId + 1;
                 jdbcTemplate.update(updateComboSql, itemCount, itemCount, itemName);
 
                 jdbcTemplate.update(insertPayLaterSql, resultSet.getString("topic"), resultSet.getString("description"),

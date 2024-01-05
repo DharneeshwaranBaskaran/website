@@ -3,13 +3,14 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
 function Edit() {
   const [cost, setcost] = useState('');
   const id = localStorage.getItem('edit');
   const type = localStorage.getItem('type');
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-
+  const { jwt, setjwt } = useLoginContext();
   const handleChange5 = (e) => {
     const value = e.target.value;
     setcost(value);
@@ -43,6 +44,8 @@ function Edit() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+      {jwt && ( 
+        <>
       <div className="logout-button">
         <button onClick={back} >Back To Home 🏠</button>
       </div>
@@ -58,6 +61,8 @@ function Edit() {
           <button onClick={handleedit} className="lob">Edit</button>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

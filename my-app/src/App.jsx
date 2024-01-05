@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import HomePage from './component/homepage';
 import Men from './component/men';
 import Menext from './component/menext';
@@ -23,12 +23,14 @@ import { LoginContext } from "./contexts/LoginContext";
 function App() {
   let type=localStorage.getItem('type');
   const [showModal,setShowModal]=useState(false); 
-  
+  const [Balance, setBalance] = useState(0);  
+
+  const  [jwt, setjwt ] = useState([]);
   return (
   <div >
   <SnackbarProvider>
     <Router>
-      <LoginContext.Provider value={{ showModal, setShowModal }}>
+      <LoginContext.Provider value={{ Balance,setBalance,showModal, setShowModal,jwt,setjwt}}>
       <Routes> 
         <Route path="/start" element={<Start/>} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
@@ -47,8 +49,7 @@ function App() {
         <Route path={`/${type}/address`}element={<Address/>}/> 
         <Route path={`/${type}/mail`}element={<Email/>}/>
         </Routes>
-        </LoginContext.Provider>
-      
+        </LoginContext.Provider>      
     </Router>
   </SnackbarProvider>
 </div>

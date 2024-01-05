@@ -6,10 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import DissatisfiedSymbol from './DissatisfiedSymbol';
 import Autosuggest from 'react-autosuggest';
 import { act } from '@testing-library/react';
+
+import { useLoginContext } from "../contexts/LoginContext";
 import './App.css';
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
+
 function Start() {
 
+  const { jwt, setjwt } = useLoginContext();
 //Initialisation
 
   const [type, setType] = useState(localStorage.getItem('type'));
@@ -125,7 +129,9 @@ useEffect(() => {
         <RegistrationOption type={2} handleRegister={handletoregister} handleLogin={handletologin} />
       </div>
       <h2 style={{ textAlign: "center" }} data-testid="PRODUCTS:"> PRODUCTS: </h2>
+      {jwt}
       <div className="search-container" data-testid="search-container"> 
+
 
 {/* rendering phase */}
 
@@ -183,7 +189,8 @@ useEffect(() => {
           <RegistrationOption type={1} header={"As Individual:"} handleRegister={handletoregister} handleLogin={handletologin} />
           <RegistrationOption type={0} header={"As company:"} handleRegister={handletoregister} handleLogin={handletologin} />
         </h2>
-        <h2>Are You a DataBase Viewer?</h2>
+        <h2>Are You a DataBase Viewer?</h2> 
+        
         <RegistrationOption type={3} header={"As Individual:"} handleLogin={handletologin} />
         <RegistrationOption type={4} header={"As company:"} handleLogin={handletologin} />
       </div>

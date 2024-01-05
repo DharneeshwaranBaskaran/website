@@ -7,8 +7,10 @@ import CustomCard from './customcard';
 import './App.css'; 
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from './withLogouthandler';
+import { useLoginContext } from "../contexts/LoginContext";
 function Men() {
   const { enqueueSnackbar } = useSnackbar();
+  const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
   const [ascending, setAscending] = useState(true);
   const [countSortAscending, setCountSortAscending] = useState(true);
@@ -93,7 +95,9 @@ function Men() {
   });
   const f = filterdata.filter(item => item.count == 0);
   return (
-    <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}> 
+    {jwt && ( 
+        <>
       <div className="logout-button">
         <Select
           style={{ height: '30px' }}
@@ -103,7 +107,8 @@ function Men() {
           <MenuItem value={fil1}>{fil1}</MenuItem>
           <MenuItem value={fil2}>{fil2}</MenuItem>
           <MenuItem value={fil3}>{fil3}</MenuItem>
-        </Select>
+        </Select> 
+        {jwt}
         <button onClick={handlebackhome} style={{ backgroundColor: "#5B0888" }}>Back 🏠</button>
         <button onClick={toggleModal} style={{ backgroundColor: "#713ABE" }}>Offer Products🎁</button>
         <button onClick={toggleSorting} style={{ backgroundColor: "#793FDF" }}>
@@ -155,7 +160,8 @@ function Men() {
             )}
         </>)}
       </div>
-      <br />
+      <br /> 
+      </>)}
     </div>
   )
 }

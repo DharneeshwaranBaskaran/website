@@ -3,6 +3,7 @@ import { enqueueSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
 const fetchData = (url, setDataFunction, errorMessage) => {
   fetch(url)
     .then((response) => {
@@ -21,6 +22,7 @@ const fetchData = (url, setDataFunction, errorMessage) => {
 
 };
 function History() {
+  const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
   const [Data, setData] = useState([]);
   const [Items, setItems] = useState([]);
@@ -233,6 +235,8 @@ function History() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+      {jwt && ( 
+      <>
       <div className="logout-button">
         <button onClick={handlebacktohomefromhis} >Back To Home 🏠</button>
       </div>
@@ -326,6 +330,7 @@ function History() {
             </tbody>
           </table>
         </>)}
+      </>)} 
       </>)}
     </div>
   );

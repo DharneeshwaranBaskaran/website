@@ -3,11 +3,12 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-import withLogoutHandler from "./withLogouthandler";
+import withLogoutHandler from "./withLogouthandler"; 
+import { useLoginContext } from "../contexts/LoginContext";
 function Payment() {
   const navigate = useNavigate();
   let Username = localStorage.getItem('username');
-  const [Balance, setBalance] = useState(0);
+  const {Balance, setBalance} = useLoginContext();
   const { enqueueSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -15,23 +16,13 @@ function Payment() {
   const typeo = localStorage.getItem('type');
   const [csvData, setCsvData] = useState([]);
   const [formData, setFormData] = useState(new FormData());
+  
+  const { jwt, setjwt } = useLoginContext();
   const handlebacktohomefrompay = () => {
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
     navigate(`/${typeo}/homepage`);
   }
-  useEffect(() => {
-    fetch(`http://localhost:8080/api/balance/${Username}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      }).then((data) => {
-        setBalance(data);
-      }).catch((error) => {
-        console.error('Error fetching balance:', error);
-      });
-  }, [Username]);
+  
   const handleRegister = async (event) => {
     let endpoint = "";
     if (localStorage.getItem("type") === "seller") {
@@ -120,6 +111,8 @@ function Payment() {
   );
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh"}}>
+      {jwt && ( 
+        <>
       <div className="logout-button">
         <button onClick={handlebacktohomefrompay} >Back To Home 🏠</button>
       </div>
@@ -169,6 +162,7 @@ function Payment() {
           </tbody>
         </table>
       </div>
+      </>)}
     </div>
   )
 }

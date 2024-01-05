@@ -3,6 +3,8 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
+
 const useDataFetching = (url, setter, dependencies = []) => {
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +25,7 @@ const useDataFetching = (url, setter, dependencies = []) => {
 function Cart() {
   const { enqueueSnackbar } = useSnackbar();
   const [It, setIt] = useState([]);
-  const [Balance, setBalance] = useState(0);
+  const {Balance, setBalance} = useLoginContext();
   const [Address, setAddress] = useState('');
   const [address, setaddress] = useState('');
   let Username = localStorage.getItem('username');
@@ -31,6 +33,7 @@ function Cart() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const type = localStorage.getItem("type")
+  const { jwt, setjwt } = useLoginContext();
   const handlebacktohome = () => {
     navigate(`/${type}/homepage`);
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
@@ -54,7 +57,8 @@ function Cart() {
       if (Items.length === 0)
         enqueueSnackbar("Your cart is empty", { variant: "info" });
       else if (Balance > total) {
-        const newBalance = Balance - (total * 9 / 10);
+        const newBalance = Balance - (total * 9 / 10); 
+        setBalance(newBalance);
         if (val === "retain") {
           fetch(`http://localhost:8080/api/HistoryRetainCart/${Username}`, {
             method: 'POST',
@@ -83,7 +87,8 @@ function Cart() {
         }
         else if (val === "express" || val === "pay") {
           if (It.length < 10 && (val === "express")) {
-            newBalance = newBalance - 10;
+            newBalance = newBalance - 10; 
+            setBalance(newBalance);
           }
           fetch(`http://localhost:8080/api/transferToHistory/${Username}`, {
             method: 'POST',
@@ -210,6 +215,8 @@ function Cart() {
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
+      {jwt && ( 
+      <>
       <div className="logout-button">
         <button onClick={handlebacktohome} style={{ backgroundColor: "#5B0888" }}>Back To Home 🏠</button>
         {backButton}
@@ -291,6 +298,8 @@ function Cart() {
       <p style={{ marginLeft: 20 }}>*$10 Extra for Non Premium Users in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*Products will be delivered within 24 hours in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*The total should be less than $50 for payment later</p>
+      </>
+      )}
     </div>
   )
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
 function Help() {
   const navigate = useNavigate();
   const handleback = () => {
     navigate("/buyer/homepage");
   }
-
+  const { jwt, setjwt } = useLoginContext();
   const sendEmail = () => {
     window.location.href = "mailto:support@example.com";
   }
@@ -24,6 +25,8 @@ function Help() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
+      {jwt && ( 
+      <>
       <div className="logout-button">
         <button onClick={handleback}>Home 🏠</button>
       </div>
@@ -45,6 +48,7 @@ function Help() {
           <p>Phone:9840950950</p>
         </div>
       </div>
+      </> )}
     </div>
   );
 }

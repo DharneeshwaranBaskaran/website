@@ -10,6 +10,7 @@ import { Card } from "@mui/material";
 import PieChart from "./piechart";
 import withLogoutHandler from "./withLogouthandler"; 
 import { BroadcastChannel } from "broadcast-channel";
+import { useLoginContext } from "../contexts/LoginContext";
 function HomePage() {
   const renderInputField = (type, placeholder, value, onChange, style, classs) => (
     <input type={type} placeholder={placeholder} value={value} onChange={onChange} style={style} className={classs} 
@@ -23,6 +24,7 @@ function HomePage() {
   const [user, setuser] = useState([]);
   const [Balance, setBalance] = useState(0);
   const [cart, setcart] = useState([]);
+  const { jwt, setjwt } = useLoginContext();
   const username = localStorage.getItem('username');
   let typeo = localStorage.getItem('type');
   const [searchQuery, setSearchQuery] = useState('');
@@ -319,6 +321,8 @@ function HomePage() {
   }
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
+            {jwt && ( 
+        <>
       <div className="logout-button">
         {localStorage.getItem('type') === 'buyer' && (<>
           <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
@@ -509,6 +513,8 @@ function HomePage() {
           </table>
         </>)}
       </div>
+      </>
+      )}
     </div>
   );
 }

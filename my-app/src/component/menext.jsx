@@ -7,6 +7,8 @@ import './App.css';
 import { FiVideo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from './withLogouthandler';
+import { useLoginContext } from "../contexts/LoginContext";
+
 function Menext() {
   const navigate = useNavigate();
   const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
@@ -20,6 +22,7 @@ function Menext() {
   const [Item, setItem] = useState([]);
   const [isImage, setIsImage] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '' });
+  const { jwt, setjwt } = useLoginContext();
   const [count, setCount] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
   let Username = localStorage.getItem("username");
@@ -255,6 +258,8 @@ function Menext() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh", overflowX: "hidden", overflowY: "hidden" }}>
+      {jwt && ( 
+        <>
       <div className="logout-button">
         {cartButton}
         {backButton}
@@ -351,6 +356,7 @@ function Menext() {
         </div>
       </div>
       <br />
+      </>)}
     </div>
   )
 }

@@ -4,11 +4,12 @@ import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
+import { useLoginContext } from "../contexts/LoginContext";
 function Add() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
   const [Upi, setUpi] = useState("");
-  const [Balance, setBalance] = useState(0);
+  const {Balance, setBalance} = useLoginContext();
   const [cat, setcat] = useState('');
   const [cost, setcost] = useState();
   const [description, setdescription] = useState('');
@@ -20,7 +21,7 @@ function Add() {
   const type = localStorage.getItem('type');
   const [csvData, setCsvData] = useState([]);
   const [formData, setFormData] = useState(new FormData());
-
+  const { jwt, setjwt } = useLoginContext();
   const backtocart = (value) => {
     navigate(`/${type}/${value}`);
     enqueueSnackbar(`Back to ${value}`, { variant: "default" });
@@ -61,13 +62,15 @@ function Add() {
   };
 
   const addBalance = async () => {
+    navigate(`/${type}/cart`); 
     const amountToAdd = parseFloat(inputValue);
     if (isNaN(amountToAdd) || amountToAdd <= 0 || amountToAdd.length < 1) {
       enqueueSnackbar("Please enter a valid positive number", { variant: "error" });
     } else if (Upi.length < 6 || !(Upi.includes("@"))) {
       enqueueSnackbar("Enter a valid Upi")
     } else {
-      const newBalance = Balance + amountToAdd;
+      const newBalance = Balance + amountToAdd; 
+      setBalance(newBalance);
       try {
         const url = `http://localhost:8080/api/updateUserBalance/${Username}`;
         const options = {
@@ -88,10 +91,9 @@ function Add() {
         console.log('Error updating user balance catch');
 
       }
-      
-      navigate(`/${type}/cart`);
       enqueueSnackbar(`Balance Updated to ${newBalance}`, { variant: "success" });
       enqueueSnackbar("Back to Cart", { variant: "default" });
+      
     }
   }
 
@@ -151,25 +153,11 @@ function Add() {
         });
     }
   };
-
-  useEffect(() => {  
-    fetch(`http://localhost:8080/api/balance/${Username}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setBalance(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, [Username]);
   
   return (
     <div style={{ backgroundColor: "#e5e5ff" }} >
+      {jwt && ( 
+        <>
       <div className="logout-button">
         <button onClick={() => backtocart("cart")} >Cart</button>
         <button onClick={() => backtocart("homepage")} >Back To Home</button>
@@ -231,6 +219,8 @@ function Add() {
           </tbody>
         </table>
       </div>
+      </>
+      )}
     </div>
   );
 }

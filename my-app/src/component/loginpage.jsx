@@ -29,7 +29,7 @@ function LoginPage() {
   const { enqueueSnackbar } = useSnackbar();
   const type = localStorage.getItem('type');
   const navigate = useNavigate();
-  
+  const { jwt, setjwt } = useLoginContext();
   const { showModal, setShowModal } = useLoginContext();
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -52,6 +52,7 @@ function LoginPage() {
       if (response.ok) {
         const token = await response.text();
         localStorage.setItem('token', token);
+        setjwt(token);
         console.log(token);
         localStorage.setItem('username', username);
         console.log(username);
@@ -76,7 +77,7 @@ function LoginPage() {
   };
   const handleChange1 = (e) => {
     const value = e.target.value;
-    if (username.length <6) {
+    if (username.length <1) {
       setError("*Enter Username");
     } else {
       setError('')
@@ -98,7 +99,6 @@ function LoginPage() {
           <div className="con">
             {renderInput("text", "Username", username, handleChange, error, "username")}
             {renderInput("password", "Password", password, handleChange1, error1, "password")}
-            <div style={errorStyle}>{error1}</div>
           </div>
           <div className="log">
             <button onClick={handleLogin} className="lob" >Login</button>

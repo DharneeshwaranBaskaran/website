@@ -2,12 +2,13 @@ import React, { useEffect,useState ,useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack"; 
 import withLogoutHandler from './withLogouthandler';
+import { useLoginContext } from "../contexts/LoginContext";
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const navigate = useNavigate(); 
   const username=localStorage.getItem("username");
-
+  const { jwt, setjwt } = useLoginContext();
   const fetchWishlist = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/wishlist/${username}`);
@@ -76,6 +77,8 @@ function Phone() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+      {jwt && ( 
+        <>
         <div className="logout-button"> 
         <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 
         </div>
@@ -108,6 +111,7 @@ function Phone() {
         </tbody>
       </table>
     </div>
+    </>)}
     </div>
   );
 }

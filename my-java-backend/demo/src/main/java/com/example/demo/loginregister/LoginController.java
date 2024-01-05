@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
@@ -37,7 +35,6 @@ public class LoginController {
 
             if (retrievedPassword != null && retrievedPassword.equals(loginRequest.getPassword())) {
                 Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-
                 String jwtToken = Jwts.builder()
                         .setSubject(loginRequest.getUsername())
                         .signWith(key, SignatureAlgorithm.HS512)
@@ -48,7 +45,8 @@ public class LoginController {
                 System.out.println("error");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
             }
-        } catch (Exception e) {
+        } catch (Exception e) { 
+            System.out.println(e);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
         }
