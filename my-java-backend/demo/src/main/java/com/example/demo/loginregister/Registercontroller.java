@@ -1,4 +1,5 @@
 package com.example.demo.loginregister;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,7 +10,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import com.example.demo.Seller.seller;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 import javax.sql.DataSource;
+
+import java.security.Key;
 import java.util.Objects;
 
 @RestController
@@ -113,6 +121,9 @@ public class Registercontroller {
 
         return randomString.toString();
     }
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
     @PostMapping("/register/google")
     public ResponseEntity<String> registerGoogleUser(@RequestBody GoogleUserRequest request) {
         String username = request.getUsername(); 
@@ -127,10 +138,15 @@ public class Registercontroller {
             String sql = "INSERT INTO users (username, password, address, email, balance) VALUES (?, ?, ?, ?, ?)";
             int rowsAffected = jdbcTemplate.update(sql, username, generatedPassword, address, email, 1000);
 
-            if (rowsAffected > 0) {
-                System.out.println("Data inserted successfully.");
+            if (rowsAffected > 0) { Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+                String jwtToken = Jwts.builder()
+                        .setSubject(request.getUsername())
+                        .signWith(key, SignatureAlgorithm.HS512)
+                        .compact();
+                System.out.println(jwtToken);
+                
                 sendEmail(email, username, generatedPassword);
-                return ResponseEntity.ok("Registered successfully");
+                return ResponseEntity.ok(jwtToken);
             } else {
                 System.out.println("Data insertion failed.");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
