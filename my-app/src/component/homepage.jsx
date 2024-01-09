@@ -198,6 +198,8 @@ for (const cookie in cookies) {
     }
   };
   const handlelogout = () => {
+    const broadcastChannel = new BroadcastChannel('logoutChannel');
+      broadcastChannel.postMessage('logout');
     navigate("/start");
     const cookies = Cookies.get();
     for (const cookie in cookies) {

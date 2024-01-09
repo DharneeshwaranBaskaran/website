@@ -33,6 +33,15 @@ function App() {
     <Router>
       <LoginContext.Provider value={{ Balance,setBalance,showModal, setShowModal,jwt,setjwt}}>
       <Routes> 
+      {(type == "access" || type==="companyaccess") ? (
+                <>
+                
+        <Route path="/start" element={<Start/>} />
+        <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
+        <Route path={`/${type}/homepage`} element={<HomePage />}/> 
+                </>
+              ) : (
+<>
         <Route path="/start" element={<Start/>} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
         <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
@@ -49,6 +58,8 @@ function App() {
         <Route path={`/${type}/user`}element={<User/>}/>
         <Route path={`/${type}/address`}element={<Address/>}/> 
         <Route path={`/${type}/mail`}element={<Email/>}/>
+        </>
+              )}
         </Routes>
         </LoginContext.Provider>      
     </Router>

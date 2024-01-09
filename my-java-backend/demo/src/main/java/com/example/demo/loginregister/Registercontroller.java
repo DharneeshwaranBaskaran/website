@@ -10,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import com.example.demo.Seller.seller;
+import com.example.demo.jwt.JwtUtils;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,6 +19,7 @@ import io.jsonwebtoken.security.Keys;
 import javax.sql.DataSource;
 
 import java.security.Key;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -124,6 +126,10 @@ public class Registercontroller {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+
+
+
+    
     @PostMapping("/register/google")
     public ResponseEntity<String> registerGoogleUser(@RequestBody GoogleUserRequest request) {
         String username = request.getUsername(); 
@@ -132,18 +138,33 @@ public class Registercontroller {
         String address = " ";
 
         if (checkUserExistsByEmail(email)) {
-            return ResponseEntity.ok("{\"message\": \"User already registered successfully\"}");
+            String sql1 = "SELECT id, username FROM users WHERE email = ?";
+        try {
+            Map<String, Object> result = jdbcTemplate.queryForMap(sql1, email);
+
+            String userId = result.get("id").toString();
+                String jwtToken = JwtUtils.generateToken(userId, username,"buyer");
+                System.out.println(jwtToken);
+                return ResponseEntity.ok(jwtToken);
+           
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+        }
+    
         }
         try {
             String sql = "INSERT INTO users (username, password, address, email, balance) VALUES (?, ?, ?, ?, ?)";
             int rowsAffected = jdbcTemplate.update(sql, username, generatedPassword, address, email, 1000);
 
-            if (rowsAffected > 0) { Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-                String jwtToken = Jwts.builder()
-                        .setSubject(request.getUsername())
-                        .signWith(key, SignatureAlgorithm.HS512)
-                        .compact();
+            if (rowsAffected > 0) {
+                Map<String, Object> result = jdbcTemplate.queryForMap(sql, email);
+
+            String userId = result.get("id").toString();
+                String jwtToken = JwtUtils.generateToken(userId, username,"buyer");
                 System.out.println(jwtToken);
+                
                 
                 sendEmail(email, username, generatedPassword);
                 return ResponseEntity.ok(jwtToken);
