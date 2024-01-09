@@ -8,7 +8,7 @@ import { FiVideo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from './withLogouthandler';
 import { useLoginContext } from "../contexts/LoginContext";
-
+import Cookies from 'js-cookie';
 function Menext() {
   const navigate = useNavigate();
   const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
@@ -16,7 +16,7 @@ function Menext() {
   const [showModal, setShowModal] = useState(false);
   const [comment, setComment] = useState('');
   const [imageData, setImageData] = useState({});
-  const targetImageId = (localStorage.getItem('myID'));
+  const targetImageId = (Cookies.get('myID'));
   const [Items, setItems] = useState([]);
   const [wish, setwish] = useState([]);
   const [Item, setItem] = useState([]);
@@ -25,9 +25,9 @@ function Menext() {
   const { jwt, setjwt } = useLoginContext();
   const [count, setCount] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
-  let Username = localStorage.getItem("username");
-  let state = localStorage.getItem('rec');
-  let type = localStorage.getItem('type');
+  let Username = Cookies.get("username");
+  let state = Cookies.get('rec');
+  let type = Cookies.get('type');
   const toggleModal = () => {
     setShowModal(!showModal);
   };
@@ -36,7 +36,7 @@ function Menext() {
   }
   const tostart = () => {
     navigate(`/buyer/register`);
-    localStorage.setItem('type', "buyer");
+    Cookies.set('type', "buyer");
     enqueueSnackbar("Register", { variant: "default" });
     window.location.reload();
   }
@@ -52,7 +52,7 @@ function Menext() {
     console.error('Error fetching cart items:', error);
   });
   }, [Username]);
-  const weekends = localStorage.getItem("weekend") === "Yes" ? "Yes" : "No";
+  const weekends = Cookies.get("weekend") === "Yes" ? "Yes" : "No";
   useEffect(() => {
     fetch(`http://localhost:8080/api/wishlist/${Username}`)
   .then(response => {
@@ -69,7 +69,7 @@ function Menext() {
     if (count > 0) {
       const cartItem = {
         id: imageData.id,topic: imageData.topic,description: imageData.description,cost: imageData.count === 0 ? imageData.cost * 0.9 : imageData.cost,count,
-        username: localStorage.getItem("username"),rating: imageData.rating,url: imageData.url,person: imageData.person,seller: imageData.seller,weekend: weekends,
+        username: Cookies.get("username"),rating: imageData.rating,url: imageData.url,person: imageData.person,seller: imageData.seller,weekend: weekends,
       };
       const existingCartItems = (ty) || [];
       const existingIndex = existingCartItems.findIndex((item) => item.topic === cartItem.topic);
@@ -122,7 +122,7 @@ function Menext() {
   
         existingCartItems.push(cartItem);
       }
-      localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
+      Cookies.set('cartItems', JSON.stringify(existingCartItems));
       setCount(0);
       navigate(`/${type}/${page}`);
     } else {
@@ -160,7 +160,7 @@ function Menext() {
     fetch(link)
       .then(response => response.json())
       .then(data => {
-        const image = data.find(item => item.id == (localStorage.getItem('myID')));
+        const image = data.find(item => item.id == (Cookies.get('myID')));
         if (image) {
           setImageData(image);
         } else {
@@ -172,7 +172,7 @@ function Menext() {
   let backButton = null;
   let purchase = null;
   if (state !== "true") {
-    if (localStorage.getItem('value') == "") {
+    if (Cookies.get('value') == "") {
       backButton = null;
       purchase = (
         <button className="lob" onClick={tostart}>Purchase</button>
@@ -258,7 +258,7 @@ function Menext() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh", overflowX: "hidden", overflowY: "hidden" }}>
-      {jwt && ( 
+      {jwt ==Cookies.get('token') && ( 
         <>
       <div className="logout-button">
         {cartButton}

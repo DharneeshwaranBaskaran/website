@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import LoginPage from '../loginpage';
-
+import Cookies from 'js-cookie';
 // test('renders the login form', () => {
 //   const { getByPlaceholderText, } = render(
 //     <MemoryRouter>
@@ -27,7 +27,7 @@ import LoginPage from '../loginpage';
 // });
 
 test('logs in user successfully', async () => {
-  if (localStorage.getItem("type") == "buyer") {
+  if (Cookies.get("type") == "buyer") {
     render(
       <MemoryRouter>
         <LoginPage />

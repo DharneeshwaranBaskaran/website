@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Cart from '../cart';
-
+import Cookies from 'js-cookie';
 test('renders table element', () => {
-    if(localStorage.getItem('type') === 'buyer' ){
+    if(Cookies.get('type') === 'buyer' ){
     const { getByRole } = render(<MemoryRouter>
         <Cart />
     </MemoryRouter>);
@@ -13,7 +13,7 @@ test('renders table element', () => {
 });
 
 test('renders the title ', () => {  
-    if(localStorage.getItem('type') === 'buyer' ){
+    if(Cookies.get('type') === 'buyer' ){
     const { getByTestId } = render( 
       <MemoryRouter>
         <Cart />
@@ -24,7 +24,7 @@ test('renders the title ', () => {
 });
 
 test('renders the search container and checks search functionality', () => { 
-    if(localStorage.getItem('type') === 'buyer' ){
+    if(Cookies.get('type') === 'buyer' ){
     const { getByTestId, getByPlaceholderText } = render(
       <MemoryRouter>
         <Cart />

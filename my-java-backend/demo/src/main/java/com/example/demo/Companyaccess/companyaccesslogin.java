@@ -1,5 +1,7 @@
 package com.example.demo.Companyaccess;
 import java.security.Key;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-
+import com.example.demo.jwt.JwtUtils;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -25,25 +27,25 @@ public class companyaccesslogin {
 
     @PostMapping("/companyaccess")
     public ResponseEntity<String> login(@RequestBody companyaccess loginRequest) {
-        String sql = "SELECT password FROM companyaccess WHERE username = ?";
-        try {
-            String retrievedPassword = jdbcTemplate.queryForObject(sql, String.class, loginRequest.getUsername());
+         String sql = "SELECT id, password FROM companyaccess WHERE username = ?";
+    try {
+        Map<String, Object> result = jdbcTemplate.queryForMap(sql, loginRequest.getUsername());
 
-            if (retrievedPassword != null && retrievedPassword.equals(loginRequest.getPassword())) {
-                Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        String retrievedPassword = (String) result.get("password");
+        String userId = result.get("id").toString();
 
-                String jwtToken = Jwts.builder()
-                        .setSubject(loginRequest.getUsername())
-                        .signWith(key, SignatureAlgorithm.HS512)
-                        .compact(); 
-                System.out.println(jwtToken);
-                return ResponseEntity.ok(jwtToken);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error: " + e.getMessage());
+        if (retrievedPassword != null && retrievedPassword.equals(loginRequest.getPassword())) {
+            String jwtToken = JwtUtils.generateToken(userId, loginRequest.getUsername(), "companyaccess");
+            System.out.println(jwtToken);
+            return ResponseEntity.ok(jwtToken);
+        } else {
+            System.out.println("error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
     }
+}
+
 }

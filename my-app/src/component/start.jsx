@@ -5,7 +5,8 @@ import CustomCard from "./customcard";
 import { useNavigate } from 'react-router-dom';
 import DissatisfiedSymbol from './DissatisfiedSymbol';
 import Autosuggest from 'react-autosuggest';
-import { act } from '@testing-library/react';
+import { act } from '@testing-library/react'; 
+import Cookies from "js-cookie";
 
 import { useLoginContext } from "../contexts/LoginContext";
 import './App.css';
@@ -16,7 +17,7 @@ function Start() {
   const { jwt, setjwt } = useLoginContext();
 //Initialisation
 
-  const [type, setType] = useState(localStorage.getItem('type'));
+const [type, setType] = useState(Cookies.get('type') || '');
   const navigate = useNavigate();
   const [data, setData] = useState([]);
 
@@ -30,9 +31,9 @@ function Start() {
 //Event handling
 
   const handletomenex = (id) => {
-    localStorage.setItem('myID', id);
-    localStorage.setItem('rec', "");
-    localStorage.setItem('value', "");
+    Cookies.set('myID', id);
+    Cookies.set('rec', "");
+    Cookies.set('value', "");
     navigate(`/${type}/menext`);
   };
   const RegistrationOption = ({ type, header, handleRegister, handleLogin }) => (
@@ -47,10 +48,10 @@ function Start() {
     const types = { 0: 'company', 1: 'seller', 2: 'buyer', 3: 'access', 4: 'companyaccess', };
     const type = types[key];
     if (action === 'login') {
-      localStorage.setItem('type', type);
+      Cookies.set('type', type);
       navigate(`/${type}/login`);
     } else if (action === 'register') {
-      localStorage.setItem('type', type);
+      Cookies.set('type', type);
       navigate(`/${type}/register`);
     } 
     window.location.reload();

@@ -3,6 +3,7 @@ import { useSnackbar } from "notistack";
 import React, { useState, useEffect } from "react";
 import './App.css';
 import { useLoginContext} from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 function Reset() {
 const renderInput = (type, placeholder, value, onChange, error, name) => (
     <input
@@ -21,7 +22,7 @@ const renderInput = (type, placeholder, value, onChange, error, name) => (
     if (username1 == "" || email == "") {
       enqueueSnackbar("Enter the Required data");
     }
-    const selectedValue = localStorage.getItem('type');
+    const selectedValue = Cookies.get('type');
     try {
       const response = await fetch(`http://localhost:8080/api/pass/${selectedValue}`, {
         method: 'POST',

@@ -1,7 +1,9 @@
 package com.example.demo.jwt;
+
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import io.jsonwebtoken.Jwts;
@@ -17,12 +19,15 @@ public class JwtUtils {
         }
     }
 
-    public static String generateToken(String username) {
+    public static String generateToken(String id, String username,String type) {
         int keyIndex = (int) (System.currentTimeMillis() % SECRET_KEYS.size());
         String secretKey = SECRET_KEYS.get(keyIndex);
 
         return Jwts.builder()
-                .setSubject(username)
+                .claim("id", id) 
+                .claim("username", username)  
+                .claim("type",type)
+                .setIssuedAt(new Date())
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
                 .compact();
     }

@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Payment from '../payment';
-
+import Cookies from 'js-cookie';
 test('renders the title ', () => {  
-    if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') ){
+    if((Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') ){
     const { getByTestId } = render( 
       <MemoryRouter>
         <Payment />
@@ -15,7 +15,7 @@ test('renders the title ', () => {
 });
 
 test('renders the Balance ', () => {  
-    if((localStorage.getItem('type') === 'buyer' )){
+    if((Cookies.get('type') === 'buyer' )){
     const { getByTestId } = render( 
       <MemoryRouter>
         <Payment />
@@ -26,7 +26,7 @@ test('renders the Balance ', () => {
 });
 
 test('renders the registration form', () => {
-    if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') ){
+    if((Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') ){
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter>
           <Payment />

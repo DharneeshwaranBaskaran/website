@@ -7,6 +7,7 @@ import BubbleGraph from "./BubbleGraph";
 import BarGraph from "./Bargraph";
 import LaterCard from "./Latercard";
 import { Card } from "@mui/material";
+import Cookies from 'js-cookie';
 import PieChart from "./piechart";
 import withLogoutHandler from "./withLogouthandler"; 
 import { BroadcastChannel } from "broadcast-channel";
@@ -24,9 +25,10 @@ function HomePage() {
   const [user, setuser] = useState([]);
   const [Balance, setBalance] = useState(0);
   const [cart, setcart] = useState([]);
-  const { jwt, setjwt } = useLoginContext();
-  const username = localStorage.getItem('username');
-  let typeo = localStorage.getItem('type');
+  const { jwt, setjwt } = useLoginContext(); 
+  const  {usid,setusid }= useLoginContext();
+  const username = Cookies.get('username');
+  let typeo = Cookies.get('type');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortingCriteria, setSortingCriteria] = useState("");
   const [accsortingCriteria, setAccSortingCriteria] = useState("");
@@ -50,16 +52,39 @@ function HomePage() {
       console.error(`Error fetching data from ${url}:`, error);
     }
   };
+  const parseJwt = (token) => {
+    if (typeof token !== 'string') {
+      // Handle the case where the token is not a string
+      console.error('Invalid token format:', token);
+      return null;
+    }
+  
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  };
+  
   useEffect(() => {
     fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);
     fetchData(`http://localhost:8080/api/${sel}/${username}`, setuser);
     fetchData(`http://localhost:8080/api/balance/${username}`, setBalance);
     fetchData(`http://localhost:8080/api/historyhome/${username}`, setItems);
     fetchData(`http://localhost:8080/api/history/view/${username}`, setData);
-    if (prov) {fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);}
     fetchData(`http://localhost:8080/api/reminder/getItems/${username}`, setremider);
     fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);
+    console.log(username);
+    console.log(jwt);
   }, []);
+  
+  useEffect(() => {
+    if (Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') {
+      fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);
+    }
+  }, [prov]);
   useEffect(() => {
     fetch(`http://localhost:8080/api/user/${username}`)
       .then((response) => {
@@ -73,8 +98,8 @@ function HomePage() {
       });
   }, []);
   const handleRecommendation = (id) => {
-    localStorage.setItem('myID', id);
-    localStorage.setItem('rec', "true");
+    Cookies.set('myID', id);
+    Cookies.set('rec', "true");
     navigate(`/${typeo}/menext`);
   }
   useEffect(() => {
@@ -88,14 +113,14 @@ function HomePage() {
         settye(data[0]?.type);
       }).catch((error) => {
         console.error('Error fetching cart items:', error);
-      });
+      }); 
   }, [username]);
   const uniqueItems = Items.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic));
   const Uniquereminder = reminder.filter((item, index, self) => index === self.findIndex((t) => t.topic === item.topic));
   const handleCategoryChange = (event) => {
     const categoryMap = { Men: 1, Women: 2 };
     const myRef = categoryMap[event.target.value] || 3;
-    localStorage.setItem("myRef", myRef);
+    Cookies.set("myRef", myRef);
     navigate(`/${typeo}/men`);
   };
   const handlePay = (id) => {
@@ -148,7 +173,7 @@ function HomePage() {
       });
   }
   const handleChange = (event) => {
-    localStorage.setItem("weekend", event.target.value === "No" ? "No" : "Yes");
+    Cookies.set("weekend", event.target.value === "No" ? "No" : "Yes");
   }
   const handleActionChange = (event) => {
     if (event.target.value == "Add")
@@ -163,15 +188,22 @@ function HomePage() {
       const broadcastChannel = new BroadcastChannel('logoutChannel');
       broadcastChannel.postMessage('logout');
       navigate("/start");
-      localStorage.clear();
+      const cookies = Cookies.get();
+for (const cookie in cookies) {
+  Cookies.remove(cookie);
+}
+
       window.location.reload();
       enqueueSnackbar("Logout Successful");
     }
   };
   const handlelogout = () => {
     navigate("/start");
-    localStorage.clear();
-    window.location.reload()
+    const cookies = Cookies.get();
+    for (const cookie in cookies) {
+      Cookies.remove(cookie);
+    }
+        window.location.reload()
     enqueueSnackbar("Logout Successful");
   }
   const handleSortingChange = (event) => {
@@ -198,7 +230,7 @@ function HomePage() {
       }
       else {
         return 0;
-      }
+      } 
     });
     setSortedData(sorted);
   }, [sortingCriteria, patch])
@@ -299,13 +331,13 @@ function HomePage() {
     setSelectValues(newSelectValues);
   };
   const handleview = (comid, id, topic) => {
-    localStorage.setItem('myID', comid);
-    localStorage.setItem('rec', "");
-    localStorage.removeItem('value');
+    Cookies.set('myID', comid);
+    Cookies.set('rec', "");
+    Cookies.removeItem('value');
     fetch(`http://localhost:8080/api/reminderdelete`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },
-      body: JSON.stringify({ id: id, username: localStorage.getItem('username') }),
+      body: JSON.stringify({ id: id, username: Cookies.get('username') }),
     }).then((response) => {
       if (!response.ok) {
         throw new Error(`Error deleting reminder: ${response.statusText}`);
@@ -319,12 +351,13 @@ function HomePage() {
     });
     navigate(`/${typeo}/menext`);
   }
-  return (
+  return ( 
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
-            {jwt && ( 
+         {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type  && parseJwt(jwt).id==Cookies.get("dataid")) ?( 
         <>
-      <div className="logout-button">
-        {localStorage.getItem('type') === 'buyer' && (<>
+      <div className="logout-button"> 
+      
+        {Cookies.get('type') === 'buyer' && (<>
           <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
           <button style={{ backgroundColor: "#5B0888" }} onClick={() => handlehelp("user")}>{username}</button>
           <select onChange={handleChange}
@@ -342,7 +375,7 @@ function HomePage() {
           </select>
           <button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehelp("help")}>Help❓</button>
         </>)}
-        {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
+        {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
           <select onChange={handleActionChange}
             style={{ backgroundColor: "#451952", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginLeft: "5px" }}>
             <option>Menu</option>
@@ -352,7 +385,7 @@ function HomePage() {
             <option value="Logout">Logout</option>
           </select>
         </>)}
-        {localStorage.getItem('type') === 'buyer' && (<>
+        {Cookies.get('type') === 'buyer' && (<>
           <select onChange={handleActionChange}
             style={{ backgroundColor: "#793FDF", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginLeft: "5px" }}>
             <option>Menu</option>
@@ -364,11 +397,11 @@ function HomePage() {
           </div>
           <button onClick={() => handlehelp("phone")} style={{ backgroundColor: "#7752FE" }}>Wishlist ⭐</button>
         </>)}
-        {(localStorage.getItem('type') === 'access' || localStorage.getItem('type') === 'companyaccess') && (
+        {(Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') && (
           <button onClick={handlelogout}>Logout</button>
         )}
       </div>
-      {localStorage.getItem('type') === 'buyer' && (<><>
+      {Cookies.get('type') === 'buyer' && (<><>
         <div style={{ width: "350px", marginLeft: "800px" }}>
           {later.length > 0 && (<>
             {later.map((item, index) => (
@@ -404,7 +437,7 @@ function HomePage() {
           </>)}
       </> </>)}
       <div>
-        {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
+        {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
           <h2 style={{ marginLeft: "10px" }}>SOLD HISTORY:</h2>
           <div className="search-container">
             {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
@@ -450,7 +483,7 @@ function HomePage() {
               ))}
             </tbody>
           </table>
-          {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
+          {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
             <h2>Users</h2>
             <table className="purchase-history-table">
               <thead>
@@ -483,9 +516,9 @@ function HomePage() {
                 ))}
               </tbody>
             </table>
-          </>)}
+          </>)}  
         </>)}
-        {(localStorage.getItem('type') === 'access' || localStorage.getItem('type') === 'companyaccess') && (<>
+        {(Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') && (<>
           <select
             value={accsortingCriteria}
             onChange={handleSortingChange1}
@@ -495,7 +528,7 @@ function HomePage() {
             <option value="des">Descending </option>
           </select>
           <br /><br />
-          <table className="purchase-history-table">
+          <table className="purchase-history-table"> 
             <thead>
               <tr>
                 <th>Topic</th>
@@ -514,7 +547,7 @@ function HomePage() {
         </>)}
       </div>
       </>
-      )}
+      ):(<><h1>YOU DO NOT HAVE ACCESS TO THIS PAGE</h1></>)}
     </div>
   );
 }

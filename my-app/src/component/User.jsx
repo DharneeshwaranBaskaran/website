@@ -3,16 +3,17 @@ import axios from "axios";
 import withLogoutHandler from "./withLogouthandler";
 import { useNavigate } from 'react-router-dom';
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 const User = () => {
   const [user, setUser] = useState({});
   const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
   const handlehome = (key) => {
-    navigate(`/${localStorage.getItem("type")}/${key}`);
+    navigate(`/${Cookies.get("type")}/${key}`);
   }
   
   useEffect(() => {
-    const username = localStorage.getItem("username");
+    const username = Cookies.get("username");
     axios.get(`http://localhost:8080/api/user/${username}`)
       .then(response => {
         setUser(response.data[0]);
@@ -25,7 +26,7 @@ const User = () => {
   
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button"   >
         <button onClick={()=>handlehome("homepage")} style={{ backgroundColor: "#713ABE", color: "white" }}>Home 🏠</button>

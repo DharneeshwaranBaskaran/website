@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Add from '../add';
-
+import Cookies from 'js-cookie';
 test('renders the title Buyer', () => { 
-  if(localStorage.getItem('type') === 'buyer'){
+  if(Cookies.get('type') === 'buyer'){
     const { getByTestId } = render( 
       <MemoryRouter>
         <Add />
@@ -15,7 +15,7 @@ test('renders the title Buyer', () => {
   });
 
   test('renders the Add form', () => {
-    if(localStorage.getItem('type') === 'buyer'){
+    if(Cookies.get('type') === 'buyer'){
     const { getByPlaceholderText, getByText } = render(
       <MemoryRouter>
           <Add />
@@ -29,7 +29,7 @@ test('renders the title Buyer', () => {
   });
 
   test('renders the title Seller', () => { 
-    if(localStorage.getItem('type') === 'seller'){
+    if(Cookies.get('type') === 'seller'){
       const { getByTestId } = render( 
         <MemoryRouter>
           <Add />
@@ -40,7 +40,7 @@ test('renders the title Buyer', () => {
     });
 
     test('renders the Add form', () => {
-      if(localStorage.getItem('type') === 'seller'){
+      if(Cookies.get('type') === 'seller'){
       const { getByPlaceholderText, getByText } = render(
         <MemoryRouter>
             <Add />

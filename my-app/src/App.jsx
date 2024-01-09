@@ -19,13 +19,14 @@ import Address from "./component/address";
 import Email from "./component/Email"; 
 import Reset from "./component/reset"; 
 import { LoginContext } from "./contexts/LoginContext";
+import Cookies from "js-cookie";
 
 function App() {
-  let type=localStorage.getItem('type');
+  let type=Cookies.get('type');
   const [showModal,setShowModal]=useState(false); 
   const [Balance, setBalance] = useState(0);  
 
-  const  [jwt, setjwt ] = useState([]);
+  const [jwt, setjwt] = useState(() => Cookies.get('token') || '');
   return (
   <div >
   <SnackbarProvider>

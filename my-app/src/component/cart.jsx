@@ -4,6 +4,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 
 const useDataFetching = (url, setter, dependencies = []) => {
   useEffect(() => {
@@ -28,16 +29,36 @@ function Cart() {
   const {Balance, setBalance} = useLoginContext();
   const [Address, setAddress] = useState('');
   const [address, setaddress] = useState('');
-  let Username = localStorage.getItem('username');
+  let Username = Cookies.get('username');
   const [Items, setItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const type = localStorage.getItem("type")
+  const type = Cookies.get("type")
   const { jwt, setjwt } = useLoginContext();
   const handlebacktohome = () => {
     navigate(`/${type}/homepage`);
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
-  }
+  } 
+
+  const parseJwt = (token) => {
+    if (typeof token !== 'string') { 
+      console.error('Invalid token format:', token);
+      return null;
+    }
+  
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }; 
+
+  useEffect(() => {
+    parseJwt(jwt);
+  } );
+
   useDataFetching(`http://localhost:8080/api/cart/getItems/${Username}`, setItems);
   useDataFetching(`http://localhost:8080/api/balance/${Username}`, setBalance);
   useDataFetching(`http://localhost:8080/api/address/${Username}`, setAddress);
@@ -179,7 +200,7 @@ function Cart() {
           return item;
         });
         setItems(updatedCartItems);
-        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+        Cookies.set('cartItems', JSON.stringify(updatedCartItems));
       }).catch((error) => {
         console.error('Error updating item:', error);
       });
@@ -187,7 +208,7 @@ function Cart() {
     enqueueSnackbar(id + " removed from cart");
   };
   let backButton = null;
-  if (localStorage.getItem('type') == 'buyer') {
+  if (Cookies.get('type') == 'buyer') {
     backButton = (<button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehistory("history")}>Purchase History📜</button>
     );
   }
@@ -215,13 +236,13 @@ function Cart() {
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
-      {jwt && ( 
+       {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type && parseJwt(jwt).id==Cookies.get("dataid") ) ?( 
       <>
       <div className="logout-button">
         <button onClick={handlebacktohome} style={{ backgroundColor: "#5B0888" }}>Back To Home 🏠</button>
         {backButton}
       </div>
-      {localStorage.getItem('type') === 'buyer' && (<>
+      {Cookies.get('type') === 'buyer' && (<>
         {It.length > 10 && (
           <h2 style={{ marginLeft: "10px" }}>You Are A Premium User</h2>
         )}
@@ -299,7 +320,7 @@ function Cart() {
       <p style={{ marginLeft: 20 }}>*Products will be delivered within 24 hours in Express Delivery</p>
       <p style={{ marginLeft: 20 }}>*The total should be less than $50 for payment later</p>
       </>
-      )}
+      ):(<><h1>YOU DO NOT HAVE ACCESS TO THIS PAGE</h1></>)}
     </div>
   )
 }

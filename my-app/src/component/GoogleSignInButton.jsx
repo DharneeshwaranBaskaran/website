@@ -4,9 +4,10 @@ import { LoginSocialGoogle } from 'reactjs-social-login';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from 'js-cookie';
 const GoogleSignInButton = ({ onGoogleSignIn }) => {
     const { enqueueSnackbar } = useSnackbar();
-    const type = localStorage.getItem("type");
+    const type = Cookies.get("type");
     const { jwt, setjwt } = useLoginContext();
     const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ const GoogleSignInButton = ({ onGoogleSignIn }) => {
             access_type="offline"
             onResolve={({ provider, data }) => {
                 console.log(provider, data);
-                localStorage.setItem('username', data.given_name);
+                Cookies.set('username', data.given_name);
                 const firstName = data.given_name;
                 const userEmail = data.email;
                 const userData = {
@@ -42,7 +43,7 @@ const GoogleSignInButton = ({ onGoogleSignIn }) => {
                     .then(response => response.json())
                     .then(data => {
                         const token = generateRandomString(20);
-                        localStorage.setItem('token', token);
+                        Cookies.set('token', token);
                         setjwt(token); 
                         console.log(token);
                         console.log(data.username);

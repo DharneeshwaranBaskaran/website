@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState} from "react"; 
 import { useLoginContext } from "../contexts/LoginContext";
 import './App.css';
+import Cookies from "js-cookie";
 function LoginPage() {
   const errorStyle = {
     color: 'red',
@@ -27,7 +28,7 @@ function LoginPage() {
   const [error1, setError1] = useState('');
   const [error2, setError2] = useState('');
   const { enqueueSnackbar } = useSnackbar();
-  const type = localStorage.getItem('type');
+  const type = Cookies.get('type');
   const navigate = useNavigate();
   const { jwt, setjwt } = useLoginContext();
   const { showModal, setShowModal } = useLoginContext();
@@ -36,11 +37,13 @@ function LoginPage() {
   };
 
   const handleLogin = async (event) => {
+    const selectedValue = Cookies.get('type');
+    console.log(selectedValue)
     if (password == "") {
       setError1("*Enter Password");
       setError2('');
     }
-    const selectedValue = localStorage.getItem('type');
+    
     try {
       const response = await fetch(`http://localhost:8080/api/${selectedValue}`, {
         method: 'POST',
@@ -51,10 +54,12 @@ function LoginPage() {
 
       if (response.ok) {
         const token = await response.text();
-        localStorage.setItem('token', token);
+        Cookies.set('token', token);
         setjwt(token);
-        console.log(token);
-        localStorage.setItem('username', username);
+        console.log(token); 
+        Cookies.set('dataid',parseJwt(token).id) 
+        console.log(parseJwt(token).id);
+        Cookies.set('username', username);
         console.log(username);
         navigate(`/${type}/homepage`);
         enqueueSnackbar("Login successfully", { variant: "success" });
@@ -68,6 +73,16 @@ function LoginPage() {
       enqueueSnackbar("An error occurred: " + error.message, { variant: "error" });
     }
   };
+
+  const parseJwt = (token) => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+};
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -108,7 +123,7 @@ function LoginPage() {
             <button onClick={toggleModal} className="lob">Reset</button>
           </div>
           <div style={errorStyle}>{error2}</div>
-          {(localStorage.getItem('type') !== 'access' && localStorage.getItem('type') !== 'companyaccess') && (
+          {(Cookies.get('type') !== 'access' && Cookies.get('type') !== 'companyaccess') && (
             <div className="log">
               <p>Don't have a account:</p><button onClick={handlebackRegister} className="lob">Register</button>
             </div>

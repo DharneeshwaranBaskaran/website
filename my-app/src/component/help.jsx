@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 function Help() {
   const navigate = useNavigate();
   const handleback = () => {
@@ -25,7 +26,7 @@ function Help() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button">
         <button onClick={handleback}>Home 🏠</button>

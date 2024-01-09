@@ -4,10 +4,11 @@ import './App.css';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 function Edit() {
   const [cost, setcost] = useState('');
-  const id = localStorage.getItem('edit');
-  const type = localStorage.getItem('type');
+  const id = Cookies.get('edit');
+  const type = Cookies.get('type');
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { jwt, setjwt } = useLoginContext();
@@ -44,7 +45,7 @@ function Edit() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
         <button onClick={back} >Back To Home 🏠</button>

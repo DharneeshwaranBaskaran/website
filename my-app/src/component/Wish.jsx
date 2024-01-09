@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack"; 
 import withLogoutHandler from './withLogouthandler';
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from 'js-cookie';
 function Phone() {
   const { enqueueSnackbar } = useSnackbar();
   const [Items,setItems]=useState([]);
   const navigate = useNavigate(); 
-  const username=localStorage.getItem("username");
+  const username=Cookies.get("username");
   const { jwt, setjwt } = useLoginContext();
   const fetchWishlist = useCallback(async () => {
     try {
@@ -41,19 +42,19 @@ function Phone() {
             return item;
           });
           setItems(updatedCartItems);
-          localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+          Cookies.set('cartItems', JSON.stringify(updatedCartItems));
         } else {
           console.error('Error updating wish item:', response.statusText);
         }
       } catch (error) {
         console.error('Error updating wish item:', error);
       }
-      window.location.reload();localStorage.getItem("type")
+      window.location.reload();Cookies.get("type")
       enqueueSnackbar(id+" removed from cart");
   };
 
   const home=()=>{
-    navigate(`/${localStorage.getItem("type")}/homepage`);
+    navigate(`/${Cookies.get("type")}/homepage`);
   }
 
   const addtocart = async (id) => {
@@ -65,7 +66,7 @@ function Phone() {
       if (response.ok) {
         const responseData = await response.text();  
         console.log(responseData);
-        navigate(`/${localStorage.getItem("type")}/cart`);
+        navigate(`/${Cookies.get("type")}/cart`);
       } else {
         console.error('Error transferring data:', response.statusText);
       }
@@ -77,7 +78,7 @@ function Phone() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
         <>
         <div className="logout-button"> 
         <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 

@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 const Email = () => {
-  const Username = localStorage.getItem("username");
+  const Username = Cookies.get("username");
   const navigate = useNavigate();
   const { jwt, setjwt } = useLoginContext();
   const [email, setemail] = useState('');
@@ -37,17 +38,17 @@ const Email = () => {
         console.log('Error updating user email catch');
       }
       
-      navigate(`/${localStorage.getItem("type")}/homepage`);
+      navigate(`/${Cookies.get("type")}/homepage`);
     }
   }
   const handlehome = () => {
-    navigate(`/${localStorage.getItem("type")}/homepage`);
+    navigate(`/${Cookies.get("type")}/homepage`);
   }
 
   return (
     
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button"   >
         <button onClick={handlehome} style={{ backgroundColor: "#713ABE", color: "white" }}>Home 🏠</button>

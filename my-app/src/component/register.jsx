@@ -4,9 +4,9 @@ import './App.css';
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import GoogleSignInButton from './GoogleSignInButton';
-
+import Cookies from "js-cookie";
 function RegisterPage() {
-  const type = localStorage.getItem("type");
+  const type = Cookies.get('type');
   const navigate = useNavigate();
   const [validUsername, setValidUsername] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
@@ -101,7 +101,7 @@ function RegisterPage() {
       setError2('Passwords do not match');
       return;
     }
-    const selectedValue = localStorage.getItem("type");
+    const selectedValue = Cookies.get('type');
     let data = {};
     switch (selectedValue) {
       case "buyer":
@@ -205,7 +205,8 @@ function RegisterPage() {
       <div style={{ padding: "35px" }}></div>
       <div className="app" >
         <div className="login-page"  >
-          <h2 data-testid="Title">Register</h2>
+          <h2 data-testid="Title">Register</h2> 
+          {Cookies.get('type')}
           <div className="con" data-text="form">
             {type === 'seller' && renderInputField("text", "Name", name, handleChange5, inputStyle4)}
             <div style={errorStyle}>{error4}</div>
@@ -229,7 +230,7 @@ function RegisterPage() {
           <div className="log">
             <p>already have a account:</p>
             <button onClick={redirectinglogin} className="lob"> Login </button>
-            {localStorage.getItem('type') === 'buyer' && (<>
+            {Cookies.get('type') === 'buyer' && (<>
                 <div>
                   <p>Sign Up using Phone Number</p>
                   <button onClick={toggleModal} className="lob">Register Phone Number</button>

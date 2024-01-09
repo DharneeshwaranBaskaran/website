@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 function Add() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
@@ -17,8 +18,8 @@ function Add() {
   const [url, seturl] = useState('');
   const [topic, settopic] = useState('');
   const [person, setperson] = useState('');
-  let Username = localStorage.getItem('username');
-  const type = localStorage.getItem('type');
+  let Username = Cookies.get('username');
+  const type = Cookies.get('type');
   const [csvData, setCsvData] = useState([]);
   const [formData, setFormData] = useState(new FormData());
   const { jwt, setjwt } = useLoginContext();
@@ -156,13 +157,13 @@ function Add() {
   
   return (
     <div style={{ backgroundColor: "#e5e5ff" }} >
-      {jwt && ( 
+      {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
         <button onClick={() => backtocart("cart")} >Cart</button>
         <button onClick={() => backtocart("homepage")} >Back To Home</button>
       </div>
-      {localStorage.getItem('type') === 'buyer' && (<>
+      {Cookies.get('type') === 'buyer' && (<>
         <div className="app">
           <div className="login" >
             <h1 data-testid="PRODUCTS:">Balance: ${Balance}</h1>
@@ -177,7 +178,7 @@ function Add() {
           </div>
         </div>
       </>)}
-      {localStorage.getItem('type') !== "buyer" && (
+      {Cookies.get('type') !== "buyer" && (
         <div className='app'>
           <div className="login-page" style={{ backgroundColor: "white" }}>
             <h2 data-testid="PRODUCT">LAUNCH PRODUCT</h2>

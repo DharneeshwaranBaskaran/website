@@ -30,7 +30,7 @@ test('renders the registration form', () => {
 });
 
 test('renders the registration buyer', () => {
-  if (localStorage.getItem("type") == "buyer") {
+  if (Cookies.get("type") == "buyer") {
     const { getByPlaceholderText } = render(
       <MemoryRouter>
         <Register />
@@ -42,7 +42,7 @@ test('renders the registration buyer', () => {
 });
 
 test('renders the registration seller', () => {
-  if (localStorage.getItem("type") == "seller") {
+  if (Cookies.get("type") == "seller") {
     const { getByPlaceholderText } = render(
       <MemoryRouter>
         <Register />
@@ -62,7 +62,7 @@ test('renders the registration seller', () => {
 });
 
 test('renders the registration seller', () => {
-  if (localStorage.getItem("type") == "company") {
+  if (Cookies.get("type") == "company") {
     const { getByPlaceholderText } = render(
       <MemoryRouter>
         <Register />
@@ -80,7 +80,7 @@ test('renders the registration seller', () => {
 });
 
 test('registers user successfully', async () => {
-  if (localStorage.getItem("type") == "buyer") {
+  if (Cookies.get("type") == "buyer") {
     render(
     <MemoryRouter>
       <Register />

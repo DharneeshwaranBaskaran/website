@@ -4,6 +4,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from "js-cookie";
 const fetchData = (url, setDataFunction, errorMessage) => {
   fetch(url)
     .then((response) => {
@@ -27,8 +28,8 @@ function History() {
   const [Data, setData] = useState([]);
   const [Items, setItems] = useState([]);
   const [Draft, setDraft] = useState([]);
-  let Username = localStorage.getItem('username');
-  let type = localStorage.getItem('type');
+  let Username = Cookies.get('username');
+  let type = Cookies.get('type');
   const [searchQuery, setSearchQuery] = useState('');
   const [Balance, setBalance] = useState(0);
 
@@ -78,7 +79,6 @@ function History() {
         .catch((error) => {
           console.error('Error updating user balance:', error);
         });
-
     }
   }
 
@@ -120,12 +120,27 @@ function History() {
     </div>
     );
   }
+  const parseJwt = (token) => {
+    if (typeof token !== 'string') { 
+      console.error('Invalid token format:', token);
+      return null;
+    }
+  
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }; 
   useEffect(() => {
     fetchData(`http://localhost:8080/api/history/${Username}`, setItems, 'Error fetching history items:');
     fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
     fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
     fetchData(`http://localhost:8080/api/balance/${Username}`, setBalance, 'error fetching balance')
-    console.log(Draft);
+    console.log(Draft); 
+    parseJwt(jwt)
   },
     [Username]);
 
@@ -202,7 +217,7 @@ function History() {
   }
 
   const handleEdit = (id) => {
-    localStorage.setItem('edit', id)
+    Cookies.set('edit', id)
     navigate(`/${type}/edit`);
   }
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -235,12 +250,12 @@ function History() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
-      {jwt && ( 
+        {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type && parseJwt(jwt).id==Cookies.get("dataid") ) ?( 
       <>
       <div className="logout-button">
         <button onClick={handlebacktohomefromhis} >Back To Home 🏠</button>
       </div>
-      {localStorage.getItem('type') == "buyer" && (
+      {Cookies.get('type') == "buyer" && (
         <input
           type="text"
           data-testid="search-container"
@@ -252,7 +267,7 @@ function History() {
         />
       )}
       <table className="purchase-history-table">
-        {localStorage.getItem('type') == "buyer" && (
+        {Cookies.get('type') == "buyer" && (
           <thead>
             <tr>
               <th>Topic</th>
@@ -278,7 +293,7 @@ function History() {
         </tbody>
       </table>
       {backButton}
-      {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (<>
+      {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
         <h2 data-testid="PRODUCTS">PRODUCTS:</h2>
         <table className="purchase-history-table">
           <thead>
@@ -331,7 +346,8 @@ function History() {
           </table>
         </>)}
       </>)} 
-      </>)}
+      </>
+      ):(<><h1>YOU DO NOT HAVE ACCESS TO THIS PAGE</h1></>)}
     </div>
   );
 }

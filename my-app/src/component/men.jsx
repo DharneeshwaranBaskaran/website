@@ -8,6 +8,7 @@ import './App.css';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from './withLogouthandler';
 import { useLoginContext } from "../contexts/LoginContext";
+import Cookies from 'js-cookie';
 function Men() {
   const { enqueueSnackbar } = useSnackbar();
   const { jwt, setjwt } = useLoginContext();
@@ -16,11 +17,11 @@ function Men() {
   const [countSortAscending, setCountSortAscending] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const type = localStorage.getItem("type");
-  const target = localStorage.getItem('myRef');
+  const type = Cookies.get("type");
+  const target = Cookies.get('myRef');
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const username = localStorage.getItem('username');
+  const username = Cookies.get('username');
   const toggleModal = () => {
     setShowModal(!showModal);
   };
@@ -40,9 +41,9 @@ function Men() {
           enqueueSnackbar("You will be Reminded if the stock arrives");
     }
     else {
-      localStorage.setItem('myID', id);
-      localStorage.setItem('rec', "");
-      localStorage.removeItem('value');
+      Cookies.set('myID', id);
+      Cookies.set('rec', "");
+      Cookies.remove('value');
       navigate(`/${type}/menext`);
     }
   }
@@ -96,7 +97,7 @@ function Men() {
   const f = filterdata.filter(item => item.count == 0);
   return (
     <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}> 
-    {jwt && ( 
+    {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
         <Select
@@ -108,7 +109,6 @@ function Men() {
           <MenuItem value={fil2}>{fil2}</MenuItem>
           <MenuItem value={fil3}>{fil3}</MenuItem>
         </Select> 
-        {jwt}
         <button onClick={handlebackhome} style={{ backgroundColor: "#5B0888" }}>Back 🏠</button>
         <button onClick={toggleModal} style={{ backgroundColor: "#713ABE" }}>Offer Products🎁</button>
         <button onClick={toggleSorting} style={{ backgroundColor: "#793FDF" }}>

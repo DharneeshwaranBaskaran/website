@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import History from '../history';
-
+import Cookies from 'js-cookie';
 test('renders the search container and checks search functionality', () => { 
-    if(localStorage.getItem('type') === 'buyer' ){
+    if(Cookies.get('type') === 'buyer' ){
     const { getByTestId, getByPlaceholderText } = render(
       <MemoryRouter>
         <History />
@@ -19,7 +19,7 @@ test('renders the search container and checks search functionality', () => {
   });
 
   test('renders table element', () => {
-    if(localStorage.getItem('type') === 'buyer' ){
+    if(Cookies.get('type') === 'buyer' ){
     const { getByRole } = render(<MemoryRouter>
         <History />
     </MemoryRouter>);
@@ -28,7 +28,7 @@ test('renders the search container and checks search functionality', () => {
 });
 
 test('renders the title ', () => {  
-    if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') ){
+    if((Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') ){
     const { getByTestId } = render( 
       <MemoryRouter>
         <History />
@@ -39,7 +39,7 @@ test('renders the title ', () => {
 });
 
 test('renders table element seller', () => {
-    if((localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') ){
+    if((Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') ){
     const { getByRole } = render(<MemoryRouter>
         <History />
     </MemoryRouter>);

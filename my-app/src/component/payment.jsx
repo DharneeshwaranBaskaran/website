@@ -4,16 +4,17 @@ import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "./withLogouthandler"; 
-import { useLoginContext } from "../contexts/LoginContext";
+import { useLoginContext } from "../contexts/LoginContext"; 
+import Cookies from "js-cookie";
 function Payment() {
   const navigate = useNavigate();
-  let Username = localStorage.getItem('username');
+  let Username = Cookies.get('username');
   const {Balance, setBalance} = useLoginContext();
   const { enqueueSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [type, setType] = useState('');
-  const typeo = localStorage.getItem('type');
+  const typeo = Cookies.get('type');
   const [csvData, setCsvData] = useState([]);
   const [formData, setFormData] = useState(new FormData());
   
@@ -23,9 +24,24 @@ function Payment() {
     navigate(`/${typeo}/homepage`);
   }
   
+  const parseJwt = (token) => {
+    if (typeof token !== 'string') { 
+      console.error('Invalid token format:', token);
+      return null;
+    }
+  
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }; 
+
   const handleRegister = async (event) => {
     let endpoint = "";
-    if (localStorage.getItem("type") === "seller") {
+    if (Cookies.get("type") === "seller") {
       endpoint = "http://localhost:8080/api/register/access";
     } else {
       endpoint = "http://localhost:8080/api/register/companyaccess";
@@ -111,17 +127,17 @@ function Payment() {
   );
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh"}}>
-      {jwt && ( 
-        <>
+      {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type && parseJwt(jwt).id==Cookies.get("dataid") ) ?( 
+      <>
       <div className="logout-button">
         <button onClick={handlebacktohomefrompay} >Back To Home 🏠</button>
       </div>
-      {localStorage.getItem('type') === 'buyer' && (<>
+      {Cookies.get('type') === 'buyer' && (<> 
             <h2 className='balance-header'>Thank you for shopping with us</h2>
             <h2 className='balance-header'>Your Balance:</h2>
             <p className="balance-amount" data-testid="Balance">${Balance}</p> 
             </> )}
-      {(localStorage.getItem('type') === 'seller' || localStorage.getItem('type') === 'company') && (
+      {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (
         <div className="app"  style={{overflowY: "hidden" }}>
           <div className="login-page" style={{ backgroundColor: "white" ,paddingRight:"30px",paddingLeft:"20px" }}>
             <h2 data-testid="PRODUCTS">Give Access</h2> {Username}
@@ -130,7 +146,7 @@ function Payment() {
             {InputField("text", "Type", type, handleChange2)}
             <button className="lob" onClick={handleRegister}>
               Give Access</button>
-            {localStorage.getItem('type') === 'company' && (<>
+            {Cookies.get('type') === 'company' && (<>
               <div>
                 <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} />
                 <br />
@@ -161,8 +177,8 @@ function Payment() {
             ))}
           </tbody>
         </table>
-      </div>
-      </>)}
+      </div></>
+      ):(<><h1>YOU DO NOT HAVE ACCESS TO THIS PAGE</h1></>)}
     </div>
   )
 }
