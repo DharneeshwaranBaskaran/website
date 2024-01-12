@@ -1,5 +1,4 @@
 package com.example.demo.loginregister;
-import java.security.Key;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -12,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.jwt.JwtUtils;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController

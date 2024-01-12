@@ -258,8 +258,7 @@ function Menext() {
 
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh", overflowX: "hidden", overflowY: "hidden" }}>
-      {jwt ==Cookies.get('token') && ( 
-        <>
+     
       <div className="logout-button">
         {cartButton}
         {backButton}
@@ -356,7 +355,7 @@ function Menext() {
         </div>
       </div>
       <br />
-      </>)}
+     
     </div>
   )
 }

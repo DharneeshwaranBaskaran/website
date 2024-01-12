@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState,lazy, Suspense} from "react";
 import HomePage from './component/homepage';
 import Men from './component/men';
 import Menext from './component/menext';
@@ -6,12 +6,9 @@ import Cart from "./component/cart";
 import Payment from "./component/payment";
 import Add from "./component/add";
 import History from "./component/history";
-import Start from "./component/start";  
 import Edit from "./component/edit";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
-import LoginPage from './component/loginpage';
-import RegisterPage from './component/register';
 import Help from "./component/help";  
 import Phone from "./component/Wish";
 import User from "./component/User"; 
@@ -20,7 +17,10 @@ import Email from "./component/Email";
 import Reset from "./component/reset"; 
 import { LoginContext } from "./contexts/LoginContext";
 import Cookies from "js-cookie";
-
+const Home = lazy(() => import('./component/homepage'));
+const Start = lazy(() => import('./component/start'));
+const LoginPage = lazy(() => import('./component/loginpage'));
+const RegisterPage = lazy(() => import('./component/register')); 
 function App() {
   let type=Cookies.get('type');
   const [showModal,setShowModal]=useState(false); 
@@ -32,16 +32,17 @@ function App() {
   <SnackbarProvider>
     <Router>
       <LoginContext.Provider value={{ Balance,setBalance,showModal, setShowModal,jwt,setjwt}}>
+      <Suspense fallback={<div><h1>⌛Loading...</h1></div>}>
       <Routes> 
+      
       {(type == "access" || type==="companyaccess") ? (
                 <>
-                
         <Route path="/start" element={<Start/>} />
         <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
-        <Route path={`/${type}/homepage`} element={<HomePage />}/> 
+        <Route path={`/${type}/homepage`} element={<Home />}/> 
                 </>
-              ) : (
-<>
+              ) 
+               : (<>
         <Route path="/start" element={<Start/>} />
         <Route path={`/${type}/register`} element={<RegisterPage />} />
         <Route path={`/${type}/login`} element={!showModal ? <LoginPage /> : <Reset />} />
@@ -60,7 +61,9 @@ function App() {
         <Route path={`/${type}/mail`}element={<Email/>}/>
         </>
               )}
+             
         </Routes>
+        </Suspense>
         </LoginContext.Provider>      
     </Router>
   </SnackbarProvider>

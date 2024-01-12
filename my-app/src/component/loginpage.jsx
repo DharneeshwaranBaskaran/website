@@ -58,7 +58,7 @@ function LoginPage() {
         setjwt(token);
         console.log(token); 
         Cookies.set('dataid',parseJwt(token).id) 
-        console.log(parseJwt(token).id);
+        console.log(parseJwt(token));
         Cookies.set('username', username);
         console.log(username);
         navigate(`/${type}/homepage`);

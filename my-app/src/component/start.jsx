@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 import { useLoginContext } from "../contexts/LoginContext";
 import './App.css';
+import { enqueueSnackbar } from "notistack";
 const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 
 function Start() {
@@ -31,10 +32,12 @@ const [type, setType] = useState(Cookies.get('type') || '');
 //Event handling
 
   const handletomenex = (id) => {
-    Cookies.set('myID', id);
-    Cookies.set('rec', "");
-    Cookies.set('value', "");
-    navigate(`/${type}/menext`);
+    enqueueSnackbar("Register Initially and login to view products");
+    setTimeout(() => {
+      Cookies.set('type', "buyer"); 
+    navigate(`/buyer/register`);
+    window.location.reload();
+    }, 1500);
   };
   const RegistrationOption = ({ type, header, handleRegister, handleLogin }) => (
     <div className="individual-registration">
