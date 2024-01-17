@@ -1,12 +1,12 @@
-import React, {  lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import './App.css';
 import Cookies from 'js-cookie';
 import withLogoutHandler from "./withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
-
-const Sellerhome = lazy(() => import("./sellerhome"));
-const Acccomacchome = lazy(() => import("./acccomacchome"));
-const Buyhome = lazy(() => import("./buyhome"));
+import Skeleton from "./skeleton";
+const Sellerview = lazy(() => import("./sellerview"));
+const Acccessview = lazy(() => import("./accessview"));
+const Buyerview = lazy(() => import("./buyerview"));
 
 function HomePage() {
   const { jwt, setjwt } = useLoginContext();
@@ -26,15 +26,15 @@ function HomePage() {
   return (
     <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
       {(jwt == Cookies.get('token') && Cookies.get('type') == parseJwt(jwt).type && parseJwt(jwt).id == Cookies.get("dataid")) ? (
-        <> <Suspense fallback={<div>Loading...</div>}><div>
+        <> <Suspense fallback={<Skeleton />}><div>
           {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
-            <Sellerhome />
+            <Sellerview />
           </>)}
           {(Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') && (<>
-            <Acccomacchome />
+            <Acccessview />
           </>)}
           {Cookies.get('type') === 'buyer' && (<>
-            <Buyhome />
+            <Buyerview />
           </>)}
         </div>  </Suspense>
         </>

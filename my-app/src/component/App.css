@@ -210,7 +210,12 @@ button {
   width: 16%; 
   
 }
-
+.selclass{
+  border: 1px solid #e5e5ff;
+  padding: 1%;
+  margin: 5px; 
+  width: 90%; 
+}
 .class img {
   max-width: 100%; 
   height: auto; 

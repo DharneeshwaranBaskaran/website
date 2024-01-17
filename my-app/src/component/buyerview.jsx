@@ -16,11 +16,8 @@ function Buyhome() {
   const [cart, setcart] = useState([]);
   const username = Cookies.get('username');
   let typeo = Cookies.get('type');
-
   const [later, setLater] = useState('');
   const [forpic, setforpic] = useState('');
-  const sel = (typeo == "seller" ? "access" : "companyaccess");
-  let count = 0;
   const fetchData = async (url, setDataCallback) => {
     try {
       const response = await fetch(url);
@@ -40,7 +37,6 @@ function Buyhome() {
         fetchData(`http://localhost:8080/api/paylater/getpaylater/${username}`, setLater);
         console.log(username);
       }, []);
-    
     
       useEffect(() => {
         fetch(`http://localhost:8080/api/user/${username}`)
@@ -146,8 +142,7 @@ function Buyhome() {
       const handlehelp = (str) => {
         navigate(`/${typeo}/${str}`);
       }
-    
-    
+  
       const handleview = (comid, id, topic) => {
         Cookies.set('myID', comid);
         Cookies.set('rec', "");
@@ -171,8 +166,6 @@ function Buyhome() {
       }
     return(<>
     <div className="logout-button">
-
-
   <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
   <button style={{ backgroundColor: "#5B0888" }} onClick={() => handlehelp("user")}>{username}</button>
   <select onChange={handleChange}
@@ -199,8 +192,6 @@ function Buyhome() {
     🛒{cart.length}
   </div>
   <button onClick={() => handlehelp("phone")} style={{ backgroundColor: "#7752FE" }}>Wishlist ⭐</button>
-
-
 </div> 
 <div>
 <div style={{ width: "350px", marginLeft: "800px" }}>

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginContext } from '../contexts/LoginContext';
 import Cookies from 'js-cookie';
 
-const GoogleSignInButton = ({ onGoogleSignIn }) => {
+const GoogleSignInButton = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { setjwt } = useLoginContext();
   const navigate = useNavigate();
