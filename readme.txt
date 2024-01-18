@@ -2,6 +2,21 @@ Website
 1)Starting Frontend:
 =>npm start
 -In a React project, npm start is a command used to start the development server.Add the path by mentioning cd "Pathname"c
+-Runs the app in the development mode.
+-Open http://localhost:3000 to view it in your browser.
+-The page will reload when you make changes.
+-You may also see any lint errors in the console.
+
+=>npm test
+-Launches the test runner in the interactive watch mode.
+-See the section about running tests for more information.
+
+=>npm run build
+-Builds the app for production to the build folder.
+-It correctly bundles React in production mode and optimizes the build for the best performance.
+-The build is minified and the filenames include the hashes.
+-Your app is ready to be deployed!
+
 2)Starting Backend:
 =>& 'C:\Program Files (x86)\Java\jdk1.8.0_202\bin\java.exe' '-cp' 'C:\Users\DHARNE~1\AppData\Local\Temp\cp_2sdwhxh431dlo0jsi0b8j0fju.jar' 'com.example.demo.DemoApplication'  is used to run backend
 
