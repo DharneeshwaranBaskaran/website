@@ -1,0 +1,198 @@
+Backend(Java Spring Boot)
+1)Spring Framework:
+=>@RestController:
+-Marks the class as a Spring MVC controller, which is capable of handling web requests.
+=>@RequestMapping: 
+-Defines the base URI for the controller ("/api").
+=>@CrossOrigin: 
+-Configures cross-origin resource sharing (CORS) for the specified origins.
+
+2)Spring JDBC:
+=>JdbcTemplate: 
+-A Spring class that simplifies JDBC operations. It is used for executing SQL queries and retrieving results from the database.
+
+3)CORS (Cross-Origin Resource Sharing):
+=>@CrossOrigin(origins = "http://localhost:3000"): 
+-Enables cross-origin resource sharing for the specified origin. This annotation allows requests from "http://localhost:3000."
+
+4)Value Injection:
+=>@Value("${jwt.secret-key}"): 
+-Reads the value of the "jwt.secret-key" property from the application properties file. This value is used for generating JWT tokens.
+
+5)HTTP Methods and Request Mapping:
+=>@PostMapping:
+-In Spring MVC, the @PostMapping annotation is a specialized form of the more general @RequestMapping annotation. It is used to map HTTP POST requests to specific handler methods in a controller. The @PostMapping annotation is a shortcut that combines the @RequestMapping annotation with the method attribute set to RequestMethod.POST.
+
+=>Example:@PostMapping("/buyer"), @PostMapping("/seller"), @PostMapping("/company"): 
+-Handle POST requests for buyer, seller, and company logins, respectively in LoginController. These methods use the JdbcTemplate to query the database and generate JWT tokens.
+
+=>@GetMapping:
+-In Spring MVC, the @GetMapping annotation is used to map HTTP GET requests to specific handler methods in a controller. It is a shortcut for the more general @RequestMapping annotation with the method attribute set to RequestMethod.GET. The @GetMapping annotation is commonly used when you want to handle HTTP GET requests and don't need to specify other attributes like path patterns or request parameters.
+
+=>Example:@GetMapping("/address/{username}"): 
+-Maps HTTP GET requests to "/api/address/{username}" for fetching a user's address.
+
+6)ResponseEntity:
+=>ResponseEntity<String>: 
+Represents the entire HTTP response. It allows for fine-grained control over the response status, headers, and body. ResponseEntity is used to send HTTP responses with appropriate status codes and messages.
+
+7)Exception Handling:
+=>try-catch blocks: 
+-The code includes error handling using try-catch blocks. If an exception occurs during database queries or token generation, appropriate error responses are returned.
+
+8)JWT Token Generation:
+=>JwtUtils.generateToken(): A utility class (JwtUtils) is used to generate JWT tokens. The generated token is sent in the response if the login is successful.
+
+9)Logging:
+=>System.out.println(): 
+-Logging statements are used to print messages to the console for debugging purposes.
+
+10)JavaMail API:
+=>javax.mail: 
+-Provides classes for sending and receiving email messages.
+=>Properties: 
+-Used to configure mail server properties.
+=>Session: 
+-Represents a mail session and is used to configure various properties.
+=>Authenticator: 
+-An abstract class that provides a callback method for obtaining a PasswordAuthentication instance.
+=>Message: 
+-Represents an email message.
+=>Transport: 
+-Sends a Message to the email server.
+
+11)HTTP Responses:
+=>ResponseEntity.ok(users): 
+-Returns a response with a 200 OK status code and the retrieved list of users if it's not empty.
+=>ResponseEntity.notFound().build(): 
+-Returns a response with a 404 Not Found status code if the list of users is empty.
+=>ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(): 
+-Returns a response with a 500 Internal Server Error status code in case of an exception.
+
+12)Annotations 
+=>@Entity:
+-Marks the class as a JPA entity, indicating that instances of this class can be persisted to a relational database.
+
+=>@Table(name = "users"):
+-Specifies the name of the database table to which this entity is mapped. In this case, the table name is "users."
+
+=>@Id:
+-Indicates that the corresponding attribute (id) is the primary key for the entity.
+
+=>@GeneratedValue(strategy = GenerationType.IDENTITY):
+-Specifies the strategy for generating primary key values. In this case, it uses the identity column feature of the database, typically used with auto-incrementing columns.
+
+=>@Getter and @Setter:
+-Lombok annotations that automatically generate getter and setter methods for the class attributes.
+
+=>@RequiredArgsConstructor:
+-Lombok annotation that generates a constructor with required fields as arguments. This is useful, for example, when initializing an object with non-null fields.
+
+=>@Id and Database Fields:
+-The class has attributes corresponding to database fields, such as username, password, email, address, balance, loyalty, and profilepic. These attributes represent the columns in the "users" table.
+
+=>Lombok Annotations (Getter, Setter, and RequiredArgsConstructor):
+-Lombok is used to reduce boilerplate code. The @Getter and @Setter annotations generate getter and setter methods for all fields. The @RequiredArgsConstructor generates a constructor with required fields as parameters.
+
+=>Relationship Annotations (commented out):
+-There is a commented-out @OneToMany annotation, suggesting a potential one-to-many relationship with another entity (possibly Combo). This relationship is not currently active but can be uncommented and configured accordingly.
+
+13)Jwt:
+-JSON Web Token (JWT) is a compact, URL-safe means of representing claims to be transferred between two parties. It is commonly used for authentication and information exchange between parties in a web application. JWTs consist of three parts: a header, a payload, and a signature. These parts are concatenated with dots (.) to form a compact string.
+
+Let's break down the provided JwtUtils class and understand how it creates JWT tokens:
+
+=>SECRET_KEYS List:
+-The class maintains a list of secret keys. These keys are used to sign the JWTs. For added security, multiple keys are generated and stored.
+
+=>generateToken Method:
+-Parameters: Takes user-specific information such as id, username, and type as input parameters.
+
+=>Logic:
+-It selects a secret key from the list based on the current time to add a level of randomness (SECRET_KEYS.get(keyIndex)).
+-Uses the Jwts.builder() to create a JWT builder.
+-Sets claims (id, username, type) in the payload using the claim method.
+-Sets the issued-at time using setIssuedAt(new Date()).
+-Signs the JWT using the selected secret key with the signWith method.
+-Finally, compact the JWT using compact().
+
+=>generateStrongSecretKey Method:
+-Generates a strong secret key for signing the JWTs.
+-Uses a SecureRandom to generate a random byte array of length 64 (512 bits).
+-Encodes the byte array using Base64 URL encoding without padding.
+
+=>Purpose:
+-The purpose of this utility class is to provide a method for generating JWT tokens. The class uses a rotating set of secret keys for added security. The rotation of keys helps mitigate certain security risks associated with long-lived keys.
+
+=>Note:
+-The generateStrongSecretKey method is used to generate strong secret keys, and the generateToken method combines user-specific claims and a randomly selected secret key to create a signed JWT.
+-When a user logs in or performs an action that requires authentication, the generateToken method is likely called to create a JWT. This JWT can then be sent to the client, stored on the client side, and used for subsequent authenticated requests to the server. The server can verify the authenticity of the JWT using the stored secret keys.
+
+14)Mapping
+-One-to-one, one-to-many, many-to-one, and many-to-many mappings are the four basic types of entity relationships in Java Spring Boot. These mappings are used to model the relationships between different entities in a database.  Entity relationships are used to model the relationships between different tables in a database, not just entities.
+
+=>One-to-One Mapping:
+-A one-to-one mapping is a type of relationship where each entity instance can be mapped to a single instance of another entity. This type of mapping is typically used to model relationships such as a user to a profile, or an order to a shipping address.
+
+=>One-to-Many Mapping:
+-A one-to-many mapping is a type of relationship where a single entity instance can be mapped to multiple instances of another entity. This type of mapping is typically used to model relationships such as a customer to their orders, or a product to its reviews.
+
+=>Many-to-One Mapping
+-A many-to-one mapping is the opposite of a one-to-many mapping. It is a type of relationship where multiple entity instances can be mapped to a single instance of another entity. This type of mapping is typically used to model relationships such as students to their courses, users to their roles or products to review. 
+
+=>Many-to-Many Mapping
+-A many-to-many mapping is a type of relationship where multiple entity instances can be mapped to multiple instances of another entity. This type of mapping is typically used to model relationships such as students to courses, or users to roles. 
+
+15)Backend Testing:
+
+Backend testing in a Java Spring Boot application involves verifying the correctness and reliability of the server-side logic, including controllers, services, repositories, and other components. Spring Boot provides excellent support for testing through various testing annotations and utilities. Here's an overview of backend testing in a Java Spring Boot application:
+
+=>Unit Testing:
+-Purpose: Tests individual components (methods, classes) in isolation.
+-Tools: JUnit, TestNG, Mockito, Hamcrest.
+
+=>Integration Testing:
+-Purpose: Verifies interactions between different components and their integration within the Spring context.
+-Tools: JUnit, TestNG, SpringBootTest, TestRestTemplate, MockMvc.
+
+=>Repository Testing:
+-Purpose: Tests data access and persistence logic in repositories.
+-Tools: JUnit, TestNG, Spring Data, TestEntityManager.
+
+=>Mocking:
+-Purpose: Mock external dependencies or services to isolate the unit of code being tested.
+-Tools: Mockito, @MockBean.
+
+=>REST API Testing:
+-Purpose: Tests the functionality of RESTful APIs.
+-Tools: TestRestTemplate, MockMvc.
+
+=>Annotations:
+-@SpringBootTest: Indicates that the test should load the complete Spring application context. This annotation is commonly used for integration tests.
+-@AutoConfigureMockMvc: Configures the MockMvc instance for use in testing the Spring MVC layer.
+Test Method:
+
+-@Test: Identifies this method as a test case.
+Autowired Dependencies:
+
+-@Autowired private MockMvc mockMvc: Injects a MockMvc instance, which is a Spring class for testing Spring MVC controllers without starting a full HTTP server.
+
+-@Autowired private JdbcTemplate jdbcTemplate: Injects a JdbcTemplate instance, which is a Spring class for interacting with a relational database using JDBC.
+
+=>Test Scenario 
+-testBuyerLogin_ValidCredentials_Success:
+
+=>Objective:
+-This test case checks the behavior of the buyer login endpoint when valid credentials are provided.
+
+=>SQL Query:
+-Executes a SQL query to retrieve the username and password from the "users" table for a specific user ID (in this case, ID 2).
+-The retrieved data is then used to construct a LoginRequest object.
+
+=>MockMvc Request:
+-Uses MockMvc to perform a POST request to the "/api/buyer" endpoint.
+-The request body contains JSON representing a LoginRequest object with the username and password obtained from the database.
+
+=>Expectations:
+-Expects the HTTP status to be 200 (OK) using status().isOk().
+-Expects the content type of response to be "text/plain;charset=UTF-8" using content().contentType(MediaType.parseMediaType("text/plain;charset=UTF-8")).

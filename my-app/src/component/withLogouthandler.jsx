@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { BroadcastChannel } from "broadcast-channel";
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'; 
+
 const withLogoutHandler = (WrappedComponent) => {
   return (props) => {
     const { enqueueSnackbar } = useSnackbar();

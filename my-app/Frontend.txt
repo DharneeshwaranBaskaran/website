@@ -1,0 +1,326 @@
+Frontend(React) 
+1)Higher Order Component:
+-In React, a higher-order component (HOC) is a function that takes a component as an argument and returns a new component that wraps the original component. This allows you to reuse component logic across multiple components without having to re-write the same code in each one. 
+-The withLogoutHandler function is a Higher-Order Component. It takes a component as an argument and returns a new component that wraps the original component.This new component inherits all the functionality of the original component, but it also gains additional functionality for handling logout events.
+-I implemented a Higher Order Component (HOC) named withLogoutHandler. Let me break down the key components and explain how this HOC works:
+
+=>Purpose of the HOC:
+-The purpose of the withLogoutHandler HOC is to enhance a given component by adding a logout functionality. This enhancement involves handling logout-related logic when a logout message is received through a broadcast channel.
+
+=>Usage of the HOC in code:
+-The withLogoutHandler HOC to wrap components like homepage.
+ 
+=>Functionality of the HOC:
+-The HOC itself is a function that takes a component (WrappedComponent) as an argument and returns a new component that includes additional behavior. In this case, the additional behavior is handling logout functionality.
+
+=>Logout Handling Logic:
+-Inside the useEffect hook of the HOC, you have the logic for handling logout. When a logout message is received through the logoutChannel, the handleLogout function is called. This function navigates to the "/start" route, clears the localStorage, reloads the page, and displays a snackbar message indicating a successful logout.
+
+=>Applying the HOC:
+-Finally, the enhanced WrappedComponent is rendered with the original props passed down to it.
+
+2)Component Lifecycle:
+=>definition:
+-In React, the component lifecycle refers to the series of phases a React component goes through from its creation to its removal from the DOM.
+
+=>Initialization Phase:
+-useState: Initializes state variables (type, data, value, currentPage).
+
+=>Mounting Phase:
+-useEffect (1st): Fetches data from the API when the component is mounted 
+
+=>Rendering Phase:
+-The component renders JSX based on the state (type, value, currentPage) and data obtained from the API (data, uniqueItems, filteredItems, currentItems).
+
+=>Updating Phase:
+-useState (re-renders component when state changes): Handles state changes, such as updating the search value (value) and pagination (currentPage).
+useEffect (2nd): Handles data fetching, updates (componentDidUpdate equivalent).
+
+=>Event Handling:
+-Functions like handletomenex, handletologin, handletoregister are called in response to user actions, updating state and triggering re-renders. 
+
+3)State Splitting in react:
+-State splitting in React refers to the practice of dividing a large component's state into smaller, more manageable pieces. This approach helps to improve the maintainability and scalability of React applications by making it easier to track, reason about, and update the state of complex components. 
+
+=>state splitting in Start: 
+->The Start component fetches data from an API and stores it in its state.
+->The Start component then filters the data based on the user's input.
+->The Start component passes the filtered data to the CustomCard component.
+->The CustomCard component only renders the data that it needs to display. 
+
+
+4)React Router:
+=> React Router is a library for managing navigation between pages in a  application. It provides a declarative way to define routes, switch between them, and manage the history stack
+
+=><MemoryRouter>
+ The <MemoryRouter> component in React Router is a type of router that keeps its routing history entirely in memory, without affecting the browser's address bar. This makes it particularly useful in several scenarios:
+
+=><Router>
+The <Router> component is the core element of React Router, a popular library for managing navigation within your single-page application (SPA). It provides various functionalities to handle URL changes, render different components based on the current route, and maintain navigation history.
+=>Purpose:
+-Manages routing logic and renders the appropriate components based on the current URL.
+-Provides navigation capabilities using components like <Switch> and <Route>.
+
+=><Routes>
+ The <Routes> component plays a crucial role in defining the overall routing structure of your application. It works seamlessly with the <Route> component to map specific URL paths to the corresponding components you want to render. Here's a breakdown of how it works:
+=>Purpose:
+-Acts as a container for multiple <Route> components.
+-Defines the hierarchical organization of your routes.
+-Enables nested routing, allowing you to group related routes under a parent path.
+
+5)Props:
+-shortform for properties allow users to pass arguments or data from one component to another component. They are read only and  and can't be changed by children component. They are passed form parent to child component
+-This parameter in the HOC function receives all the props passed to the wrapped component . These props are then spread further down to the wrapped component within the function body.
+
+=>Using props:
+-The enhanced component is created by invoking the WrappedComponent with the spread operator {...props}. This means that all the original props passed to the enhanced component will be forwarded to the WrappedComponent. This is a common pattern in HOCs to ensure that the enhanced component retains its original props.
+
+=>In Address Page:
+-In the context of specific code, the Address component is wrapped with the withLogoutHandler HOC, and any props passed to Address will be forwarded to WrappedComponent (which is Address in this case).
+-So, any props that were initially intended for the Address component can be accessed and used within the Address component as usual. The props variable inside Address will contain the original props as well as any additional props or behavior added by the withLogoutHandler HOC.
+
+6)State:
+-State in React refers to the dynamic data that can change over time, affecting the rendering of your components. It allows you to create interactive and responsive interfaces based on user actions, API responses, or any other dynamic change in your application.
+
+=>Here's a breakdown of state in React:
+-State Variable: Holds the actual data value that represents the current state of a component.
+-State Management: Techniques for manipulating and accessing state within your components and across your application.
+-State Update: Triggered by event handlers, API calls, or other interactions that change the state value.
+-Re-rendering: When state changes, React re-renders the affected components using the updated state, reflecting the change in the UI.
+
+States in start page:
+->data: This state variable holds the data fetched from the API and is used to populate the list of products.
+->value: This state variable holds the current value of the search input.
+->currentPage: This state variable keeps track of the current page for pagination.
+->suggestionsList: This state variable holds the list of suggestions for the search input.
+
+7)React Testing:
+=>Unit testing
+-A unit test is a test that isolates a single unit of code, such as a function, class, or module, and tests its behavior. 
+
+=>integration testing
+-An integration test is a used to test how two or more units of code interact with each other. Integration tests can be more complex than unit tests, but they are essential for ensuring that the different parts of an application work together correctly.  
+
+=>End-to-end Testing:
+-End-to-end testing is not done for the user to understand the page. End-to-end testing is done to ensure that the entire application is working correctly from the user's perspective. The tests should simulate how a user would interact with the application, from start to finish.
+
+8)useState:
+-useState is preferred in modern React development for several reasons:
+=>Simplicity and Readability:
+-The syntax of useState is more concise and readable compared to the traditional class component state syntax.
+-It makes functional components more straightforward and eliminates the need for boilerplate code associated with class components.
+
+=>Separation of Concerns:
+-Hooks, including useState, promote a more modular and reusable code structure.
+-Stateful logic can be extracted into custom hooks, allowing components to focus on rendering and presentation while delegating logic to hooks.
+
+=>Easier to Understand Lifecycle:
+-Hooks, including useState, make it easier to understand the lifecycle of a component. Each call to a hook is a self-contained unit of logic.
+-In contrast, class components have various lifecycle methods (e.g., componentDidMount, componentDidUpdate), which can make it more challenging to follow the flow of logic.
+
+=>Functional Programming Paradigm:
+-Hooks fit well with the functional programming paradigm, where functions are pure and state is managed immutably.
+-useState promotes immutability by providing a function to update state based on the previous state.
+
+=>Consistency Across Components:
+-With the introduction of hooks, functional components can now use the same state management mechanism (useState) as class components.
+-This consistency makes it easier for developers to switch between functional and class components or work on projects with a mix of both.
+
+=>Better Performance:
+-React can optimize the rendering of functional components that use hooks, potentially leading to better performance.
+-Hooks allow React to memoize state and avoid unnecessary renders.
+
+=>Hooks API for Side Effects:
+-Hooks like useEffect can handle side effects in a declarative and centralized way, making it easier to manage asynchronous operations and subscriptions.
+-Class components required lifecycle methods to handle side effects, leading to scattered and harder-to-follow logic.
+-While useState is widely preferred, it's important to note that the choice of using hooks or class components depends on the project and team preferences. 
+-Newer projects often use hooks for their advantages, while existing projects may still use class components due to legacy code or specific requirements.
+
+9) React Testing:
+In Start Page:
+=>Test: should filter products based on search term
+-This test checks if exactly one product card is rendered when the user types "formal" in the search bar on the provided application. Here's a breakdown of the steps:
+
+=>Test: suggestion list appears when text is typed without any error
+-The test also renders the Start component within a MemoryRouter.
+-It finds the input with the placeholder text 'Search Products' and triggers a change event by typing 'Formal' into the input.
+-It then checks for the presence of an element with the test ID 'search-container', expecting it to print suggestions.
+
+=>Test: renders the custom cards
+-This test renders the Start component within a MemoryRouter.
+-It retrieves all elements with the test ID 'custom-card' and checks that the number of such elements is greater than 0, indicating that custom cards are being rendered.
+
+=>Test: should render with pagination and handle page clicks
+-The test renders the Start component within a MemoryRouter.
+-It then checks that the number of custom cards rendered is less than or equal to 15.
+-It uses the waitFor function to wait for an asynchronous operation, and within that callback, it asserts the presence of a pagination button with the test ID 'pagination-button'.
+
+=>Memory Router 
+-This ensures that when the Start component interacts with React Router components (like Link or useNavigate), it does so in a way that is isolated to the test environment.
+-If  component includes navigation or routing logic, using MemoryRouter in your test allows you to simulate navigation and test how your component responds without affecting the global browser history.
+-MemoryRouter is used in testing to provide a controlled environment for testing components that use React Router. It's a useful tool for isolating your tests and making them more reliable.
+-MemoryRouter allows you to test your React routing components in isolation, independent of any external browser interactions. This makes tests more predictable and reliable, as you can control the route changes and history independent of the actual browser window
+
+10)getByTestId
+-getByTestId is a query function in React Testing Library (RTL) used to access specific elements in your UI based on a custom data-testid attribute. It's useful in scenarios where matching by text or accessibility roles isn't feasible.
+
+Here's a breakdown of getByTestId:
+=>Function:
+-Accepts a single string argument, the testid you assigned to the element.
+
+=>Purpose:
+-Helps you find elements without relying on visible text or accessibility semantics.
+
+11)getByText
+-getByText is another helpful query function in React Testing Library (RTL) used to find elements based on their text content. It's a common and preferred choice for testing UI interactions related to visible text on the screen.
+
+Here's a breakdown of getByText:
+=>Function:
+Accepts a single string argument, the specific text you want to match in the element's content.
+
+12)getByPlaceholderText:
+-In React testing using libraries like Jest and Testing Library, getByPlaceholderText is a function provided by Testing Library to select elements in the DOM by their placeholder text. This is commonly used for testing form elements. Below is an example of how you might use getByPlaceholderText in a React test:
+
+13)What is the Context API?
+
+-It's a mechanism for sharing data between components in a React application without having to pass props through multiple levels of the component tree.
+-It's useful for managing global state or data that needs to be accessible to many components throughout the app.
+
+=>Key Concepts:
+-Provider: A component that creates a context and makes its value available to its children.(loginContext)
+-Consumer: A component that can access the context value from any level of the tree, even if it's not a direct descendant of the provider.(Components like 
+homepage,loginpage)
+
+Here's a breakdown of  Context API in code :
+=>In LoginContext.js
+-I created a context named LoginContext using createContext().
+-Also define a custom hook useLoginContext to conveniently access the context values in your components.
+
+=>App.js
+-Wrap the main part of your application with LoginContext.Provider.
+-The value prop provides the values that will be available to all components wrapped inside this provider.
+-These values include Balance, setBalance, showModal, setShowModal, jwt, and setjwt.
+
+=>HomePage.js
+-In component,I used the useLoginContext hook to access the context values.
+-You can destructure the values you need, such as jwt and setjwt, directly from the context.
+-This allows you to use these values within the component.
+
+=>Explanation:
+-The Context API is used to create a global context (LoginContext) to manage login-related state across your application.
+-The LoginContext.Provider in App.js wraps application, making the context values available to all components within the Router component.
+-Components like HomePage.js use the useLoginContext hook to consume the context values, providing a clean and efficient way to access and update the login-related state across different parts of your application.
+
+14)Lazy Loading
+-Lazy loading in React is a technique used to improve the performance of web applications by loading only the necessary components or resources when they are actually needed, rather than loading everything upfront. This helps in reducing the initial bundle size and speeds up the initial page load time. 
+
+1. Importing Components Lazily
+2. Rendering Components with Suspense
+3. Code Splitting and Loading on Demand
+
+-This approach splits the code into multiple bundles.
+-Only the bundle for the initial page is loaded upfront, reducing initial load time.
+-Other components are loaded only when their routes are accessed, improving performance and perceived loading speed.
+
+=>Advanages:
+-Faster Initial Page Load
+-Improved Time-to-Interactive
+-Reduced Memory Usage
+-Efficient Resource Utilization
+-Better User Experience
+-Optimized Caching
+
+Here's a breakdown of  lazy loading in App.js:
+=>Import lazy function
+=>Wrap components with lazy
+=>Wrap  routes with Suspense:
+-The Suspense component is used to wrap the part of your application where lazy-loaded components are used. The fallback prop is what will be displayed while the lazy-loaded components are being loaded.
+=>Using lazy-loaded components in Routes:
+-In the element prop of the Route components, you are using the lazy-loaded components. These components will be loaded asynchronously when the corresponding routes are accessed.
+-By using lazy loading, you optimize the loading time of your application by only fetching the code for the components that are actually needed at runtime. This can lead to faster initial page loads and a better user experience.
+
+15)UseEffect:
+-In React, the useEffect hook is a powerful and commonly used hook for handling side effects in functional components. It allows you to perform side effects in your components, such as fetching data, interacting with the DOM, or subscribing to external events. The useEffect hook takes two arguments: a function that contains the code to execute, and an optional array of dependencies that determines when the effect should run.
+
+key aspects of the useEffect hook:
+=>Effect Function:
+-The first argument to useEffect is a function that contains the code you want to run as a side effect.
+-This function will be executed after the component renders.
+
+=>Dependencies Array:
+-The second argument is an optional array of dependencies.
+-If provided, the effect will only run if any of the dependencies have changed since the last render.
+-If the dependencies array is omitted, the effect runs after every render.
+
+=>Cleanup Function:
+-The function returned from the effect function is a cleanup function.
+-This function is called when the component is unmounted or when the dependencies change before the next render.
+-It is used to perform cleanup tasks like unsubscribing from subscriptions or canceling network requests.
+
+In Start page code:
+=>useEffect Hook:
+-The useEffect hook is a React hook that allows you to perform side effects in functional components. It runs after the component has been rendered.
+
+=>Act Function:
+-The act function is used to wrap code that causes side effects in React components. It ensures that all state updates triggered by the wrapped code are flushed before the component is considered "done" with its side effects.
+
+=>Data Fetching:
+-The fetch function is used to make an HTTP request to the URL 'http://localhost:8080/api/combodata'.
+-The response is checked for success (response.ok). If the response is not okay, an error is thrown.
+-If the response is okay, the JSON data is extracted using response.json().
+
+=>Setting State:
+-The fetched data is then used to update the component's state using the setData function. This assumes that there is a state variable named data and a corresponding setData function.
+
+=>Error Handling:
+-If there are any errors during the fetch or parsing of the response, an error message is logged to the console.
+
+=>Empty Dependency Array:
+-The empty dependency array ([]) indicates that this effect does not depend on any specific values from the component's props or state. Therefore, the effect runs only once when the component mounts.
+
+16)Enquesnackbar:
+-EnqueueSnackbar is typically associated with the SnackbarProvider component from the notistack library. The notistack library is commonly used in React applications to display snackbars or toasts for notifications.
+
+17)Cookies:
+-Cookies are being used to store and manage user-related information during the processing of the webpage:
+
+18)Classname:
+-In React, the className attribute is used to specify the CSS class for a DOM element. It is analogous to the class attribute in HTML. You use it to apply styles to React components.
+
+19)window.location.reload():
+-In React, you can use window.location.reload() to reload the current page.  
+
+20)ReactPlayer:
+-ReactPlayer component is imported from the react-player library. This library provides a React component for playing various types of media, such as videos and audio. The ReactPlayer component is a versatile player that supports a variety of media sources and formats. 
+
+21)Google Signin:
+-GoogleSignInButton component uses the LoginSocialGoogle component from the reactjs-social-login library to provide a Google Sign-In button. The Google Sign-In process involves a series of steps to authenticate a user with their Google account. Below is an explanation of how your Google Sign-In component works:
+
+=>Rendering the Google Sign-In Button:
+-The component renders a GoogleLoginButton provided by the react-social-login-buttons library. This is the button that users will click to initiate the Google Sign-In process.
+
+=>Setting Up Google Sign-In with LoginSocialGoogle:
+-The LoginSocialGoogle component is used to set up the Google Sign-In process.
+-It takes various props like client_id, scope, discoveryDocs, and access_type to configure the Google Sign-In parameters.
+The onResolve and onReject callbacks are provided to handle the response when the user resolves or rejects the Google Sign-In prompt.
+
+=>Handling the Google Sign-In Resolution:
+-When the user successfully signs in with Google, the onResolve callback is triggered.
+-The onResolve callback receives the provider (which is 'google' in this case) and the user data containing information like the user's given name, email, etc.
+The user data is then passed to the handleLogin function.
+
+=>Handling the Google Sign-In Rejection:
+-If the user rejects the Google Sign-In prompt, the onReject callback is triggered. The rejection reason (error) is logged to the console.
+
+=>Making a Backend Request to Authenticate with Google Token:
+-The handleLogin function makes a backend request to 'http://localhost:8080/api/register/google' to authenticate the user with the Google-provided information.
+-The user data is sent in the request body, and the server responds with a token if the authentication is successful.
+
+=>Handling Backend Response:
+-If the backend response is successful (HTTP status 200), the received token is stored in a cookie using Cookies.set.
+-The token is also set in the React state using the setjwt function from the LoginContext.
+-The user's ID is extracted from the token using the parseJwt function and stored in a cookie as well.
+-Finally, the user is redirected to the homepage of the application.
+
+=>Handling Errors:
+-If there is an error during the Google Sign-In process or the backend authentication, error messages are logged to the console, and a snackbar notification is displayed to the user.
