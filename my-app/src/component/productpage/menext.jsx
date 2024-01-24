@@ -7,7 +7,6 @@ import '../App.css';
 import { FiVideo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from '../hoc/withLogouthandler';
-import { useLoginContext } from "../../contexts/LoginContext";
 import Cookies from 'js-cookie';
 function Menext() {
   const navigate = useNavigate();
@@ -179,18 +178,18 @@ function Menext() {
       );
     } else {
       backButton = (
-        <button onClick={()=>handleback("homepage")} style={{ backgroundColor: "#713ABE" }}>Back 🏠</button>
+        <button onClick={()=>handleback("homepage")} style={{ backgroundColor: "#713ABE" }}>Back </button>
       );
     }}
   else {
     backButton = (
-      <button onClick={()=>handleback("homepage")} >Back To Home 🏠</button>
+      <button onClick={()=>handleback("homepage")} >Back To Home </button>
     );
   }
   let cartButton = null,addButton = null,countButton = null,Wishlist = null;
   if (type == "buyer") {
     cartButton = (<button onClick={()=>handleback("cart")} style={{ backgroundColor: "#5B0888" }}>View Cart</button>);
-    addButton = (<button type="submit" className="lob" onClick={handlecart}>Add To Cart🛒</button>)
+    addButton = (<button type="submit" className="lob" onClick={handlecart}>Add To Cart</button>)
     Wishlist = (<button type="submit" className="lob" style={{ marginLeft: "5px" }} onClick={handlewish}>Wishlist</button>)
     countButton = (<div className='contain1'>
       <button onClick={decrement} style={{ backgroundColor: "#6666ff", }}>-</button>

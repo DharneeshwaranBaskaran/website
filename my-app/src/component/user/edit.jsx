@@ -48,7 +48,7 @@ function Edit() {
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
-        <button onClick={back} >Back To Home 🏠</button>
+        <button onClick={back} >Back To Home </button>
       </div>
       <div className="app">
         <div className="login-page">

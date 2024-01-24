@@ -40,7 +40,7 @@ function CustomCard({ item, handleView }) {
             fullWidth
             onClick={() => handleView(item.id, item.topic, item.stockcount)}
           >
-            {item.stockcount <= 0 ? "Remind🔔" : "View👁️‍🗨️"}
+            {item.stockcount <= 0 ? "Remind" : "View"}
           </Button>
         </CardActions>
       </Card>

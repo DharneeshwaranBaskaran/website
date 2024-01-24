@@ -110,13 +110,13 @@ function Men() {
           <MenuItem value={fil2}>{fil2}</MenuItem>
           <MenuItem value={fil3}>{fil3}</MenuItem>
         </Select> 
-        <button onClick={handlebackhome} style={{ backgroundColor: "#5B0888" }}>Back 🏠</button>
-        <button onClick={toggleModal} style={{ backgroundColor: "#713ABE" }}>Offer Products🎁</button>
+        <button onClick={handlebackhome} style={{ backgroundColor: "#5B0888" }}>Back </button>
+        <button onClick={toggleModal} style={{ backgroundColor: "#713ABE" }}>Offer Products</button>
         <button onClick={toggleSorting} style={{ backgroundColor: "#793FDF" }}>
           {ascending ? "Sort Descending ↓" : "Sort Ascending ↑"}
         </button>
         <button onClick={toggleCountSorting} style={{ backgroundColor: "#793FDF" }}>
-          {countSortAscending ? "Most Purchased💎" : ""}
+          {countSortAscending ? "Most Purchased" : ""}
         </button>
       </div>
       <div className="search-container" data-testid="search-container">

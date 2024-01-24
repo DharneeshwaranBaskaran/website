@@ -130,7 +130,7 @@ function Payment() {
       {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type && parseJwt(jwt).id==Cookies.get("dataid") ) ?( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohomefrompay} >Back To Home 🏠</button>
+        <button onClick={handlebacktohomefrompay} >Back To Home </button>
       </div>
       {Cookies.get('type') === 'buyer' && (<> 
             <h2 className='balance-header'>Thank you for shopping with us</h2>

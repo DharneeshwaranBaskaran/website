@@ -255,7 +255,7 @@ function History() {
         {(jwt ==Cookies.get('token')&& Cookies.get('type')==parseJwt(jwt).type && parseJwt(jwt).id==Cookies.get("dataid") ) ?( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohomefromhis} >Back To Home 🏠</button>
+        <button onClick={handlebacktohomefromhis} >Back To Home </button>
       </div>
       {Cookies.get('type') == "buyer" && (
         <input

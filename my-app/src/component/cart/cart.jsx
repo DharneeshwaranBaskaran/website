@@ -188,7 +188,7 @@ function Cart() {
                 ))
               ) : (<tr>
                 <td colSpan="5" style={{ textAlign: "center" }}>
-                  <h1>Cart is empty🛒</h1>
+                  <h1>Cart is empty</h1>
                 </td>
               </tr>
               )}
