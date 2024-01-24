@@ -2,26 +2,10 @@ import React, { useState, useEffect } from "react";
 import { enqueueSnackbar } from "notistack";
 import './App.css';
 import { useNavigate } from 'react-router-dom';
-import withLogoutHandler from "./withLogouthandler";
+import withLogoutHandler from "./hoc/withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
 import Cookies from "js-cookie";
-const fetchData = (url, setDataFunction, errorMessage) => {
-  fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      setDataFunction(data);
-    })
-    .catch((error) => {
-      console.error(`Error fetching items from ${url}:`, error);
-      errorMessage && console.error(errorMessage);
-    });
 
-};
 function History() {
   const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
@@ -31,7 +15,7 @@ function History() {
   let Username = Cookies.get('username');
   let type = Cookies.get('type');
   const [searchQuery, setSearchQuery] = useState('');
-  const [Balance, setBalance] = useState(0);
+  const {Balance, setBalance} = useLoginContext();
 
   const handlerepeat = (id, cost, count) => {
     console.log(id, cost, count);
@@ -49,7 +33,7 @@ function History() {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          return response.json();
+          return response.text();
         })
         .then((data) => {
           console.log(data);
@@ -71,7 +55,7 @@ function History() {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          return response.json();
+          return response.text();
         })
         .then((data) => {
           console.log(data);
@@ -79,6 +63,7 @@ function History() {
         .catch((error) => {
           console.error('Error updating user balance:', error);
         });
+        setBalance(newBalance)
     }
   }
 
@@ -134,15 +119,30 @@ function History() {
   
     return JSON.parse(jsonPayload);
   }; 
-  useEffect(() => {
-    fetchData(`http://localhost:8080/api/history/${Username}`, setItems, 'Error fetching history items:');
-    fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
-    fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
-    fetchData(`http://localhost:8080/api/balance/${Username}`, setBalance, 'error fetching balance')
-    console.log(Draft); 
+  
+    const fetchData = async (urls, setDataCallbacks) => {
+      try {
+        const responses = await Promise.all(
+          urls.map(url => fetch(url).then(response => response.json()))
+        );
+        responses.forEach((data, index) => {
+          setDataCallbacks[index](data);
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchData(
+        [`http://localhost:8080/api/history/${Username}`, `http://localhost:8080/api/history/view/${Username}`,
+        `http://localhost:8080/api/history/viewdraft/${Username}`, `http://localhost:8080/api/balance/${Username}`
+        ],
+        [setItems, setData, setDraft, setBalance]
+      );
+      console.log(Draft); 
     parseJwt(jwt)
-  },
-    [Username]);
+    }, []);
 
   const removeItemFromCart = (id) => {
     fetch(`http://localhost:8080/api/deletecombo/${id}/${Username}`, {
@@ -155,9 +155,11 @@ function History() {
         return response.json();
       })
       .then(() => {
-        fetchData(`http://localhost:8080/api/history/view/${Username}`, setData, 'Error fetching cart items:');
-        fetchData(`http://localhost:8080/api/history/viewdraft/${Username}`, setDraft, 'Error fetching draft items:');
-      })
+        fetchData(
+          [`http://localhost:8080/api/history/view/${Username}`,`http://localhost:8080/api/history/viewdraft/${Username}`],
+          [ setData, setDraft]
+        );
+        })
       .catch((error) => {
         console.error('Error deleting combo:', error);
       });

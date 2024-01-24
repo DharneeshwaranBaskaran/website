@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import './App.css';
 import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
-import withLogoutHandler from "./withLogouthandler"; 
+import withLogoutHandler from "./hoc/withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext"; 
 import Cookies from "js-cookie";
 function Payment() {

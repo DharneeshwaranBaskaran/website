@@ -1,7 +1,7 @@
 import React, { useEffect,useState ,useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack"; 
-import withLogoutHandler from './withLogouthandler';
+import withLogoutHandler from "./hoc/withLogouthandler";
 import { useLoginContext } from "../contexts/LoginContext";
 import Cookies from 'js-cookie';
 function Phone() {
