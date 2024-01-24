@@ -1,8 +1,8 @@
 import React from 'react';
-
+import Disatified from "../images/disatisfied.jpg"
 function DissatisfiedSymbol() {
   return (
-    <h1>😢</h1>
+    <div><img src={Disatified} alt={Disatified} style={{ height: '35px', marginLeft: '100px' }} /></div>
   );
 }
 
