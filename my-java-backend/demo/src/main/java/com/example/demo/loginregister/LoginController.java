@@ -14,7 +14,6 @@ import com.example.demo.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
-@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
      

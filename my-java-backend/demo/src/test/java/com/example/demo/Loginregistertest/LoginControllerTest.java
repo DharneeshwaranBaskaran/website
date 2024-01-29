@@ -34,7 +34,7 @@ public class LoginControllerTest {
         Map<String, Object> row = results.get(0);
         request.setUsername((String) row.get("username"));
         request.setPassword((String) row.get("password"));
-        mockMvc.perform(post("/api/buyer")
+        mockMvc.perform(post("/buyer")
                 .content("{\"username\":\"" + request.getUsername() + "\",\"password\":\"" + request.getPassword() + "\"}")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
