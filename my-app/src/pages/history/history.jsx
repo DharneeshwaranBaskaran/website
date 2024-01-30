@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
 import Cookies from "js-cookie";
-import { Helper } from "../../components/helper/helpers";
+import { Helper } from "../../components/helper/helpers"; 
+import "./history.css";
 function History() {
   const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function History() {
       enqueueSnackbar("Insuficient Balance", { variant: "warning" });
     }
     else {
-      fetch(`http://localhost:8080/api/repeatHistory/${id}`, {
+      fetch(`http://localhost:8080/repeatHistory/${id}`, {
         method: 'POST',
       })
         .then((response) => {
@@ -42,7 +43,7 @@ function History() {
           console.error('Error transferring data:', error);
           enqueueSnackbar(`Error transferring data: ${error}`);
         });
-      fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+      fetch(`http://localhost:8080/updateUserBalance/${Username}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ function History() {
       enqueueSnackbar("Your History Page Is Empty", { variant: "info" });
     }
     else {
-      fetch(`http://localhost:8080/api/HistoryClear/${Username}`, {
+      fetch(`http://localhost:8080/HistoryClear/${Username}`, {
         method: 'POST',
       })
         .then((response) => {
@@ -114,18 +115,26 @@ function History() {
         console.error('Error fetching data:', error);
       }
     };
+
+    
   
-    useEffect(() => {
+    useEffect(() => { 
+      if(Cookies.get('type') == "buyer"){
       fetchData(
-        [`http://localhost:8080/api/history/${Username}`, `http://localhost:8080/api/history/view/${Username}`,
-        `http://localhost:8080/api/history/viewdraft/${Username}`, `http://localhost:8080/api/balance/${Username}`
-        ],
-        [setItems, setData, setDraft, setBalance]
-      );
+        [`http://localhost:8080/history/${Username}`, `http://localhost:8080/balance/${Username}`],
+        [setItems, setBalance]
+      )}
+      else{
+      fetchData(
+
+      [`http://localhost:8080/history/viewdraft/${Username}`, `http://localhost:8080/history/view/${Username}`],
+      [ setDraft,setData ]
+      )
+    }
     }, []);
 
   const removeItemFromCart = (id) => {
-    fetch(`http://localhost:8080/api/deletecombo/${id}/${Username}`, {
+    fetch(`http://localhost:8080/deletecombo/${id}/${Username}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -136,7 +145,7 @@ function History() {
       })
       .then(() => {
         fetchData(
-          [`http://localhost:8080/api/history/view/${Username}`,`http://localhost:8080/api/history/viewdraft/${Username}`],
+          [`http://localhost:8080/history/view/${Username}`,`http://localhost:8080/history/viewdraft/${Username}`],
           [ setData, setDraft]
         );
         })
@@ -153,7 +162,7 @@ function History() {
 
   const handlecancel = (id, cost, count) => {
     let newBalance = Balance + (cost * count * 9 / 10) - 5;
-    fetch(`http://localhost:8080/api/cancel/${id}`, {
+    fetch(`http://localhost:8080/cancel/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -173,7 +182,7 @@ function History() {
         console.error('Error cancelling order:', error);
         enqueueSnackbar('Failed to cancel order', { variant: 'error' });
       });
-    fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+    fetch(`http://localhost:8080/updateUserBalance/${Username}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -201,7 +210,7 @@ function History() {
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const drafttodatabase = async (id) => {
-    fetch(`http://localhost:8080/api/transferdata/${id}`, {
+    fetch(`http://localhost:8080/transferdata/${id}`, {
       method: 'POST',
     })
       .then((response) => {
@@ -226,7 +235,7 @@ function History() {
   }
 
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div className="backgroundcol">
         {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
@@ -239,8 +248,7 @@ function History() {
           placeholder="Search Items"
           value={searchQuery}
           onChange={handleSearchChange}
-          className="search-bar"
-          style={{ marginLeft: "10px" }}
+          className="search-bar marleft"
         />
       )}
       <table className="purchase-history-table">

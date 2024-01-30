@@ -58,10 +58,10 @@ function Header() {
         }
     };
     useEffect(() => {
-        fetchData(`http://localhost:8080/api/cart/getItems/${username}`, setcart);
+        fetchData(`http://localhost:8080/cart/getItems/${username}`, setcart);
     }, []);
     useEffect(() => {
-        fetch(`http://localhost:8080/api/user/${username}`)
+        fetch(`http://localhost:8080/user/${username}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Error fetching user data: ${response.statusText}`);
@@ -98,7 +98,7 @@ function Header() {
     }
     return (
         <div className="logout-button">
-            {(Cookies.get('type') === 'buyer' || Cookies.get('type') === 'company') && (<>
+            {(Cookies.get('type') === 'buyer') && (<>
                 <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
                 <button style={{ backgroundColor: "#5B0888" }} onClick={() => handlehelp("user")}>{username}</button>
                 <select onChange={handleChange} style={selectStyle("#5B0888")}>

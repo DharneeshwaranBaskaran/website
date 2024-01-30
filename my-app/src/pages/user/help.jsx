@@ -25,7 +25,7 @@ function Help() {
   ];
 
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }} >
+    <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button">

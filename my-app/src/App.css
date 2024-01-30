@@ -368,7 +368,11 @@ align-items: center;
 .vim{
 display: flex;
 flex-direction: column; 
-align-items: center;
+align-items: center; 
+border: 2px solid #ccccff;
+background-color: #ccccff;
+padding: 5px;
+border-radius: 5px;
 }
 
 .card-header {

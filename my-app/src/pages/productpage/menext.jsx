@@ -8,6 +8,7 @@ import { FiVideo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from '../../components/hoc/withLogouthandler';
 import Cookies from 'js-cookie';
+import "./men.css";
 function Menext() {
   const navigate = useNavigate();
   const videoUrl = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
@@ -40,7 +41,7 @@ function Menext() {
     window.location.reload();
   }
   useEffect(() => {
-    fetch(`http://localhost:8080/api/cart/getItems/${Username}`)
+    fetch(`http://localhost:8080/cart/getItems/${Username}`)
   .then(response => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -53,7 +54,7 @@ function Menext() {
   }, [Username]);
   const weekends = Cookies.get("weekend") === "Yes" ? "Yes" : "No";
   useEffect(() => {
-    fetch(`http://localhost:8080/api/wishlist/${Username}`)
+    fetch(`http://localhost:8080/wishlist/${Username}`)
   .then(response => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -175,7 +176,7 @@ function Menext() {
       );
     } else {
       backButton = (
-        <button onClick={()=>handleback("homepage")} style={{ backgroundColor: "#713ABE" }}>Back </button>
+        <button onClick={()=>handleback("homepage")}>Back </button>
       );
     }}
   else {
@@ -185,13 +186,13 @@ function Menext() {
   }
   let cartButton = null,addButton = null,countButton = null,Wishlist = null;
   if (type == "buyer") {
-    cartButton = (<button onClick={()=>handleback("cart")} style={{ backgroundColor: "#5B0888" }}>View Cart</button>);
+    cartButton = (<button onClick={()=>handleback("cart")} >View Cart</button>);
     addButton = (<button type="submit" className="lob" onClick={handlecart}>Add To Cart</button>)
-    Wishlist = (<button type="submit" className="lob" style={{ marginLeft: "5px" }} onClick={handlewish}>Wishlist</button>)
+    Wishlist = (<button type="submit" className="lob wishbut"  onClick={handlewish}>Wishlist</button>)
     countButton = (<div className='contain1'>
-      <button onClick={decrement} style={{ backgroundColor: "#6666ff", }}>-</button>
+      <button onClick={decrement} className='inde'>-</button>
       <h1>{count}</h1>
-      <button onClick={increment} style={{ backgroundColor: "#6666ff", }}>+</button>
+      <button onClick={increment} className='inde'>+</button>
     </div>)
   }
 
@@ -243,17 +244,17 @@ function Menext() {
   const renderDiscountAmount = () => {
     if (imageData.count > 0) {
       return (
-        <h3 style={{ fontSize: '20px', color: '#222' }}>Actual Cost: ${imageData.cost}</h3>
+        <h3 className='costh'>Actual Cost: ${imageData.cost}</h3>
       );
     } else {
       return (
-        <h3 style={{ fontSize: '20px', color: '#222' }}>Discount Cost: ${imageData.cost * 0.9}</h3>
+        <h3 className='costh'>Discount Cost: ${imageData.cost * 0.9}</h3>
       );
     }
   };
 
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh", overflowX: "hidden", overflowY: "hidden" }}>
+    <div className='menextbackground'>
       <div className="logout-button">
         {cartButton}
         {backButton}
@@ -262,23 +263,24 @@ function Menext() {
       <div class="contain">
         <div id="mag">
           <div class="containimg">
-            <div className='vim' style={{border: "2px solid #ccccff",backgroundColor: '#ccccff',padding: '5px',borderRadius: '5px'}}>
+            <div className='vim' >
               <img
                 src={imageData.url}
                 alt={imageData.topic}
                 onClick={handleToggleImage}
-                style={{cursor: 'pointer', height: '100px',paddingTop: '10px', paddingBottom: '10px'}}
+                className='im'
               />
               <FiVideo
                 size={50}
                 color="black"
                 onClick={handleToggleVideo}
-                style={{ cursor: 'pointer' }}
+                className='v'
               />
             </div>
             {isImage ? (
               <div>
-                <ReactImageMagnify style={{ maxWidth: "500px" }}
+                <ReactImageMagnify  
+                className='magnify'
                   smallImage={{
                     alt: imageData.topic,
                     isFluidWidth: true,
@@ -305,9 +307,9 @@ function Menext() {
         </div>
         <div data-testid="custom-card">
           <Card onSubmit={handleSubmit} style={divStyle}>
-            <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>{imageData.topic} </h1>
-            <h2 style={{ fontSize: '18px', color: '#333' }}>{imageData.description}</h2>
-            <h2 style={{ fontSize: '18px', color: '#333' }}>Quantity:{imageData.stockcount} pieces</h2>
+            <h1 className='topic'>{imageData.topic} </h1>
+            <h2 className='des'>{imageData.description}</h2>
+            <h2 className='quantity'>Quantity:{imageData.stockcount} pieces</h2>
             {renderDiscountAmount()}
             {countButton}
             <Box>
@@ -319,10 +321,7 @@ function Menext() {
             {addButton}
             {Wishlist}
             {purchase}
-            <button onClick={toggleModal} className="lob"
-              style={{
-                marginLeft: "5px"
-              }}>Comment</button>
+            <button onClick={toggleModal} className="lob wishbut">Comment</button>
             {showModal && (
               <div>
                 <div className="con">
@@ -338,12 +337,12 @@ function Menext() {
             )}
           </Card>
           <br />
-          <button onClick={view} className="lob" style={{marginLeft: "5px"}}>View Comments</button>
+          <button onClick={view} className="lob wishbut" >View Comments</button>
           {Item.length > 0 && (<>
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}>Comments</h2>
+              <h2 className='comh'>Comments</h2>
               <Card style={divStyle}>
                 {Item.map(item => (
-                  <p style={{ marginLeft: "5px", fontSize: '18px', color: '#333' }}>{item.username}:{item.comment}</p>
+                  <p className='comp'>{item.username}:{item.comment}</p>
                 ))}
               </Card>
             </>)}

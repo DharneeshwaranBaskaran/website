@@ -4,8 +4,9 @@ import '../../App.css';
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import GoogleSignInButton from '../../components/GoogleSignin/GoogleSignInButton';
-import Cookies from "js-cookie"; 
-import Input from "../../components/registerlogin/input";
+import Cookies from "js-cookie";
+import Input from "../../components/registerlogin/input"; 
+import "./register.css"
 function RegisterPage() {
   const type = Cookies.get('type');
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ function RegisterPage() {
     }
   }
 
-  
+
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -124,8 +125,6 @@ function RegisterPage() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   };
-
-  const errorStyle = {color: 'red',fontSize: '10px'};
   const handleInputChange = (e, setValue, setValid, minLength, errorMessage, setInvalidFlag, setError) => {
     const value = e.target.value;
     setValue(value);
@@ -164,13 +163,13 @@ function RegisterPage() {
     handleInputChange(e, setCompany, () => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange8 = (e) => {
-    handleInputChange(e, setcomAddress,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
+    handleInputChange(e, setcomAddress, () => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange9 = (e) => {
-    handleInputChange(e, setWebsite,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
+    handleInputChange(e, setWebsite, () => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
   const handleChange0 = (e) => {
-    handleInputChange(e, setmail,() => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
+    handleInputChange(e, setmail, () => true, 6, '*Company Name should contain 6 characters', setiscompany, setError6);
   };
 
   const redirectinglogin = () => {
@@ -188,31 +187,31 @@ function RegisterPage() {
   const inputStyle4 = generateInputStyle(isname);
   const inputStyle5 = generateInputStyle(isnum);
   const inputStyle6 = generateInputStyle(iscompany);
-
   return (
-    <div style={{backgroundImage: `url(${backpic})`, minHeight: "130vh"}}>
-      <div style={{ padding: "35px" }}></div>
+    <div className="background">
+      <div className="padding"></div>
       <div className="app" >
         <div className="login-page"  >
-          <h2 data-testid="Title">Register</h2> 
+          <h2 data-testid="Title">Register</h2>
           {Cookies.get('type')}
           <div className="con" data-text="form">
-            {type === 'seller' && Input("text", "Name", name, handleChange5,"","", inputStyle4)}
-            <div style={errorStyle}>{error4}</div>
-            {type !== 'buyer' && Input("text", "Contact Number", num, handleChange6,"","", inputStyle5)}
-            <div style={errorStyle}>{error5}</div>
-            {type !== 'buyer' && Input("text", "Company", company, handleChange7,"","", inputStyle6)}
-            <div style={errorStyle}>{error6}</div>
-            {Input("text", "Username", username, handleChange,"","", inputStyle)}
-            <div style={errorStyle}>{error}</div>
-            {Input("password", "Password", password, handleChange1,"","", inputStyle1)}
-            <div style={errorStyle}>{error1}</div>
-            {Input("password", "Confirm Password", conpassword, handleChange2,"","", inputStyle2)}
-            <div style={errorStyle}>{error2}</div>
-            {Input("text", "Email", email, handleChange3,"","", inputStyle3)}
-            {type !== 'company' && Input("text", "Personal Address", address,"","", handleChange4)}
-            {type !== 'buyer' && Input("text", "Company Address", comaddress,"","", handleChange8)}
-            {type=== 'company' && Input("text", "Website", website,"","", handleChange9)}
+            {type === 'seller' && <Input type="text" placeholder="Name" value={name} onChange={handleChange5} style={inputStyle4} />}
+            <div className="errorStyle">{error4}</div>
+            {type !== 'buyer' && <Input type="text" placeholder="Contact Number" value={num} onChange={handleChange6} style={inputStyle5} />}
+            <div className="errorStyle">{error5}</div>
+            {type !== 'buyer' && <Input type="text" placeholder="Company" value={company} onChange={handleChange7} style={inputStyle6} />}
+            <div className="errorStyle">{error6}</div>
+            <Input type="text" placeholder="Username" value={username} onChange={handleChange} style={inputStyle} />
+            <div className="errorStyle">{error}</div>
+            <Input type="password" placeholder="Password" value={password} onChange={handleChange1} style={inputStyle1} />
+            <div className="errorStyle">{error1}</div>
+            <Input type="password" placeholder="Confirm Password" value={conpassword} onChange={handleChange2} style={inputStyle2} />
+            <div className="errorStyle">{error2}</div>
+            <Input type="text" placeholder="Email" value={email} onChange={handleChange3} style={inputStyle3} />
+            <div className="errorStyle">{error3}</div>
+            {type !== 'company' && <Input type="text" placeholder="Personal Address" value={address} onChange={handleChange4} />}
+            {type !== 'buyer' && <Input type="text" placeholder="Company Address" value={comaddress} onChange={handleChange8} />}
+            {type === 'company' && <Input type="text" placeholder="Website" value={website} onChange={handleChange9} />}
           </div>
           <button onClick={handleRegister} className="lob">
             Register</button>
@@ -220,23 +219,23 @@ function RegisterPage() {
             <p>already have a account:</p>
             <button onClick={redirectinglogin} className="lob"> Login </button>
             {Cookies.get('type') === 'buyer' && (<>
-                <div>
-                  <p>Sign Up using Phone Number</p>
-                  <button onClick={toggleModal} className="lob">Register Phone Number</button>
-                  {showModal && (
-                    <div>
-                      <h2>Enter Moblile Number:</h2>
-                      <div className="con">
-                        {Input("text", "Number", phoneNumber,"","", handlePhoneNumberChange)}
-                        {Input("text", "Email", mail,"","", handleChange0)}
-                        <button type="submit" className="lob" onClick={handlephone}>Submit</button>
-                      </div>
+              <div>
+                <p>Sign Up using Phone Number</p>
+                <button onClick={toggleModal} className="lob">Register Phone Number</button>
+                {showModal && (
+                  <div>
+                    <h2>Enter Moblile Number:</h2>
+                    <div className="con">
+                      <Input type="text" placeholder="Number" value={phoneNumber} onChange={handlePhoneNumberChange} />
+                      <Input type="text" placeholder="Email" value={mail} onChange={handleChange0} />
+                      <button type="submit" className="lob" onClick={handlephone}>Submit</button>
                     </div>
-                  )}
-                  <p>Sign Up with Google</p>
-                  <GoogleSignInButton />
-                </div>
-              </>)}
+                  </div>
+                )}
+                <p>Sign Up with Google</p>
+                <GoogleSignInButton />
+              </div>
+            </>)}
           </div>
         </div>
       </div>

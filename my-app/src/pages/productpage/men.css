@@ -1,0 +1,74 @@
+.backgroundcol {
+    background-color: #e5e5ff;
+    overflow-x: 'hidden';
+}
+
+.hei {
+    height: 10px;
+}
+
+.inde {
+    background-color: #6666ff;
+}
+
+.divStyle {
+    background-color: #ccccff;
+    padding: 12px;
+    border: 2px solid black;
+    width: 300px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.wishbut {
+    margin-left: 5px;
+}
+
+.comp {
+    margin-left: 5px;
+    font-size: 18px;
+    color: #333;
+}
+
+.comh {
+    font-size: 24px;
+    font-weight: bold;
+    color: #111;
+}
+
+.topic {
+    font-size: 24px;
+    font-weight: bold;
+    color: #111;
+}
+.des{
+   font-size: 18px;
+    color: #333 ;
+} 
+.quantity{
+   font-size: 18px;
+    color: #333;
+}
+.magnify{
+     max-width: 500px;
+}
+.v{
+   cursor: pointer;
+} 
+.im{
+    cursor: pointer;
+     height:100px;
+     padding-top: 10px;
+      padding-bottom: 10px
+} 
+.menextbackground{
+    background-color: #e5e5ff;
+     min-height: 100vh;
+      overflow-x:hidden;
+       overflow-y: hidden 
+
+} 
+.costh{
+    font-size: 20px;
+     color: #222;
+}

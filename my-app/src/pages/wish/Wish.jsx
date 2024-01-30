@@ -12,7 +12,7 @@ function Phone() {
   const { jwt, setjwt } = useLoginContext();
   const fetchWishlist = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/wishlist/${username}`);
+      const response = await fetch(`http://localhost:8080/wishlist/${username}`);
       if (response.ok) {
         const data = await response.json();
         setItems(data);
@@ -30,7 +30,7 @@ function Phone() {
   
   const removeItemFromCart = async (id) => {
       try {
-        const response = await fetch(`http://localhost:8080/api/updatewish/${id}/${username}`, {
+        const response = await fetch(`http://localhost:8080/updatewish/${id}/${username}`, {
           method: 'PUT',
         });
     
@@ -76,11 +76,11 @@ function Phone() {
   
 
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div  className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
         <>
         <div className="logout-button"> 
-        <button style={{backgroundColor:"#5B0888"}} onClick={home}>Home 🏠</button> 
+        <button  onClick={home}>Home</button> 
         </div>
       <h2 data-testid="PRODUCTS">Wishlist Collection</h2>
       <div  className='class-contain' >

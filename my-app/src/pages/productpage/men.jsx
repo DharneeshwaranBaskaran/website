@@ -8,7 +8,8 @@ import '../../App.css';
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from '../../components/hoc/withLogouthandler';
 import { useLoginContext } from "../../usercontext/UserContext";
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'; 
+import "./men.css"
 function Men() {
   
   const { enqueueSnackbar } = useSnackbar();
@@ -96,12 +97,13 @@ function Men() {
   });
   const f = filterdata.filter(item => item.count == 0);
   return (
-    <div style={{ backgroundColor: "#e5e5ff", overflowX: 'hidden' }}> 
+    <div className='backgroundcol'> 
     {jwt ==Cookies.get('token')&& ( 
         <>
-      <div className="logout-button">
+      <div className="logout-button">  
+      <div className='hei'>
         <Select
-          style={{ height: '30px' }}
+        
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}>
           <MenuItem value="">All</MenuItem>
@@ -109,15 +111,17 @@ function Men() {
           <MenuItem value={fil2}>{fil2}</MenuItem>
           <MenuItem value={fil3}>{fil3}</MenuItem>
         </Select> 
-        <button onClick={handlebackhome} style={{ backgroundColor: "#5B0888" }}>Back </button>
-        <button onClick={toggleModal} style={{ backgroundColor: "#713ABE" }}>Offer Products</button>
-        <button onClick={toggleSorting} style={{ backgroundColor: "#793FDF" }}>
+        </div>
+        <button onClick={handlebackhome} >Back </button>
+        <button onClick={toggleModal} >Offer Products</button>
+        <button onClick={toggleSorting} >
           {ascending ? "Sort Descending ↓" : "Sort Ascending ↑"}
         </button>
-        <button onClick={toggleCountSorting} style={{ backgroundColor: "#793FDF" }}>
+        <button onClick={toggleCountSorting} className='color'>
           {countSortAscending ? "Most Purchased" : ""}
         </button>
-      </div>
+      </div> 
+      <br></br>
       <div className="search-container" data-testid="search-container">
         <input
           type="text"

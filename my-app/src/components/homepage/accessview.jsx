@@ -57,7 +57,7 @@ function Acccomacchome() {
         setsorted(sorted)
     }, [accsortingCriteria, pro])
     useEffect(() => {
-        fetch(`http://localhost:8080/api/ty/${typeo}/${username}`)
+        fetch(`http://localhost:8080/ty/${typeo}/${username}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Error fetching cart items: ${response.statusText}`);

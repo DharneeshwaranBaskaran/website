@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/paylater")
 @CrossOrigin(origins = "http://localhost:3000")
 public class paylaterprint {
 
@@ -20,7 +19,7 @@ public class paylaterprint {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("/getpaylater/{username}")
+    @GetMapping("/paylater/getpaylater/{username}")
     public ResponseEntity<List<paylater>> getCartItemsForUsername(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM paylater WHERE username = ? AND state = ?";

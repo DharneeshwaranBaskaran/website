@@ -6,7 +6,8 @@ import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
 import Cookies from "js-cookie";
 import PaymentButton from "../../components/cart/payment";
-import { Helper } from "../../components/helper/helpers";
+import { Helper } from "../../components/helper/helpers"; 
+import "./cart.css"
 function Cart() {
   const { enqueueSnackbar } = useSnackbar();
   const [It, setIt] = useState([]);
@@ -26,8 +27,8 @@ function Cart() {
 
   useEffect(() => {
     fetchData(
-      [`http://localhost:8080/api/cart/getItems/${Username}`,`http://localhost:8080/api/balance/${Username}`,
-      `http://localhost:8080/api/address/${Username}`,`http://localhost:8080/api/historyhome/${Username}`],
+      [`http://localhost:8080/cart/getItems/${Username}`,`http://localhost:8080/balance/${Username}`,
+      `http://localhost:8080/address/${Username}`,`http://localhost:8080/historyhome/${Username}`],
       [setItems, setBalance,setAddress,setIt]
     );
   }, []);
@@ -60,7 +61,7 @@ function Cart() {
     return total;
   };
   const removeItemFromCart = (id) => {
-    fetch(`http://localhost:8080/api/update/${id}/${Username}`, {
+    fetch(`http://localhost:8080/update/${id}/${Username}`, {
       method: 'PUT'
     })
       .then((response) => {
@@ -85,7 +86,7 @@ function Cart() {
   };
   let backButton = null;
   if (Cookies.get('type') == 'buyer') {
-    backButton = (<button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehistory("history")}>Purchase History</button>
+    backButton = (<button  onClick={() => handlehistory("history")}>Purchase History</button>
     );
   }
   const handleSearchChange = (e) => {
@@ -93,7 +94,7 @@ function Cart() {
   };
   const handleaddress = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/updateAddress/${Username}`, {
+      const response = await fetch(`http://localhost:8080/updateAddress/${Username}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(address),
@@ -108,41 +109,41 @@ function Cart() {
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "150vh" }}>
+    <div className="backgroundcol">
        {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohome} style={{ backgroundColor: "#5B0888" }}>Back To Home</button>
+        <button onClick={handlebacktohome} >Back To Home</button>
         {backButton}
       </div>
       {Cookies.get('type') === 'buyer' && (<>
         {It.length > 10 && (
-          <h2 style={{ marginLeft: "10px" }}>You Are A Premium User</h2>
+          <h2 className="marleft">You Are A Premium User</h2>
         )}
         <div>
-          <h1 className="cart-header" style={{ marginLeft: "15px" }} data-testid="PRODUCTS">Cart for {Username}</h1>
+          <h1 className="cart-header marleft" data-testid="PRODUCTS">Cart for {Username}</h1>
           {(Address == undefined || Address == " " || Address == "") && (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <p style={{ marginLeft: "15px" }}>Enter Your Address Before placing order:</p>
+            <div className="addr">
+              <p className="marleft">Enter Your Address Before placing order:</p>
               <input
-                style={{ width: "200px", marginLeft: "20px" }}
+                className="inp"
                 type="text"
                 placeholder="Personal Address"
                 value={address}
                 onChange={handleChange4}
-              /><button style={{ marginLeft: "20px" }} className="lob" onClick={handleaddress}>Confirm</button>
+              /><button  className="lob marleft" onClick={handleaddress}>Confirm</button>
             </div>
           )}
         </div>
-        <p style={{ marginLeft: "20px" }}>Delivery Address:{Address}</p>
+        <p className="marleft">Delivery Address:{Address}</p>
         <div data-testid="search-container">
           <input
             type="text"
             placeholder="Search Items"
             value={searchQuery}
             onChange={handleSearchChange}
-            className="search-bar"
-            style={{ marginLeft: "15px" }}
+            className="search-bar marleft"
+            
           />
         </div>
         <div>
@@ -170,21 +171,21 @@ function Cart() {
                   </tr>
                 ))
               ) : (<tr>
-                <td colSpan="5" style={{ textAlign: "center" }}>
+                <td colSpan="5" className="ali">
                   <h1>Cart is empty</h1>
                 </td>
               </tr>
               )}
             </tbody>
           </table>
-          <div className="cart-total" style={{ marginRight: "87px" }}>Total: $ {calculateTotal(Items)}</div>
-          <div className="cart-item-count" style={{ marginLeft: "10px" }}>Available Balance:${Balance}</div>
+          <div className="cart-total marright" >Total: $ {calculateTotal(Items)}</div>
+          <div className="cart-item-count marleft" >Available Balance:${Balance}</div>
           <PaymentButton/>
         </div>
       </>)}
-      <p style={{ marginLeft: 20 }}>*$10 Extra for Non Premium Users in Express Delivery</p>
-      <p style={{ marginLeft: 20 }}>*Products will be delivered within 24 hours in Express Delivery</p>
-      <p style={{ marginLeft: 20 }}>*The total should be less than $50 for payment later</p>
+      <p className="marleft">*$10 Extra for Non Premium Users in Express Delivery</p>
+      <p className="marleft">*Products will be delivered within 24 hours in Express Delivery</p>
+      <p className="marleft">*The total should be less than $50 for payment later</p>
       </>
       )}
     </div>

@@ -32,8 +32,8 @@ const PaymentButton = ({ }) => {
 
   useEffect(() => {
     fetchData(
-      [`http://localhost:8080/api/cart/getItems/${Username}`, `http://localhost:8080/api/balance/${Username}`,
-      `http://localhost:8080/api/address/${Username}`, `http://localhost:8080/api/historyhome/${Username}`],
+      [`http://localhost:8080/cart/getItems/${Username}`, `http://localhost:8080/balance/${Username}`,
+      `http://localhost:8080/address/${Username}`, `http://localhost:8080/historyhome/${Username}`],
       [setItems, setBalance, setAddress, setIt]
     );
   }, []);
@@ -57,7 +57,7 @@ const PaymentButton = ({ }) => {
 
         if (val === "retain") {
           setBalance(newBalance);
-          fetch(`http://localhost:8080/api/HistoryRetainCart/${Username}`, {
+          fetch(`http://localhost:8080/HistoryRetainCart/${Username}`, {
             method: 'POST',
           }).then((response) => {
             if (!response.ok) {
@@ -68,7 +68,7 @@ const PaymentButton = ({ }) => {
           }).catch((error) => {
             console.error('Error transferring data:', error);
           });
-          fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+          fetch(`http://localhost:8080/updateUserBalance/${Username}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newBalance),
@@ -87,7 +87,7 @@ const PaymentButton = ({ }) => {
             setBalance(newBalance);
           }
           setBalance(newBalance);
-          fetch(`http://localhost:8080/api/transferToHistory/${Username}`, {
+          fetch(`http://localhost:8080/transferToHistory/${Username}`, {
             method: 'POST',
           }).then((response) => {
             if (!response.ok) {
@@ -98,7 +98,7 @@ const PaymentButton = ({ }) => {
           }).catch((error) => {
             console.error('Error transferring data:', error);
           });
-          fetch(`http://localhost:8080/api/updateUserBalance/${Username}`, {
+          fetch(`http://localhost:8080/updateUserBalance/${Username}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newBalance),
@@ -114,7 +114,7 @@ const PaymentButton = ({ }) => {
         }
         else {
           if (total < 50) {
-            fetch(`http://localhost:8080/api/transferToHistorypaylater/${Username}`, {
+            fetch(`http://localhost:8080/transferToHistorypaylater/${Username}`, {
               method: 'POST'
             })
               .then((response) => {

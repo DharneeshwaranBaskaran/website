@@ -3,7 +3,8 @@ import axios from "axios";
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useNavigate } from 'react-router-dom';
 import { useLoginContext } from "../../usercontext/UserContext";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; 
+import "./user.css"
 const User = () => {
   const [user, setUser] = useState({});
   const { jwt, setjwt } = useLoginContext();
@@ -14,7 +15,7 @@ const User = () => {
   
   useEffect(() => {
     const username = Cookies.get("username");
-    axios.get(`http://localhost:8080/api/user/${username}`)
+    axios.get(`http://localhost:8080/user/${username}`)
       .then(response => {
         setUser(response.data[0]);
       })
@@ -24,7 +25,7 @@ const User = () => {
   }, []);
   
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button"   >
@@ -32,10 +33,10 @@ const User = () => {
       </div>
       <div className="app" >
         <div className="logins" >
-          <p style={{ color: "#451952" }}>User:{user.username}</p>
-          <p style={{ color: "#451952" }}> Email:{user.email}<button onClick={()=>handlehome("mail")} style={{ backgroundColor: "#713ABE", color: "white", borderRadius: "5px", marginLeft: "20px" }}>edit</button></p>
-          <p style={{ color: "#451952" }}>Address:{user.address}<button onClick={()=>handlehome("address")} style={{ backgroundColor: "#713ABE", color: "white", borderRadius: "5px", marginLeft: "20px" }}>edit</button></p>
-          <p style={{ color: "#451952" }}>Balance:${user.balance}<button onClick={()=>handlehome("add")} style={{ backgroundColor: "#713ABE", color: "white", borderRadius: "5px", marginLeft: "20px" }}>edit</button></p>
+          <p >User:{user.username}</p>
+          <p > Email:{user.email}<button onClick={()=>handlehome("mail")} className="usebut">edit</button></p>
+          <p >Address:{user.address}<button onClick={()=>handlehome("address")} className="usebut">edit</button></p>
+          <p >Balance:${user.balance}<button onClick={()=>handlehome("add")} className="usebut">edit</button></p>
         </div></div>
         </>)}
     </div>

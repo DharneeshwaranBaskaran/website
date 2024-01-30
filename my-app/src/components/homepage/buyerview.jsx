@@ -32,8 +32,8 @@ function Buyhome() {
 
   useEffect(() => {
     fetchData(
-      [`http://localhost:8080/api/balance/${username}`, `http://localhost:8080/api/historyhome/${username}`,
-      `http://localhost:8080/api/reminder/getItems/${username}`, `http://localhost:8080/api/paylater/getpaylater/${username}`
+      [`http://localhost:8080/balance/${username}`, `http://localhost:8080/historyhome/${username}`,
+      `http://localhost:8080/reminder/getItems/${username}`, `http://localhost:8080/paylater/getpaylater/${username}`
       ],
       [setBalance, setItems, setremider, setLater]
     );
@@ -63,7 +63,7 @@ function Buyhome() {
       enqueueSnackbar("total:$" + total);
       if (Balance > total) {
         const newBalance = Balance - total;
-        const markPaidResponse = await fetch(`http://localhost:8080/api/paidlater/${username}/${id}`, {
+        const markPaidResponse = await fetch(`http://localhost:8080/paidlater/${username}/${id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -71,7 +71,7 @@ function Buyhome() {
           throw new Error(`Error transferring data: ${markPaidResponse.statusText}`);
         }
         const markPaidData = await markPaidResponse.text();
-        const updateUserBalanceResponse = await fetch(`http://localhost:8080/api/updateUserBalance/${username}`, {
+        const updateUserBalanceResponse = await fetch(`http://localhost:8080/updateUserBalance/${username}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newBalance),

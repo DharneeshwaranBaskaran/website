@@ -7,11 +7,8 @@ import '../../App.css';
 import Cookies from "js-cookie";
 import { Helper } from "../../components/helper/helpers"; 
 import Input from "../../components/registerlogin/input";
+import "./loginpage.css";
 function LoginPage() {
-  const errorStyle = {
-    color: 'red',
-    fontSize: '10px',
-  };
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -65,7 +62,6 @@ function LoginPage() {
     setError('');
     setError2('');
     setUsername(value); 
-    console.log(username);
   };
   const handleChange1 = (e) => {
     const value = e.target.value;
@@ -84,7 +80,7 @@ function LoginPage() {
   }
 
   return (
-    <div style={{ backgroundImage: `url(${backpic})` }}>
+    <div className="background">
       <div className="app">
         <div className="login-page">
           <h2 data-testid="Title">Login</h2>
@@ -99,7 +95,7 @@ function LoginPage() {
             <p>forgot password:</p>
             <button onClick={toggleModal} className="lob">Reset</button>
           </div>
-          <div style={errorStyle}>{error2}</div>
+          <div className="errorStyle">{error2}</div>
           {(Cookies.get('type') !== 'access' && Cookies.get('type') !== 'companyaccess') && (
             <div className="log">
               <p>Don't have a account:</p><button onClick={handlebackRegister} className="lob">Register</button>

@@ -36,12 +36,13 @@ function Reset() {
   }
   
   const handleChangepass = (event) => {
-    const { name, value } = event.target;
-    if (name === "username1") {
-      setUsername1(value);
-    } else if (name === "email") {
-      setEmail(value);
-    }
+    const name = event.target.value;
+      setUsername1(name);
+  };
+
+  const handleChange = (event) => {
+    const name = event.target.value;
+      setEmail(name);
   };
   return (
     <div style={{ backgroundImage: `url(${backpic})` }}>
@@ -51,8 +52,8 @@ function Reset() {
           <>
         <h2>Enter Username and Email:</h2>
         <div className="con">
-          {Input("text", "Username", username1, handleChangepass, "", "username1")}
-          {Input("text", "Email", email, handleChangepass, "", "email")}
+        <Input type="text"  placeholder="Username" value={username1}  onChange={handleChangepass} />
+        <Input type="text"  placeholder="Email" value={email}  onChange={handleChange} />
           <button type="submit" className="lob" onClick={handlemail}>Submit</button>
         </div>
         </>

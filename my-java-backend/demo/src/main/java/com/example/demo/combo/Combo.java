@@ -33,7 +33,8 @@ public class Combo {
     private String cat;
     private String person;  
     private int Stockcount;
-    private Boolean state; 
+    private Boolean state;  
+    
      @ManyToOne
     private seller seller;
     private int count;

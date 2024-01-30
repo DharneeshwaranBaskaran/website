@@ -38,7 +38,7 @@ function Sellerhome() {
     
       useEffect(() => {
         fetchData(
-          [`http://localhost:8080/api/${sel}/${username}`,`http://localhost:8080/api/history/view/${username}`],
+          [`http://localhost:8080/${sel}/${username}`,`http://localhost:8080/history/view/${username}`],
           [setuser, setData]
         );
       }, []);

@@ -5,7 +5,8 @@ import Papa from 'papaparse';
 import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; 
+import "./add.css"
 function Add() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
@@ -73,7 +74,7 @@ function Add() {
       const newBalance = Balance + amountToAdd; 
       setBalance(newBalance);
       try {
-        const url = `http://localhost:8080/api/updateUserBalance/${Username}`;
+        const url = `http://localhost:8080/updateUserBalance/${Username}`;
         const options = {
           method: 'POST',
           headers: {
@@ -150,7 +151,7 @@ function Add() {
   };
   
   return (
-    <div style={{ backgroundColor: "#e5e5ff" }} >
+    <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
@@ -174,7 +175,7 @@ function Add() {
       </>)}
       {Cookies.get('type') !== "buyer" && (
         <div className='app'>
-          <div className="login-page" style={{ backgroundColor: "white" }}>
+          <div className="login-page back" >
             <h2 data-testid="PRODUCT">LAUNCH PRODUCT</h2>
             <div className="con">
               {InputField("text", "category", cat, (e) => setcat(e.target.value))}
@@ -185,16 +186,16 @@ function Add() {
               {InputField("text", "Url", url, (e) => seturl(e.target.value))}
               {InputField("text", "person", person, (e) => setperson(e.target.value))}
             </div>
-            <button className="lob" onClick={() => addData("adddata")} style={{ marginRight: "5px" }}>Launch Product</button>
-            <button className="lob" onClick={() => addData("adddatadraft")} style={{ marginLeft: "5px" }}>Add To Draft</button>
+            <button className="lob marright" onClick={() => addData("adddata")} >Launch Product</button>
+            <button className="lob marleft" onClick={() => addData("adddatadraft")}>Add To Draft</button>
             <div>
-              <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} /><br />
+              <input type="file" accept=".csv" onChange={handleFileUpload} className="col" /><br />
               <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button><br />
             </div>
           </div>
         </div>
       )}
-      <div className="purchase-history-table" style={{ marginTop: "20px" }}>
+      <div className="purchase-history-table martop" >
         <table>
           <thead>
             <tr>

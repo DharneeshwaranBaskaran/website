@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import '../../App.css';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"; 
+import "./user.css"
 const Address = () => {
   const Username = Cookies.get("username");
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const Address = () => {
     }
     else {
       try {
-        const url = `http://localhost:8080/api/updateAddress/${Username}`;
+        const url = `http://localhost:8080/updateAddress/${Username}`;
         const options = {
           method: 'POST',
           headers: {
@@ -45,22 +46,22 @@ const Address = () => {
   }
   return (
     
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div className="backgroundcol">
       {jwt ==Cookies.get('token') && ( 
       <>
       <div className="logout-button"   >
-        <button onClick={handlehome} style={{ backgroundColor: "#713ABE", color: "white" }}>Home</button>
+        <button onClick={handlehome} >Home</button>
       </div>
       <div className="app"  >
         <div className="logins" >
-          <h3 style={{ textAlign: "center" }} data-testid="PRODUCTS:">Alter Delivery Address</h3>
+          <h3 className="cont" data-testid="PRODUCTS:">Alter Delivery Address</h3>
           <input
-            style={{ width: "200px", marginLeft: "45px" }}
+            className="ins"
             type="text"
             placeholder="Personal Address"
             value={address}
             onChange={handleChange4}
-          /><button style={{ marginLeft: "110px" }} className="lob" onClick={updateaddress}>Confirm</button>
+          /><button  className="lob buttonad" onClick={updateaddress}>Confirm</button>
         </div>
       </div> 
       </>

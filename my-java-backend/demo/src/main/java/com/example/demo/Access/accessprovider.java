@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class accessprovider {
     private final JdbcTemplate jdbcTemplate;

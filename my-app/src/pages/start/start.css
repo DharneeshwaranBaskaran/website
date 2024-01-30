@@ -1,4 +1,18 @@
 .background{
     background-image: url('../../images/backpic.jpg'); 
-    height: "520vh"; 
+    height: 540vh; 
+} 
+.alignheader{
+    text-align: center;
+} 
+.log{
+    margin-left: 33%; 
 }
+/* .pag{
+    display: flex;
+     justify-content: center;
+     
+} */
+body {
+    overflow-x: hidden;
+  }

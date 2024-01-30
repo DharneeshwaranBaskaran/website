@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/history")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ViewHistory {
     private final JdbcTemplate jdbcTemplate;
@@ -18,7 +17,7 @@ public class ViewHistory {
     public ViewHistory(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-    @GetMapping("/view/{username}")
+    @GetMapping("/history/view/{username}")
     public ResponseEntity<List<Combo>> getHistoryItems(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM combo WHERE seller = ? AND state = ?";
@@ -33,7 +32,7 @@ public class ViewHistory {
         }
     }
 
-    @GetMapping("/viewdraft/{username}")
+    @GetMapping("/history/viewdraft/{username}")
     public ResponseEntity<List<Combo>> getHistoryDraftItems(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM combo WHERE seller = ? AND state = ?";
@@ -43,7 +42,8 @@ public class ViewHistory {
             }, username, false);
             return ResponseEntity.ok(combos);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
+            System.out.printf("Errorhis",e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

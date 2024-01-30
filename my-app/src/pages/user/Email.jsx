@@ -21,7 +21,7 @@ const Email = () => {
     }
     else {
       try {
-        const response = await fetch(`http://localhost:8080/api/updateEmail/${Username}`, {
+        const response = await fetch(`http://localhost:8080/updateEmail/${Username}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(email),
@@ -43,22 +43,22 @@ const Email = () => {
 
   return (
     
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh" }}>
+    <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button"   >
-        <button onClick={handlehome} style={{ backgroundColor: "#713ABE", color: "white" }}>Home </button>
+        <button onClick={handlehome} >Home </button>
       </div>
       <div className="app"  >
         <div className="logins" >
-          <h3 style={{ textAlign: "center" }}data-testid="PRODUCTS:">Alter Delivery Email</h3>
+          <h3 className="cont"data-testid="PRODUCTS:">Alter Delivery Email</h3>
           <input
-            style={{ width: "200px", marginLeft: "45px" }}
+            className="ins"
             type="text"
             placeholder="Enter Email"
             value={email}
             onChange={handleChange4}
-          /><button style={{ marginLeft: "110px" }} className="lob" onClick={updateemail}>Confirm</button>
+          /><button className="lob buttonad" onClick={updateemail}>Confirm</button>
         </div>
       </div> 
       </> 

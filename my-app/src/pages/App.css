@@ -500,12 +500,15 @@ align-items: center;
 .pagination ul {
   list-style: none;
   display: flex; 
-  justify-content: center;
+  justify-content: center; 
+  
 }
 
 .pagination li {
   margin: 0 5px; 
   cursor: pointer;
+  display: flex; 
+  justify-content: center; 
 }
 
 .pagination li.active {

@@ -49,7 +49,7 @@ function Start() {
     const type = types[key];
     if (action === 'login') {
       Cookies.set('type', type);
-      navigate(`/${type}/login`);
+      navigate(`/${type}/login`); 
     } else if (action === 'register') {
       Cookies.set('type', type);
       navigate(`/${type}/register`);
@@ -126,10 +126,10 @@ useEffect(() => {
 
   return (
     <div className="background">
-      <div className="logout-button" style={{ marginLeft: "800px" }}>
+      <div className="logout-button log">
         <RegistrationOption type={2} handleRegister={handletoregister} handleLogin={handletologin} />
       </div>
-      <h2 style={{ textAlign: "center" }} data-testid="PRODUCTS:"> PRODUCTS: </h2>
+      <h2 className="alignheader" data-testid="PRODUCTS:"> PRODUCTS: </h2>
     
       <div className="search-container" data-testid="search-container"> 
 
@@ -168,8 +168,8 @@ useEffect(() => {
         </>)}
       </div >
       <div className="pagination" data-testid="pagination">
-        <ul>
-          <div data-testid="pagination-button" style={{ display: 'flex', justifyContent: 'center' }}>
+        <ul> 
+          <div data-testid="pagination-button" >
             {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
               <li
                 key={i}
@@ -185,7 +185,7 @@ useEffect(() => {
       <div className="video-container" data-testid="video-container">
         <ReactPlayer ref={null} url={VIDEO_PATH} controls={true} />
       </div>
-      <div style={{ textAlign: "center" }}>
+      <div className="alignheader">
         <h2>Want To Sell Your Product In Our Website: <br />
           <RegistrationOption type={1} header={"As Individual:"} handleRegister={handletoregister} handleLogin={handletologin} />
           <RegistrationOption type={0} header={"As company:"} handleRegister={handletoregister} handleLogin={handletologin} />

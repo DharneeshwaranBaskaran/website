@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/reminder")
 @CrossOrigin(origins = "http://localhost:3000")
 public class reminderprint {
 
@@ -21,7 +20,7 @@ public class reminderprint {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("/getItems/{username}")
+    @GetMapping("/reminder/getItems/{username}")
     public ResponseEntity<List<reminder>> getRemindersForUsername(@PathVariable String username) {
         try {
             String sql = "SELECT * FROM reminder WHERE username = ? AND state = ?";

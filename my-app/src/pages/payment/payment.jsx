@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext"; 
 import Cookies from "js-cookie";
-import { Helper } from "../../components/helper/helpers";
+import { Helper } from "../../components/helper/helpers"; 
+import "./payment.css"
 function Payment() {
   const navigate = useNavigate();
   let Username = Cookies.get('username');
@@ -111,7 +112,7 @@ function Payment() {
     />
   );
   return (
-    <div style={{ backgroundColor: "#e5e5ff", minHeight: "100vh"}}>
+    <div className="background">
       {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
@@ -123,8 +124,8 @@ function Payment() {
             <p className="balance-amount" data-testid="Balance">${Balance}</p> 
             </> )}
       {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (
-        <div className="app"  style={{overflowY: "hidden" }}>
-          <div className="login-page" style={{ backgroundColor: "white" ,paddingRight:"30px",paddingLeft:"20px" }}>
+        <div className="app over">
+          <div className="login-page access" >
             <h2 data-testid="PRODUCTS">Give Access</h2> {Username}
             {InputField("text", "Username", username, handleChange)}
             {InputField("text", "Email", email, handleChange3)}
@@ -133,7 +134,7 @@ function Payment() {
               Give Access</button>
             {Cookies.get('type') === 'company' && (<>
               <div>
-                <input type="file" accept=".csv" onChange={handleFileUpload} style={{ color: '#6499E9' }} />
+                <input type="file" accept=".csv" onChange={handleFileUpload} className="color"/>
                 <br />
                 <button onClick={uploadCsvToBackend} className="lob">Upload CSV to Backend</button>
                 <br />
@@ -142,7 +143,7 @@ function Payment() {
           </div>
         </div>
       )}
-      <div className="p-history-table" style={{ marginTop: "20px" }}>
+      <div className="p-history-table his" >
         <table>
           <thead>
             <tr>

@@ -1,0 +1,21 @@
+.marleft{
+    margin-left: 20px; 
+} 
+.marright{
+     margin-right: 87px;
+} 
+.inp{
+    width: 200px;
+     margin-left: 20px
+}
+.ali{
+    text-align: center;
+}
+.backgroundcol {
+    background-color: #e5e5ff;
+    height: 750px;
+}
+.addr{
+    display: flex;
+     align-items: center
+}
