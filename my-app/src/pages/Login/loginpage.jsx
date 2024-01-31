@@ -54,7 +54,6 @@ function LoginPage() {
     } catch (error) {
       enqueueSnackbar("An error occurred: " + error.message, { variant: "error" });
     }
-    console.log(username);
   };
 
   const handleChange = (e) => {

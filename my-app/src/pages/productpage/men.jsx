@@ -97,7 +97,7 @@ function Men() {
   });
   const f = filterdata.filter(item => item.count == 0);
   return (
-    <div className='backgroundcol'> 
+    <div className='backgroundmen'> 
     {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">  

@@ -235,7 +235,7 @@ function History() {
   }
 
   return (
-    <div className="backgroundcol">
+    <div className="backgroundhis">
         {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">

@@ -1,5 +1,7 @@
 package com.example.demo.combo;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,18 +24,19 @@ public class stock{
     @PostMapping("/updatestock/{id}/{number}/{topic}")
     public ResponseEntity<String> updateStockCount(@PathVariable Long id, @PathVariable Integer number, @PathVariable String topic) {
         try {
-            String selectSql = "SELECT stockcount FROM combo WHERE id=?";
-            int currentCount = jdbcTemplate.queryForObject(selectSql, new Object[]{id}, Integer.class);
-
-            if (currentCount == 0) {
+            String selectSql = "SELECT count,stockcount FROM combo WHERE id=?";
+            Map<String, Object> comboData = jdbcTemplate.queryForMap(selectSql, id);
+            int currentCount = (int) comboData.get("count");
+            int currentStockCount = (int) comboData.get("stockcount");
+            if (currentStockCount == 0) {
                 String updateReminderSql = "UPDATE reminder SET state = ? WHERE topic=?";
                 jdbcTemplate.update(updateReminderSql, true, topic);
             }
 
-            int newCount = currentCount + number;
+            int newCount = currentStockCount + number;
 
-            String updateSql = "UPDATE combo SET stockcount = ? WHERE id=?";
-            int rowsAffected = jdbcTemplate.update(updateSql, newCount, id);
+            String updateSql = "UPDATE combo SET stockcount = ?,message=? WHERE id=?";
+            int rowsAffected = jdbcTemplate.update(updateSql, newCount, (currentCount == 0) ? "10% Discount":"",id  );
 
             if (rowsAffected > 0) {
                 System.out.println("Count updated successfully for product: " + id);

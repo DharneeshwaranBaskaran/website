@@ -33,8 +33,8 @@ public class AddData {
 
             int newId = (lastId != null) ? lastId + 1 : 1;
 
-            String sql = "INSERT INTO combo (id, topic, description, url, cat, cost, rating, person, state, seller, count,stockcount) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            int rowsAffected = jdbcTemplate.update(sql, newId, topic, description, url, cat, cost, rating, person, true, seller, 0,0);
+            String sql = "INSERT INTO combo (id, topic, description, url, cat, cost, rating, person, state, seller, count,stockcount,message) VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            int rowsAffected = jdbcTemplate.update(sql, newId, topic, description, url, cat, cost, rating, person, true, seller, 0,0,"Out Of Stock");
 
             if (rowsAffected > 0) {
                 System.out.println("Data inserted successfully.");

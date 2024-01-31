@@ -66,7 +66,14 @@ public class paylaterinsertion {
                         resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
                         resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
                         resultSet.getString("person"), resultSet.getString("seller"));
-            }
+                        int updatedStockCount = jdbcTemplate.queryForObject("SELECT stockcount FROM combo WHERE id = ?", Integer.class, resultSet.getLong("id"));
+                        if (updatedStockCount == 0) {
+                            jdbcTemplate.update("UPDATE combo SET message = 'out of stock' WHERE topic = ?", resultSet.getString("topic"));
+                        }
+                        else{ 
+                            jdbcTemplate.update("UPDATE combo SET message = '' WHERE topic= ?", resultSet.getString("topic"));
+                        }
+                    }
             return null;
         }, username, true);
 

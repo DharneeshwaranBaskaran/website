@@ -87,7 +87,7 @@ const PaymentButton = ({ }) => {
             setBalance(newBalance);
           }
           setBalance(newBalance);
-          fetch(`http://localhost:8080/transferToHistory/${Username}`, {
+          fetch(`http://localhost:8080/api/transferToHistory/${Username}`, {
             method: 'POST',
           }).then((response) => {
             if (!response.ok) {
@@ -145,12 +145,12 @@ const PaymentButton = ({ }) => {
 
   return (
     <div className="cart-buttons">
-      <button className="cart-button" style={{ backgroundColor: "#5B0888" }} onClick={() => handleButtonClick("later")}>Buy Now pay Later</button>
-      <button className="cart-button" style={{ backgroundColor: "#713ABE" }} onClick={() => handleButtonClick("express")}>Express Delivery</button>
-      <button className="cart-button" style={{ backgroundColor: "#793FDF" }} onClick={() => handleButtonClick("retain")}>Pay And Retain</button>
-      <button className="cart-button" style={{ backgroundColor: "#7752FE" }} onClick={() => handleButtonClick("pay")}>Pay</button>
+      <button className="cart-button" onClick={() => handleButtonClick("later")}>Buy Now pay Later</button>
+      <button className="cart-button"  onClick={() => handleButtonClick("express")}>Express Delivery</button>
+      <button className="cart-button"  onClick={() => handleButtonClick("retain")}>Pay And Retain</button>
+      <button className="cart-button"  onClick={() => handleButtonClick("pay")}>Pay</button>
       <button onClick={() => handlehistory("add")} className="cart-button">Add Balance</button>
-      <button onClick={() => handlehistory("address")} className="lob" style={{ marginLeft: "10px", marginRight: "10px" }}>Alter Address</button>
+      <button onClick={() => handlehistory("address")} className="cart-button" >Alter Address</button>
     </div>
   );
 };

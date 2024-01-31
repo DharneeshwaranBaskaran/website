@@ -21,8 +21,6 @@ function Menext() {
   const [wish, setwish] = useState([]);
   const [Item, setItem] = useState([]);
   const [isImage, setIsImage] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '' });
-
   const [count, setCount] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
   let Username = Cookies.get("username");

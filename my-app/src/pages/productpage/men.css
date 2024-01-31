@@ -1,6 +1,7 @@
-.backgroundcol {
+.backgroundmen {
     background-color: #e5e5ff;
-    overflow-x: 'hidden';
+    overflow-x: 'hidden'; 
+    min-height: auto;
 }
 
 .hei {

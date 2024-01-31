@@ -30,7 +30,7 @@ function Acccomacchome() {
 
     useEffect(() => {
         if (Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') {
-            fetchData(`http://localhost:8080/api/history/view/${prov}`, setpro);
+            fetchData(`http://localhost:8080/history/view/${prov}`, setpro);
         }
     }, [prov]);
     useEffect(() => {

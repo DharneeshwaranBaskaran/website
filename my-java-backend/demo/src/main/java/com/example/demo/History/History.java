@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class History {
         @Autowired
@@ -60,8 +61,14 @@ public class History {
                         "\nCost: " + resultSet.getDouble("cost") +
                         "\nCount: " + resultSet.getInt("count"));
 
-                int newId = lastId + 1;
                 jdbcTemplate.update(updateComboSql, itemCount, itemCount, itemName);
+                int updatedStockCount = jdbcTemplate.queryForObject("SELECT stockcount FROM combo WHERE topic = ?", Integer.class, resultSet.getString("topic"));
+                if (updatedStockCount == 0) {
+                    jdbcTemplate.update("UPDATE combo SET message = 'out of stock' WHERE topic = ?", resultSet.getString("topic"));
+                }
+                else{
+                    jdbcTemplate.update("UPDATE combo SET message = '' WHERE topic = ?", resultSet.getString("topic"));
+                }
 }
             return null;
         }, username, true);

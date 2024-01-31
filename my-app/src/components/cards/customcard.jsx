@@ -5,12 +5,7 @@ import '../../App.css';
 
 function CustomCard({ item, handleView }) {
   const renderDiscountLabel = () => {
-    if (item.stockcount === 0) {
-      return <div className="discount-label">Out Of Stock</div>;
-    } else if (item.count === 0) {
-      return <div className="discount-label">10% OFF</div>;
-    }
-    return null;
+      return <div className="discount-label">{item.message}</div>;
   };
 
   return (
@@ -19,7 +14,7 @@ function CustomCard({ item, handleView }) {
         <CardMedia component="img" image={item.url} alt="img" />
         <CardContent className="card-content" >
           <Typography gutterBottom variant="h6">
-            <p style={{ textAlign: "center" }}>{item.topic}</p>
+            <p className="carp">{item.topic}</p>
           </Typography>
           <div className="containcard">
             <Typography gutterBottom fontWeight="bold">

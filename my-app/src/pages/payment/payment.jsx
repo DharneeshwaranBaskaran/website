@@ -112,7 +112,7 @@ function Payment() {
     />
   );
   return (
-    <div className="background">
+    <div className="backgroundhistory">
       {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">

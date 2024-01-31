@@ -19,20 +19,39 @@ public class HistoryRepeat {
     @PostMapping("/repeatHistory/{id}")
     public ResponseEntity<String> transferFromHistory(@PathVariable long id) {
         try {
-            String selectSql = "SELECT * FROM history WHERE id = :id";
-            MapSqlParameterSource parameters = new MapSqlParameterSource();
-            parameters.addValue("id", id);
+            String selectHistorySql = "SELECT * FROM history WHERE id = :id";
+            MapSqlParameterSource historyParameters = new MapSqlParameterSource();
+            historyParameters.addValue("id", id);
 
             HistoryItem historyItem = namedParameterJdbcTemplate.queryForObject(
-                    selectSql,
-                    parameters,
+                    selectHistorySql,
+                    historyParameters,
                     new BeanPropertyRowMapper<>(HistoryItem.class));
 
             if (historyItem != null) {
-                String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend) VALUES (:topic, :description, :cost, :count, :username, :state, :rating, :url, :person, :seller, :weekend)";
-                namedParameterJdbcTemplate.update(insertSql, getSqlParameterSource(historyItem));
+                // Check stock count in the combo table
+                String selectComboSql = "SELECT stockcount FROM combo WHERE id = :comboId";
+                MapSqlParameterSource comboParameters = new MapSqlParameterSource();
+                comboParameters.addValue("comboId", historyItem.getCombo().getId());
 
-                return ResponseEntity.ok("Record with ID " + id + " transferred from history to history.");
+                int stockCount = namedParameterJdbcTemplate.queryForObject(selectComboSql, comboParameters, Integer.class);
+
+                // Proceed only if stock count is greater than or equal to the required count
+                if (stockCount >= historyItem.getCount()) {
+                    String insertHistorySql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend) VALUES (:topic, :description, :cost, :count, :username, :state, :rating, :url, :person, :seller, :weekend)";
+                    namedParameterJdbcTemplate.update(insertHistorySql, getSqlParameterSource(historyItem));
+
+                    // Update message in the combo table if stock count is 0
+                    if (stockCount - historyItem.getCount() == 0) {
+                        String updateComboMessageSql = "UPDATE combo SET message = 'Out of stock' WHERE id = :comboId";
+                        namedParameterJdbcTemplate.update(updateComboMessageSql, comboParameters);
+                    }
+                    
+
+                    return ResponseEntity.ok("Record with ID " + id + " transferred from history to history.");
+                } else {
+                    return ResponseEntity.badRequest().body("Insufficient stock for the product with ID " + historyItem.getCombo().getId());
+                }
             } else {
                 return ResponseEntity.notFound().build();
             }
@@ -41,7 +60,6 @@ public class HistoryRepeat {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     private MapSqlParameterSource getSqlParameterSource(HistoryItem historyItem) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("topic", historyItem.getTopic());

@@ -34,7 +34,7 @@ public class Combo {
     private String person;  
     private int Stockcount;
     private Boolean state;  
-    
+    private String message;
      @ManyToOne
     private seller seller;
     private int count;

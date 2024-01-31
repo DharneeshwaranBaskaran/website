@@ -3,7 +3,7 @@ import '../../App.css';
 import Cookies from 'js-cookie';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
-import Skeleton from "../../components/homepage_skeleton/skeleton";
+import Skeleton from "./skeleton_home";
 import { Helper } from "../../components/helper/helpers";
 import "./homepage.css"
 const Sellerview = lazy(() => import("../../components/homepage/sellerview"));
@@ -13,7 +13,7 @@ const Buyerview = lazy(() => import("../../components/homepage/buyerview"));
 function HomePage() {
   const { jwt, setjwt } = useLoginContext();
   return (
-    <div className="backgroundcol">
+    <div className="backgroundhome">
       {(jwt == Cookies.get('token') && Cookies.get('type') == Helper(jwt).type && Helper(jwt).id == Cookies.get("dataid")) &&(
         <> <Suspense fallback={<Skeleton />}><div>
           {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>

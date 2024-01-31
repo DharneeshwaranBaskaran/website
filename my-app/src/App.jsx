@@ -14,7 +14,7 @@ import Phone from "./pages/wish/Wish";
 import User from "./pages/user/User"; 
 import Address from "./pages/user/address"; 
 import Email from "./pages/user/Email"; 
-import Skeleton from "./components/homepage_skeleton/skeleton";
+import Skeleton from "./pages/Homepage/skeleton_home";
 import Reset from "./components/registerlogin/reset"; 
 import { LoginContext } from "./usercontext/UserContext";
 import Cookies from "js-cookie";

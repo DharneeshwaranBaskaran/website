@@ -56,7 +56,14 @@ public class HistoryCartRetained {
                         "\nCount: " + resultSet.getInt("count"));
 
                 jdbcTemplate.update(updateComboSql, itemCount, itemCount, itemName);
-}
+                int updatedStockCount = jdbcTemplate.queryForObject("SELECT stockcount FROM combo WHERE topic = ?", Integer.class, resultSet.getString("topic"));
+                if (updatedStockCount == 0) {
+                    jdbcTemplate.update("UPDATE combo SET message = 'out of stock' WHERE topic = ?", resultSet.getString("topic"));
+                }else{
+                    jdbcTemplate.update("UPDATE combo SET message = '' WHERE topic = ?", resultSet.getString("topic"));
+                }
+            }    
+                 
             return null;
         }, username, true);
 
@@ -66,13 +73,6 @@ public class HistoryCartRetained {
         return ResponseEntity.ok("Cart items transferred to history for username: " + username);
     }
 
-    private static class HistoryItemRowMapper implements RowMapper<HistoryItem> {
-        @Override
-        public HistoryItem mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-             BeanPropertyRowMapper<HistoryItem> rowMapper = new BeanPropertyRowMapper<>(HistoryItem.class);
-        return rowMapper.mapRow(resultSet, rowNum);
-        }
-    }
     private void sendEmail(String toEmail, String username, List<String> data) {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server

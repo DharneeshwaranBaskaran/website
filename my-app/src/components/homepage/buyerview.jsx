@@ -96,7 +96,7 @@ function Buyhome() {
   const handleview = (comid, id, topic) => {
     Cookies.set('myID', comid);
     Cookies.set('rec', "");
-    Cookies.removeItem('value');
+    Cookies.remove('value');
     fetch(`http://localhost:8080/api/reminderdelete`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json', },

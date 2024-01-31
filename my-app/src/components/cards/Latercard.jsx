@@ -6,7 +6,7 @@ import Button from "@mui/material/Button";
 import '../../App.css';
 function LaterCard({ item, index, handlePayClick }) {
   return (
-    <Card key={index} style={{ backgroundColor: "#ccccff" }}>
+    <Card key={index} className="carb">
       <CardContent>
         <Typography variant="h6">Name:{item.topic}</Typography>
         <Typography variant="body2" color="textSecondary">

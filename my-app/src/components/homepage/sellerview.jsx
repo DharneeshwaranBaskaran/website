@@ -165,7 +165,7 @@ function Sellerhome() {
     };
     return (<>
         <Header />
-        <div>
+        <div style={{backgroundColor:"#e5e5ff", height:"10000"}}>
 
             <h2 style={{ marginLeft: "10px" }}>SOLD HISTORY:</h2>
             <div className="search-container">
