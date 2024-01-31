@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import PieChart from "../graph/piechart";
+// import PieChart from "../graph/piechart";
+import PieChartElectron from "../graph/piechartelectron";
 import '../../App.css';
 import { useSnackbar } from "notistack";
 import BubbleGraph from "../graph/BubbleGraph";
@@ -186,7 +187,7 @@ function Sellerhome() {
                 <BarGraph data={sortedData} />
                 <div style={{ width: "600px" }}>
                     <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
-                    <PieChart data={sortedData} />
+                    <PieChartElectron data={sortedData} />
                 </div>
                 <BubbleGraph data={sortedData} />
             </div>
