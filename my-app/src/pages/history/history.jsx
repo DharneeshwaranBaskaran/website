@@ -259,6 +259,7 @@ function History() {
               <th>Count</th>
               <th>Cost</th>
               <th>Total Cost</th>
+              <th>Status</th>
               <th>Repeat Order</th>
               <th>Cancel Order</th>
             </tr>
@@ -271,6 +272,7 @@ function History() {
               <td>{item.count}</td>
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
+              <td>{item.status}</td>
               <td><button className="cart-button" onClick={() => handlerepeat(item.id, item.cost, item.count)}>Repeat Order</button></td>
               <td><button className="cart-button" onClick={() => handlecancel(item.id, item.cost, item.count)}>Cancel</button></td>
             </tr>

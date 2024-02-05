@@ -36,7 +36,7 @@ public class HistoryItem {
     private String person; 
     private String seller;
     private String weekend;
-
+    private String status;
 
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "combo_id")

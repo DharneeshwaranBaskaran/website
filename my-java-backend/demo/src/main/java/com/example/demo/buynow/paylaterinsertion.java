@@ -27,7 +27,7 @@ public class paylaterinsertion {
     @PostMapping("/transferToHistorypaylater/{username}")
     public ResponseEntity<String> transferCartToHistory(@PathVariable String username) {
         String selectSql = "SELECT * FROM cart WHERE username = ? AND state = ?";
-        String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, combo_id, weekend,status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
         String updateComboSql = "UPDATE combo SET stockcount = stockcount - ?, count = count + ? WHERE topic = ?";
         String insertPayLaterSql = "INSERT INTO paylater (topic, description, cost, count, username, state, rating, url, person, seller) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String updateSql = "UPDATE cart SET state = ? WHERE username = ?";
@@ -46,13 +46,13 @@ public class paylaterinsertion {
                             resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
                             resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
                             resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
-                            resultSet.getString("weekend"));
+                            resultSet.getString("weekend"),"status");
                 } else {
                     jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
                             resultSet.getDouble("cost") * 10 / 9, resultSet.getInt("count"), resultSet.getString("username"),
                             resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
                             resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
-                            resultSet.getString("weekend"));
+                            resultSet.getString("weekend"),"status");
                 }
 
                 dataToSend.add("Topic: " + resultSet.getString("topic") +

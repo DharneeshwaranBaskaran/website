@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-// import PieChart from "../graph/piechart";
-import PieChartElectron from "../graph/piechartelectron";
+import PieChart from "../graph/piechart";
 import '../../App.css';
 import { useSnackbar } from "notistack";
 import BubbleGraph from "../graph/BubbleGraph";
@@ -9,6 +8,7 @@ import BarGraph from "../graph/Bargraph";
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import Header from "./header";
+
 function Sellerhome() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortingCriteria, setSortingCriteria] = useState("");
@@ -23,7 +23,7 @@ function Sellerhome() {
     const [inputValues, setInputValues] = useState(Array(sortedData.length).fill(''));
     const { enqueueSnackbar } = useSnackbar();
     const [selectValues, setSelectValues] = useState(user.map((item) => ""));
-    
+
     const fetchData = async (urls, setDataCallbacks) => {
         try {
           const responses = await Promise.all(
@@ -36,7 +36,7 @@ function Sellerhome() {
           console.error('Error fetching data:', error);
         }
       };
-    
+     
       useEffect(() => {
         fetchData(
           [`http://localhost:8080/${sel}/${username}`,`http://localhost:8080/history/view/${username}`],
@@ -185,9 +185,10 @@ function Sellerhome() {
             </div>
             <div>
                 <BarGraph data={sortedData} />
+               
                 <div style={{ width: "600px" }}>
                     <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
-                    <PieChartElectron data={sortedData} />
+                    <PieChart data={sortedData} />
                 </div>
                 <BubbleGraph data={sortedData} />
             </div>

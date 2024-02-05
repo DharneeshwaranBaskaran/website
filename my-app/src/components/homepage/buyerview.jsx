@@ -51,7 +51,7 @@ function Buyhome() {
   const handlePay = async (id) => {
     try {
       enqueueSnackbar("id:" + id);
-      const cartResponse = await fetch(`http://localhost:8080/api/paylater/getpaylat/${id}`);
+      const cartResponse = await fetch(`http://localhost:8080/getpaylat/${id}`);
       if (!cartResponse.ok) {
         throw new Error(`Error fetching cart items: ${cartResponse.statusText}`);
       }

@@ -3,7 +3,8 @@ import { Bubble } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(CategoryScale, LinearScale, PointElement, Tooltip, Legend);
-
+const electron = window.require ? window.require('electron') : null;
+const { ipcRenderer } = electron || {};
 const BubbleGraph = ({ data }) => {
   const [chartData, setChartData] = useState({
     datasets: [],
@@ -27,9 +28,16 @@ const BubbleGraph = ({ data }) => {
           borderWidth: 1,
         },
       ],
-    });
+    }); 
+    if (ipcRenderer && ipcRenderer.send) {
+      ipcRenderer.send('updatedChartData', chartData);
+    }
   }, [data]);
-
+  useEffect(() => {
+    if (ipcRenderer) {
+      ipcRenderer.send('load-bubble');
+    }
+  }, []);
   return (
     <Bubble
       data={chartData}

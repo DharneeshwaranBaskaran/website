@@ -1,4 +1,4 @@
-import React, { useState,lazy, Suspense} from "react";
+import React, { useState,lazy, Suspense,useEffect} from "react";
 import HomePage from './pages/Homepage/homepage';
 import Men from './pages/productpage/men';
 import Menext from './pages/productpage/menext';
@@ -18,6 +18,9 @@ import Skeleton from "./pages/Homepage/skeleton_home";
 import Reset from "./components/registerlogin/reset"; 
 import { LoginContext } from "./usercontext/UserContext";
 import Cookies from "js-cookie";
+
+const electron = window.require ? window.require('electron') : null;
+const { ipcRenderer } = electron || {};
 const Home = lazy(() => import('./pages/Homepage/homepage'));
 const Start = lazy(() => import('./pages/start/start'));
 const LoginPage = lazy(() => import('./pages/Login/loginpage'));
@@ -27,6 +30,12 @@ function App() {
   let type=Cookies.get('type');
   const [showModal,setShowModal]=useState(false); 
   const [Balance, setBalance] = useState(0);  
+  useEffect(() => {
+    // Check if ipcRenderer is available before using it
+    if (ipcRenderer) {
+      ipcRenderer.send('some-event', 'Hello from React!');
+    }
+  }, []);
 
   const [jwt, setjwt] = useState(() => Cookies.get('token') || '');
   return (

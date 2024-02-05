@@ -38,7 +38,7 @@ public class HistoryRepeat {
 
                 // Proceed only if stock count is greater than or equal to the required count
                 if (stockCount >= historyItem.getCount()) {
-                    String insertHistorySql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend) VALUES (:topic, :description, :cost, :count, :username, :state, :rating, :url, :person, :seller, :weekend)";
+                    String insertHistorySql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend,status) VALUES (:topic, :description, :cost, :count, :username, :state, :rating, :url, :person, :seller, :weekend,:status)";
                     namedParameterJdbcTemplate.update(insertHistorySql, getSqlParameterSource(historyItem));
 
                     // Update message in the combo table if stock count is 0

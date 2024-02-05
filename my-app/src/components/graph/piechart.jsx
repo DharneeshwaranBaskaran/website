@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 
+const electron = window.require ? window.require('electron') : null;
+const { ipcRenderer } = electron || {};
 Chart.register(ArcElement, Tooltip, Legend);
 
 const PieChart = ({ data }) => {
@@ -23,7 +25,7 @@ const PieChart = ({ data }) => {
           backgroundColor: [
             'rgba(255,99,132,0.2)',
             'rgba(75,192,192,0.2)',
-            'rgba(255,205,86,0.2)',        
+            'rgba(255,205,86,0.2)',
           ],
           borderColor: [
             'rgba(255,99,132,1)',
@@ -34,7 +36,17 @@ const PieChart = ({ data }) => {
         },
       ],
     });
+
+    if (ipcRenderer) {
+      ipcRenderer.send('upChartData', chartData);
+    }
   }, [data]);
+
+  useEffect(() => {
+    if (ipcRenderer) {
+      ipcRenderer.send('load-piechart');
+    }
+  }, []);
 
   return (
     <Pie
@@ -42,15 +54,14 @@ const PieChart = ({ data }) => {
       options={{
         plugins: {
           legend: {
-            position: 'bottom',
-          },
+            position: 'bottom'
+          }
         },
         width: 200,
-        height: 200, 
+        height: 200,
       }}
     />
   );
-  
 };
 
 export default PieChart;
