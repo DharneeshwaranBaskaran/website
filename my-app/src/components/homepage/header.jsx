@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Header() {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
-    const actionOptions = ["Menu", "Remove", "Add", "Access", "Logout"];
+    const actionOptions = ["Menu", "Remove", "Add", "Access","Status","Logout"];
     const deliveryOptions = ["Weekend Delivery", "Yes", "No"];
     const categoryOptions = ["Category", "Men", "Women", "Kids"];
     const actionOption = ["Menu", "Cart", "Logout"];
@@ -80,7 +80,9 @@ function Header() {
         } else if (event.target.value == "Access") {
             navigate(`/${typeo}/payment`);
         } else if (event.target.value == "Cart") {
-            navigate(`/${typeo}/cart`);
+            navigate(`/${typeo}/cart`); 
+        }else if (event.target.value == "Status") {
+            navigate(`/${typeo}/status`); 
         } else {
             const broadcastChannel = new BroadcastChannel('logoutChannel');
             broadcastChannel.postMessage('logout');

@@ -68,7 +68,8 @@ function Menext() {
       const cartItem = {
         id: imageData.id,topic: imageData.topic,description: imageData.description,cost: imageData.count === 0 ? imageData.cost * 0.9 : imageData.cost,count,
         username: Cookies.get("username"),rating: imageData.rating,url: imageData.url,person: imageData.person,seller: imageData.seller,weekend: weekends,
-      };
+      }; 
+      console.log(cartItem);
       const existingCartItems = (ty) || [];
       const existingIndex = existingCartItems.findIndex((item) => item.topic === cartItem.topic);
       if (existingIndex !== -1) {

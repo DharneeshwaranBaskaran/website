@@ -18,7 +18,6 @@ public class SellerInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String username;
     private String person;
-      
     private String password;  
     private String email;
     private String address;
@@ -26,6 +25,4 @@ public class SellerInfo {
     private String name; 
     private String company;
     private Long num;
-
-
 }

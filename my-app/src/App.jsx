@@ -18,7 +18,7 @@ import Skeleton from "./pages/Homepage/skeleton_home";
 import Reset from "./components/registerlogin/reset"; 
 import { LoginContext } from "./usercontext/UserContext";
 import Cookies from "js-cookie";
-
+import Status from "./pages/status/status";
 const electron = window.require ? window.require('electron') : null;
 const { ipcRenderer } = electron || {};
 const Home = lazy(() => import('./pages/Homepage/homepage'));
@@ -69,7 +69,8 @@ function App() {
         <Route path={`/${type}/phone`} element={<Phone/>}/>
         <Route path={`/${type}/user`}element={<User/>}/>
         <Route path={`/${type}/address`}element={<Address/>}/> 
-        <Route path={`/${type}/mail`}element={<Email/>}/>
+        <Route path={`/${type}/mail`}element={<Email/>}/> 
+        <Route path={`/${type}/status`}element={<Status/>}/>
         </>
               )}
              

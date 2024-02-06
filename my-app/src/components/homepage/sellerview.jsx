@@ -200,7 +200,8 @@ function Sellerhome() {
                             <th>Id</th>
                             <th>Topic</th>
                             <th>Count</th>
-                            <th>Stock</th>
+                            <th>Stock</th> 
+                            <th>Seller</th>
                             <th>Add Stock</th>
                         </tr>
                     </thead>
@@ -209,8 +210,9 @@ function Sellerhome() {
                             <tr key={index}>
                                 <td>{item.id}</td>
                                 <td>{item.topic}</td>
-                                <td>{item.count}</td>
+                                <td>{item.count}</td> 
                                 <td>{item.stockcount}</td>
+                                <td>{item.seller}</td>
                                 <td>{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), { backgroundColor: "#E4F1FF", color: "black", border: "none", padding: "5px", width: "50px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px", })}
                                     <button onClick={() => handlestock(item.id, item.topic, index)} className="cart-button" >Add</button></td>
                             </tr>

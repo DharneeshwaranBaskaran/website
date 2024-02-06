@@ -35,8 +35,8 @@ public class Combo {
     private int Stockcount;
     private Boolean state;  
     private String message;
-     @ManyToOne
-    private seller seller;
+    private String seller;
+
     private int count;
     @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistoryItem> historyItems;
@@ -44,6 +44,4 @@ public class Combo {
     @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems;
 
-    public void setSeller(String string) {
-    }
 }
