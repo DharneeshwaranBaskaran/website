@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import backpic from "../../images/backpic.jpg";
 import '../../App.css';
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';

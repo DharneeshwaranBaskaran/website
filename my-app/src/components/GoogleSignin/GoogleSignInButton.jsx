@@ -53,7 +53,7 @@ const GoogleSignInButton = () => {
 
         handleLogin(userData);
       }}
-      onReject={(err) => {
+      onReject={() => {
       }}
     >
       <GoogleLoginButton />

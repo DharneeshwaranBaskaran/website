@@ -1,4 +1,3 @@
-import backpic from "../../images/backpic.jpg";
 import { useSnackbar } from "notistack";
 import { useNavigate } from 'react-router-dom';
 import React, { useState} from "react"; 

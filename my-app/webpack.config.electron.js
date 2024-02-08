@@ -5,26 +5,22 @@ module.exports = {
   target: 'electron-renderer',
   entry: './src/electroncomponents/renderer.js', 
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'build'), 
     filename: 'renderer.bundle.js', 
     libraryTarget: 'commonjs2',
   },
   module: {
     rules: [
       {
-        test: /\.(js|mjs|jsx)$/,
+        test: /\.(js|mjs)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-react'],
-          },
         },
       },
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
     fallback: {
       fs: false, 
       path: require.resolve('path-browserify'),

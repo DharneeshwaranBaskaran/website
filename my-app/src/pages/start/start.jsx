@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import backpic from "../../images/backpic.jpg";
 import ReactPlayer from 'react-player';
 import CustomCard from "../../components/cards/customcard";
 import { useNavigate } from 'react-router-dom';

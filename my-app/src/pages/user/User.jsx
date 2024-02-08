@@ -29,7 +29,7 @@ const User = () => {
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button"   >
-        <button onClick={()=>handlehome("homepage")} style={{ backgroundColor: "#713ABE", color: "white" }}>Home </button>
+        <button onClick={()=>handlehome("homepage")} >Home </button>
       </div>
       <div className="app" >
         <div className="logins" >

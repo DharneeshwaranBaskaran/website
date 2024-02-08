@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import PieChart from "../graph/piechart";
+import PieChart from "../../electroncomponents/graphs/piechart";
 import '../../App.css';
 import { useSnackbar } from "notistack";
-import BubbleGraph from "../graph/BubbleGraph";
-import BarGraph from "../graph/Bargraph";
+import BubbleGraph from "../../electroncomponents/graphs/BubbleGraph";
+import BarGraph from "../../electroncomponents/graphs/Bargraph";
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import Header from "./header";
@@ -149,8 +149,11 @@ function Sellerhome() {
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         };
+const pdfContent = element.cloneNode(true);
+const addStockCells = pdfContent.querySelectorAll('.add-stock-cell');
+addStockCells.forEach(cell => cell.remove());
 
-        html2pdf(element, pdfOptions);
+html2pdf(pdfContent, pdfOptions);
     };
     const handleDownloadExcel = () => {
         const excelData = sortedData.map(({ id, cost, count, stockcount }) => ({
@@ -164,6 +167,11 @@ function Sellerhome() {
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
         XLSX.writeFile(workbook, 'sorted_data.xlsx');
     };
+    useEffect(() => {
+        if (window.electron && window.electron.ipcRenderer) {
+          window.electron.ipcRenderer.send('updateChartData',sortedData);
+        }
+      }, []);
     return (<>
         <Header />
         <div style={{backgroundColor:"#e5e5ff", height:"10000"}}>
@@ -202,7 +210,7 @@ function Sellerhome() {
                             <th>Count</th>
                             <th>Stock</th> 
                             <th>Seller</th>
-                            <th>Add Stock</th>
+                            <th className="add-stock-cell">Add Stock</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -213,7 +221,7 @@ function Sellerhome() {
                                 <td>{item.count}</td> 
                                 <td>{item.stockcount}</td>
                                 <td>{item.seller}</td>
-                                <td>{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), { backgroundColor: "#E4F1FF", color: "black", border: "none", padding: "5px", width: "50px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px", })}
+                                <td className="add-stock-cell">{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), { backgroundColor: "#E4F1FF", color: "black", border: "none", padding: "5px", width: "50px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px", })}
                                     <button onClick={() => handlestock(item.id, item.topic, index)} className="cart-button" >Add</button></td>
                             </tr>
                         ))}

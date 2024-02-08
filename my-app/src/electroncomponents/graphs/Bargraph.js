@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, BarElement, Tooltip, Legend } from 'chart.js';
 
+const { ipcRenderer } = window.require ? window.require('electron') : { ipcRenderer: null };
+
 Chart.register(CategoryScale, LinearScale, PointElement, BarElement, Tooltip, Legend);
-const electron = window.require ? window.require('electron') : null;
-const { ipcRenderer } = electron || {};
 
 const BarGraph = ({ data }) => {
   const [chartData, setChartData] = useState({
@@ -45,11 +44,10 @@ const BarGraph = ({ data }) => {
         },
       ],
     });
-    if (ipcRenderer ) {
+    if (ipcRenderer) {
       ipcRenderer.send('updateChartData', chartData);
     }
   }, [data]);
-  
 
   return (
     <Bar
@@ -67,4 +65,3 @@ const BarGraph = ({ data }) => {
 };
 
 export default BarGraph;
-

@@ -1,35 +1,23 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const url = require('url');
 
 let mainWindow;
 
-function createWindow() {
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-
-  mainWindow.loadFile('index.html');
-  // mainWindow.loadURL("http://localhost:3000/start")
-  mainWindow.webContents.openDevTools(); 
-}
-
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+app.on('ready', () => {
+  mainWindow = new BrowserWindow();
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.executeJavaScript(
+      `require('./src/electron-components/renderer.js');`
+    );
   });
 });
 
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
-});
-
-ipcMain.on('some-event', (event, data) => {
-  // Handle the event and data from the React module
-  console.log('Received data from React:', data);
+ipcMain.on('updateChartData', (event, chartData) => {
+console.log("");
 });
