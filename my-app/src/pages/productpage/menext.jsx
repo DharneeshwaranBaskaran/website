@@ -175,17 +175,17 @@ function Menext() {
       );
     } else {
       backButton = (
-        <button onClick={()=>handleback("homepage")}>Back </button>
+        <button onClick={()=>handleback("homepage")} className='purple'>Back </button>
       );
     }}
   else {
     backButton = (
-      <button onClick={()=>handleback("homepage")} >Back To Home </button>
+      <button onClick={()=>handleback("homepage")} className='purple'>Back To Home </button>
     );
   }
   let cartButton = null,addButton = null,countButton = null,Wishlist = null;
   if (type == "buyer") {
-    cartButton = (<button onClick={()=>handleback("cart")} >View Cart</button>);
+    cartButton = (<button onClick={()=>handleback("cart")} className='purple'>View Cart</button>);
     addButton = (<button type="submit" className="lob" onClick={handlecart}>Add To Cart</button>)
     Wishlist = (<button type="submit" className="lob wishbut"  onClick={handlewish}>Wishlist</button>)
     countButton = (<div className='contain1'>

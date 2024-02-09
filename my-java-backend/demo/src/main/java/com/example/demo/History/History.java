@@ -1,6 +1,4 @@
 package com.example.demo.History;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -9,11 +7,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,8 +34,6 @@ public class History {
             while (resultSet.next()) {
                 String itemName = resultSet.getString("topic");
                 int itemCount = resultSet.getInt("count");
-
-                int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM history", Integer.class);
 
                 if (jdbcTemplate.queryForObject("SELECT COUNT(*) FROM history WHERE topic = ? AND description = ?", Integer.class, itemName, resultSet.getString("description")) > 0) {
                     jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
@@ -74,20 +67,17 @@ public class History {
         }, username, true);
 
         jdbcTemplate.update(updateSql, false, username);
-
         sendEmail("gbdharneeshwaran@gmail.com", username, dataToSend);
-
         return ResponseEntity.ok("Cart items transferred to history for username: " + username);
     }
     
             private void sendEmail(String toEmail, String username, List<String> data) {
         Properties properties = new Properties();
-        properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
-        properties.put("mail.smtp.port", "587"); // Change this to the appropriate port
+        properties.put("mail.smtp.host", "smtp.gmail.com"); 
+        properties.put("mail.smtp.port", "587"); 
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
 
-        // Set up the session with your email credentials
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -96,9 +86,8 @@ public class History {
         });
 
         try {
-            // Create a message
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
+            message.setFrom(new InternetAddress("dharnee28@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Data from Cart");
             
@@ -110,10 +99,8 @@ public class History {
                 messageText.append("\n\n");
             }
             messageText.append("Username: " + username);
-
             message.setText(messageText.toString());
 
-            // Send the message
             Transport.send(message);
             System.out.println("Email sent successfully.");
         } catch (MessagingException e) {

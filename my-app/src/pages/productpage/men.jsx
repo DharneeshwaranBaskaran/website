@@ -112,12 +112,12 @@ function Men() {
           <MenuItem value={fil3}>{fil3}</MenuItem>
         </Select> 
         </div>
-        <button onClick={handlebackhome} >Back </button>
-        <button onClick={toggleModal} >Offer Products</button>
-        <button onClick={toggleSorting} >
+        <button onClick={handlebackhome}className='purple'>Back </button>
+        <button onClick={toggleModal} className='purple'>Offer Products</button>
+        <button onClick={toggleSorting} className='lightpurple'>
           {ascending ? "Sort Descending ↓" : "Sort Ascending ↑"}
         </button>
-        <button onClick={toggleCountSorting} className='color'>
+        <button onClick={toggleCountSorting} className='color lightpurple'>
           {countSortAscending ? "Most Purchased" : ""}
         </button>
       </div> 

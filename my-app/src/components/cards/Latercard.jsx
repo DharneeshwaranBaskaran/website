@@ -3,11 +3,12 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import '../../App.css';
+import '../../App.css'; 
+import './card.css';
 function LaterCard({ item, index, handlePayClick }) {
   return (
-    <Card key={index} className="carb">
-      <CardContent>
+    <Card key={index} >
+      <CardContent className="carb">
         <Typography variant="h6">Name:{item.topic}</Typography>
         <Typography variant="body2" color="textSecondary">
           Cost: ${item.cost}

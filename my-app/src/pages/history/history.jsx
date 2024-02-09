@@ -18,52 +18,7 @@ function History() {
   const [searchQuery, setSearchQuery] = useState('');
   const {Balance, setBalance} = useLoginContext();
 
-  const handlerepeat = (id, cost, count) => {
-    let total = 0;
-    total += (cost * count) * 9 / 10;
-    let newBalance = Balance - total;
-    if (total > Balance) {
-      enqueueSnackbar("Insuficient Balance", { variant: "warning" });
-    }
-    else {
-      fetch(`http://localhost:8080/repeatHistory/${id}`, {
-        method: 'POST',
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((data) => {
-          enqueueSnackbar(data);
-          navigate(`/${type}/payment`);
-        })
-        .catch((error) => {
-          console.error('Error transferring data:', error);
-          enqueueSnackbar(`Error transferring data: ${error}`);
-        });
-      fetch(`http://localhost:8080/updateUserBalance/${Username}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newBalance),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.text();
-        })
-        .then((data) => {
-        })
-        .catch((error) => {
-          console.error('Error updating user balance:', error);
-        });
-        setBalance(newBalance)
-    }
-  }
+ 
 
   const handlebacktohomefromhis = () => {
     navigate(`/${type}/homepage`);
@@ -98,7 +53,7 @@ function History() {
   let backButton = null;
   if (type == "buyer") {
     backButton = (<div className="logout-button">
-      <button onClick={handleHistoryClear}>Clear History</button>
+      <button onClick={handleHistoryClear} className='purple'>Clear History</button>
     </div>
     );
   }
@@ -217,19 +172,16 @@ function History() {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
+        return {};
       })
       .then((data) => {
-        enqueueSnackbar(data);
         navigate(`/${type}/homepage`);
       })
       .catch((error) => {
         if (error instanceof TypeError && error.message === 'Failed to fetch') {
           console.error('Network error:', error);
-          enqueueSnackbar('Network error. Please check your internet connection.');
         } else {
           console.error('Error transferring data:', error);
-          enqueueSnackbar(error.message || 'Error transferring data');
         }
       });
   }
@@ -239,7 +191,7 @@ function History() {
         {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohomefromhis} >Back To Home </button>
+        <button onClick={handlebacktohomefromhis} className="purple">Back To Home </button>
       </div>
       {Cookies.get('type') == "buyer" && (
         <input
@@ -260,7 +212,6 @@ function History() {
               <th>Cost</th>
               <th>Total Cost</th>
               <th>Status</th>
-              <th>Repeat Order</th>
               <th>Cancel Order</th>
             </tr>
           </thead>
@@ -273,7 +224,6 @@ function History() {
               <td>${item.cost}</td>
               <td>${item.cost * item.count}</td>
               <td>{item.status}</td>
-              <td><button className="cart-button" onClick={() => handlerepeat(item.id, item.cost, item.count)}>Repeat Order</button></td>
               <td><button className="cart-button" onClick={() => handlecancel(item.id, item.cost, item.count)}>Cancel</button></td>
             </tr>
           ))}

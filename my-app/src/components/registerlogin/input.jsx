@@ -1,9 +1,5 @@
 import React from "react";
-
-const errorStyle = {
-  color: 'red',
-  fontSize: '10px',
-};
+import "./resetinput.css"
 
 const Input = ({ type, placeholder, value, onChange, error, name, style }) => (
   <>
@@ -15,7 +11,7 @@ const Input = ({ type, placeholder, value, onChange, error, name, style }) => (
       name={name}
       style={style}
     />
-    <div style={errorStyle}>{error}</div>
+     <div className="error-message">{error}</div>
   </>
 );
 

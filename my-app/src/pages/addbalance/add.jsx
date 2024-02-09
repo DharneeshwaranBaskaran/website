@@ -155,8 +155,8 @@ function Add() {
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">
-        <button onClick={() => backtocart("cart")} >Cart</button>
-        <button onClick={() => backtocart("homepage")} >Back To Home</button>
+        <button onClick={() => backtocart("cart")} className="purple">Cart</button>
+        <button onClick={() => backtocart("homepage")} className="lightpurple">Back To Home</button>
       </div>
       {Cookies.get('type') === 'buyer' && (<>
         <div className="app">

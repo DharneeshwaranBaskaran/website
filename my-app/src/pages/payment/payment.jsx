@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState,useEffect} from "react";
 import { useSnackbar } from "notistack";
 import '../../App.css';
 import Papa from 'papaparse';
@@ -25,7 +25,23 @@ function Payment() {
     enqueueSnackbar("Redirecting to homepage", { variant: "default" });
     navigate(`/${typeo}/homepage`);
   }
-  
+  useEffect(() => {
+    fetchData([`http://localhost:8080/balance/${Username}`],[ setBalance]);
+  }, []);
+
+  const fetchData = async (urls, setDataCallbacks) => {
+    try {
+      const responses = await Promise.all(
+        urls.map(url => fetch(url).then(response => response.json()))
+      );
+      responses.forEach((data, index) => {
+        setDataCallbacks[index](data);
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
  
 
   const handleRegister = async (event) => {
@@ -116,7 +132,7 @@ function Payment() {
       {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohomefrompay} >Back To Home </button>
+        <button onClick={handlebacktohomefrompay} className="purple">Back To Home </button>
       </div>
       {Cookies.get('type') === 'buyer' && (<> 
             <h2 className='balance-header'>Thank you for shopping with us</h2>
@@ -124,8 +140,8 @@ function Payment() {
             <p className="balance-amount" data-testid="Balance">${Balance}</p> 
             </> )}
       {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (
-        <div className="app over">
-          <div className="login-page access" >
+        <div className="app">
+          <div className="login-page" >
             <h2 data-testid="PRODUCTS">Give Access</h2> {Username}
             {InputField("text", "Username", username, handleChange)}
             {InputField("text", "Email", email, handleChange3)}

@@ -8,7 +8,7 @@ import BarGraph from "../../electroncomponents/graphs/Bargraph";
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import Header from "./header";
-
+import "./homcom.css";
 function Sellerhome() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortingCriteria, setSortingCriteria] = useState("");
@@ -174,17 +174,15 @@ html2pdf(pdfContent, pdfOptions);
       }, []);
     return (<>
         <Header />
-        <div style={{backgroundColor:"#e5e5ff", height:"10000"}}>
+        <div className="sellerhome">
 
-            <h2 style={{ marginLeft: "10px" }}>SOLD HISTORY:</h2>
+            <h2 className="rembut">SOLD HISTORY:</h2>
             <div className="search-container">
                 {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
                 <select value={sortingCriteria}
-                    onChange={handleSortingChange}
-                    style={{
-                        height: '35px', backgroundColor: "#6666ff", borderRadius: "5px"
-                        , marginRight: "5px", color: "white", marginLeft: "800px"
-                    }}>
+                    onChange={handleSortingChange} 
+                    className="sellersort"
+                    >
                     <option value="">Sort</option>
                     <option value="cost">By Cost</option>
                     <option value="count">By Count</option>
@@ -194,8 +192,8 @@ html2pdf(pdfContent, pdfOptions);
             <div>
                 <BarGraph data={sortedData} />
                
-                <div style={{ width: "600px" }}>
-                    <h2 style={{ marginLeft: "20px" }}>Revenue:</h2>
+                <div className="chart">
+                    <h2 className="rembut">Revenue:</h2>
                     <PieChart data={sortedData} />
                 </div>
                 <BubbleGraph data={sortedData} />
@@ -229,8 +227,8 @@ html2pdf(pdfContent, pdfOptions);
                 </table>
             </div>
             <div className="logout-button">
-                <button onClick={handleDownloadExcel}>Download Excel</button>
-                <button onClick={handleDownloadPDF}>Download PDF</button>
+                <button onClick={handleDownloadExcel}className="purple">Download Excel</button>
+                <button onClick={handleDownloadPDF}className="purple">Download PDF</button>
             </div>
             <h2>Users</h2>
             <table className="purchase-history-table">
@@ -253,8 +251,7 @@ html2pdf(pdfContent, pdfOptions);
                             <td><select
                                 value={selectValues[index]}
                                 onChange={(e) => handleSelectChange(index, e.target.value)}
-                                style={{ backgroundColor: "#713ABE", color: "white", border: "none", padding: "5px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px" }}>
-                                <option value="">Select Type</option>
+                                className="sellerselect"><option value="">Select Type</option>
                                 <option value="cost">Cost</option>
                                 <option value="count">Count</option>
                                 <option value="revenue">Revenue</option>

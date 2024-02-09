@@ -1,6 +1,7 @@
 .backgroundhis {
     background-color: #e5e5ff;
-    height: auto;
+    height: auto; 
+    min-height: 600px;
 }
 .marleft{
     margin-left: 10px

@@ -47,7 +47,7 @@ const Email = () => {
       {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button"   >
-        <button onClick={handlehome} >Home </button>
+        <button onClick={handlehome} className='purple'>Home </button>
       </div>
       <div className="app"  >
         <div className="logins" >

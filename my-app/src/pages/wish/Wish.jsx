@@ -80,7 +80,7 @@ function Phone() {
       {jwt ==Cookies.get('token')&& ( 
         <>
         <div className="logout-button"> 
-        <button  onClick={home}>Home</button> 
+        <button  onClick={home}className='purple'>Home</button> 
         </div>
       <h2 data-testid="PRODUCTS">Wishlist Collection</h2>
       <div  className='class-contain' >

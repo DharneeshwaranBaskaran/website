@@ -29,7 +29,7 @@ function Help() {
       {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button">
-        <button onClick={handleback}>Home </button>
+        <button onClick={handleback}className='purple'>Home </button>
       </div>
       <div className="help-page" >
         <div className="faq-section" >

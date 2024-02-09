@@ -20,7 +20,6 @@ public class CartDelete {
     @PutMapping("/update/{id}/{username}")
     public ResponseEntity<String> updateCartItemState(@PathVariable Long id, @PathVariable String username) {
         try {
-            // Define SQL query to update the state of a product in the cart table based on its id and username
             String updateSql = "UPDATE cart SET state = ? WHERE id = ? AND username = ?";
             int rowsAffected = jdbcTemplate.update(updateSql, false, id, username);
 

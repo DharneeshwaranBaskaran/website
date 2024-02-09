@@ -86,7 +86,7 @@ function Cart() {
   };
   let backButton = null;
   if (Cookies.get('type') == 'buyer') {
-    backButton = (<button  onClick={() => handlehistory("history")}>Purchase History</button>
+    backButton = (<button  onClick={() => handlehistory("history")}className='purple'>Purchase History</button>
     );
   }
   const handleSearchChange = (e) => {
@@ -113,10 +113,10 @@ function Cart() {
        {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
-        <button onClick={handlebacktohome} >Back To Home</button>
+        <button onClick={handlebacktohome} className="purple">Back To Home</button>
         {backButton}
       </div>
-      {Cookies.get('type') === 'buyer' && (<>
+      {Cookies.get('type') === 'buyer' && (<> 
         {It.length > 10 && (
           <h2 className="marleft">You Are A Premium User</h2>
         )}

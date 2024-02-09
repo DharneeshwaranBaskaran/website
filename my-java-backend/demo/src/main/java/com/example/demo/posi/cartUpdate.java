@@ -25,33 +25,17 @@ public class cartUpdate {
 
         try {
             String selectSql = "SELECT count FROM cart WHERE combo_id = ? AND username = ? AND state = ?";
-            Integer currentCount = jdbcTemplate.queryForObject(
-                    selectSql,
-                    Integer.class,
-                    id,
-                    username,
-                    state
-            );
+            Integer currentCount = jdbcTemplate.queryForObject(selectSql,Integer.class, id,username,state);
 
             if (currentCount != null) {
                 int newCount = currentCount + count;
 
                 String stockCountSql = "SELECT stockcount FROM combo WHERE id = ?";
-                Integer stockCount = jdbcTemplate.queryForObject(
-                        stockCountSql,
-                        Integer.class,
-                        id
-                );
+                Integer stockCount = jdbcTemplate.queryForObject(stockCountSql,Integer.class,id);
 
                 if (stockCount != null && stockCount >= newCount) {
                     String updateSql = "UPDATE cart SET count = ? WHERE combo_id = ? AND username = ? AND state = ?";
-                    int rowsAffected = jdbcTemplate.update(
-                            updateSql,
-                            newCount,
-                            id,
-                            username,
-                            state
-                    );
+                    int rowsAffected = jdbcTemplate.update(updateSql, newCount,id,username,state);
 
                     if (rowsAffected > 0) {
                         System.out.println("Count updated successfully for product: " + id);

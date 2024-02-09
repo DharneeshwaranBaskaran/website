@@ -5,10 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import com.example.demo.Seller.*;
 import com.example.demo.History.HistoryItem;
 import com.example.demo.posi.CartItem;
 import lombok.Getter;
@@ -36,8 +34,8 @@ public class Combo {
     private Boolean state;  
     private String message;
     private String seller;
-
     private int count;
+    
     @OneToMany(mappedBy = "combo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistoryItem> historyItems;
     

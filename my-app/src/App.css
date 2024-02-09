@@ -60,7 +60,7 @@ button {
 }
 
 .logout-button button {
-  background-color: #6666ff; 
+
   color: white;
   padding: 10px 20px;
   border: none;
@@ -585,4 +585,25 @@ align-items: center;
 
 .react-autosuggest__suggestion--highlighted {
   background-color: #e0e0e0;
+} 
+.purple{
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #5B0888;
+  
+}
+.lightpurple{
+  background-color: #713ABE;
+}
+.sellersort{
+ 
+    height: 35px;
+    background-color: #6666ff;
+    border-radius: 5px;
+    margin-right: 5px; 
+    color: white;
+     margin-left: 800px;
+
 }

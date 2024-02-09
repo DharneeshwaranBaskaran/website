@@ -22,7 +22,6 @@ public class companyaccessdelete {
     @DeleteMapping("/deletecompanyaccess/{id}")
     public ResponseEntity<String> deleteAccessItem(@PathVariable Long id) {
         try {
-            // Define SQL query to delete a product from the companyaccess table based on its id
             String sql = "DELETE FROM companyaccess WHERE id=?";
             int rowsAffected = jdbcTemplate.update(sql, id);
 

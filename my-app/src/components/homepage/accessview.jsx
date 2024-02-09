@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
+import "./homcom.css"
 import Header from "./header";
 function Acccomacchome() {
     const [accsortingCriteria, setAccSortingCriteria] = useState("");
@@ -75,7 +76,7 @@ function Acccomacchome() {
             <select
                 value={accsortingCriteria}
                 onChange={handleSortingChange1}
-                style={{ height: '35px', backgroundColor: "#6666ff", borderRadius: "5px", marginRight: "5px", color: "white", marginLeft: "1100px" }}
+                className="access"
             > <option value="">Sort</option>
                 <option value="ass">Ascending</option>
                 <option value="des">Descending </option>

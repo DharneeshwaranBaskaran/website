@@ -8,9 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import com.example.demo.combo.Combo;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,6 +27,7 @@ public class statustable {
     private String description;
     private String username; 
     private String status;
+    
 @ManyToOne(fetch = FetchType.EAGER)
 @JoinColumn(name = "combo_id")
 private Combo combo;

@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-
+@RequestMapping("/api")
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class HistoryRepeat {
@@ -29,19 +29,15 @@ public class HistoryRepeat {
                     new BeanPropertyRowMapper<>(HistoryItem.class));
 
             if (historyItem != null) {
-                // Check stock count in the combo table
                 String selectComboSql = "SELECT stockcount FROM combo WHERE id = :comboId";
                 MapSqlParameterSource comboParameters = new MapSqlParameterSource();
                 comboParameters.addValue("comboId", historyItem.getCombo().getId());
 
                 int stockCount = namedParameterJdbcTemplate.queryForObject(selectComboSql, comboParameters, Integer.class);
-
-                // Proceed only if stock count is greater than or equal to the required count
                 if (stockCount >= historyItem.getCount()) {
                     String insertHistorySql = "INSERT INTO history (topic, description, cost, count, username, state, rating, url, person, seller, weekend,status) VALUES (:topic, :description, :cost, :count, :username, :state, :rating, :url, :person, :seller, :weekend,:status)";
                     namedParameterJdbcTemplate.update(insertHistorySql, getSqlParameterSource(historyItem));
 
-                    // Update message in the combo table if stock count is 0
                     if (stockCount - historyItem.getCount() == 0) {
                         String updateComboMessageSql = "UPDATE combo SET message = 'Out of stock' WHERE id = :comboId";
                         namedParameterJdbcTemplate.update(updateComboMessageSql, comboParameters);
@@ -55,7 +51,8 @@ public class HistoryRepeat {
             } else {
                 return ResponseEntity.notFound().build();
             }
-        } catch (Exception e) {
+        } catch (Exception e) { 
+            System.out.println(e);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

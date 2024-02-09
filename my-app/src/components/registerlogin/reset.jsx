@@ -1,4 +1,4 @@
-import backpic from "../../images/backpic.jpg";
+
 import { useSnackbar } from "notistack";
 import React, { useState} from "react";
 import '../../App.css';
@@ -45,7 +45,7 @@ function Reset() {
       setEmail(name);
   };
   return (
-    <div style={{ backgroundImage: `url(${backpic})` }}>
+    <div className="background">
     <div className="app">
       <div className="login-page">
       {showModal && (

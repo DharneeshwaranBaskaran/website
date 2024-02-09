@@ -61,7 +61,7 @@ const Status = () => {
       {jwt == Cookies.get('token') && (
         <>
           <div className="logout-button">
-            <button onClick={handlehome}>Home</button>
+            <button onClick={handlehome} className="purple">Home</button>
           </div>
           <Statustable
             data={Data}

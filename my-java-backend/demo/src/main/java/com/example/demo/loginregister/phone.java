@@ -25,7 +25,6 @@ public class phone {
         int balance = 1000;
 
         try {
-            // Check if username already exists
             if (isUsernameExists(username)) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"error\": \"Username already exists.\"}");
             }
@@ -69,12 +68,11 @@ public class phone {
     }
     private void sendEmail(String toEmail, String username, String password) {
             Properties properties = new Properties();
-            properties.put("mail.smtp.host", "smtp.gmail.com"); // Change this to your email provider's SMTP server
-            properties.put("mail.smtp.port", "587"); // Change this to the appropriate port
+            properties.put("mail.smtp.host", "smtp.gmail.com"); 
+            properties.put("mail.smtp.port", "587"); 
             properties.put("mail.smtp.auth", "true");
             properties.put("mail.smtp.starttls.enable", "true");
     
-            // Set up the session with your email credentials
             Session session = Session.getInstance(properties, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -83,14 +81,12 @@ public class phone {
             });
     
             try {
-                // Create a message
                 Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress("dharnee28@gmail.com")); // Change this to your email address
+                message.setFrom(new InternetAddress("dharnee28@gmail.com")); 
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
                 message.setSubject("Registration Successful");
                 message.setText("Dear User,\n\nYour registration is successful!\n\nUsername: " + username + "\nPassword: " + password);
     
-                // Send the message
                 Transport.send(message);
                 System.out.println("Email sent successfully.");
             } catch (MessagingException e) {

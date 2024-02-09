@@ -24,9 +24,9 @@ public class CartController {
             Long id = cartItem.getId();
             int count = cartItem.getCount();
 
-            // if (!hasEnoughStock(id, count) || !sellerExists(cartItem.getSeller())) {
-            //     return ResponseEntity.badRequest().body("Stock count is less than the requested count.");
-            // }
+            if (!hasEnoughStock(id, count)) {
+                return ResponseEntity.badRequest().body("Stock count is less than the requested count.");
+            }
             int lastId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM cart", Integer.class);
 
             int newId = lastId + 1;
@@ -69,11 +69,4 @@ public class CartController {
         return stockCount != null && stockCount >= requestedCount;
     }
 
-
-// Helper method to check if the seller exists
-private boolean sellerExists(String seller) {
-    String selectSellerSql = "SELECT COUNT(*) FROM seller WHERE username = ?";
-    int count = jdbcTemplate.queryForObject(selectSellerSql, Integer.class, seller);
-    return count > 0;
-}
 }

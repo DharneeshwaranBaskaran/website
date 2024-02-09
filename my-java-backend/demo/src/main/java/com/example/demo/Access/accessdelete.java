@@ -20,7 +20,6 @@ public class accessdelete {
     @DeleteMapping("/deleteaccess/{id}")
     public ResponseEntity<String> deleteAccessItem(@PathVariable Long id) {
         try {
-            // Define SQL query to delete a product from the access table based on its id
             String sql = "DELETE FROM access WHERE id=?";
             int rowsAffected = jdbcTemplate.update(sql, id);
 

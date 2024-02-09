@@ -29,7 +29,7 @@ public class companyaccess {
     private String email;
     private String type;
     private String provider;
-    // Constructors, getters, and setters
+    
     @ManyToOne
     @JoinColumn(name = "company_id") 
     private company company;

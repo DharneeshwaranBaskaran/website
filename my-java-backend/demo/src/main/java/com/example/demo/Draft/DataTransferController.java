@@ -18,7 +18,6 @@ public class DataTransferController {
     @PostMapping("/transferdata/{id}")
     public ResponseEntity<String> transferDraftToCombo(@PathVariable Long id) {
         try {
-            // Check if the record with the given ID exists in the combo table
             String checkIdQuery = "SELECT COUNT(*) FROM combo WHERE id = ? AND state = ?";
             int rowCount = jdbcTemplate.queryForObject(checkIdQuery, Integer.class, id, false);
 

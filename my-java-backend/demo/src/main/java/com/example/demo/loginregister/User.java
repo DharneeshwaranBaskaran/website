@@ -25,7 +25,5 @@ public class User {
     private Double loyalty;
     private String profilepic;
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    // private List<Combo> combos;
 
 }

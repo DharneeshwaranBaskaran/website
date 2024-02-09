@@ -6,7 +6,8 @@ import '../../App.css';
 import LaterCard from "../cards/Latercard";
 import { Card } from "@mui/material";
 import Cookies from 'js-cookie';
-import Header from "./header";
+import Header from "./header"; 
+import './homcom.css'
 function Buyhome() {
   const username = Cookies.get('username');
   let typeo = Cookies.get('type');
@@ -117,7 +118,7 @@ function Buyhome() {
   return (<>
     <Header />
     <div>
-      <div style={{ width: "350px", marginLeft: "800px" }}>
+      <div className="latercard">
         {later.length > 0 && (<>
           {later.map((item, index) => (
             <LaterCard key={index} item={item} handlePayClick={(itemid) => handlePay(itemid)} />
@@ -126,19 +127,19 @@ function Buyhome() {
       </div>
       {Uniquereminder.length > 0 && (
         <div className="conrem" data-testid="Reminder">
-          <Card style={{ backgroundColor: "#ccccff", paddingLeft: "20px", paddingRight: "20px", paddingBottom: "10px" }}>
-            <p style={{ fontSize: '24px', fontWeight: 'bold', color: ' #111' }}> Product Arrived</p>
+          <Card className="remindercard">
+            <p className="remindermes"> Product Arrived</p>
             {(Uniquereminder).map((item, index) => (
               <tr key={index}>
                 <td>{item.topic}</td>
-                <td><button className="lob" style={{ marginLeft: "30px" }} onClick={() => handleview(item.combo_id, item.id, item.topic)}>View</button></td>
+                <td><button className="lob rembut" onClick={() => handleview(item.combo_id, item.id, item.topic)}>View</button></td>
               </tr>
             ))}
           </Card>
         </div>
       )}
       {uniqueItems.length > 0 && (
-        <><h2 style={{ marginLeft: "10px" }} data-testid="Title">RECOMMENDED PRODUCTS:</h2>
+        <><h2  className="rembut" data-testid="Title">RECOMMENDED PRODUCTS:</h2>
           <div className='class-contain' data-testid="Card">
             {uniqueItems.map((item, index) => (
               <>

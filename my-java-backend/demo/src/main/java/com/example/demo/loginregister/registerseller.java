@@ -25,7 +25,7 @@ public class registerseller {
         try {
             int maxId = jdbcTemplate.queryForObject("SELECT MAX(id) FROM combo", Integer.class);
             if (maxId < 1) {
-                maxId = 1; // Start from 1 if the table is empty
+                maxId = 1;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
             String line;
@@ -33,15 +33,12 @@ public class registerseller {
 
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
-                    // Skip the header line
                     firstLine = false;
                     continue;
                 }
                 maxId=maxId+1;
-                // Split the CSV line into individual fields
                 String[] fields = line.split(",");
                 System.out.println(fields);
-                // Assuming the order of fields matches the CSV file
                 String cat = fields[0].trim();
                 Integer cost = Integer.parseInt(fields[1].trim());
                 String description = fields[2].trim();
@@ -54,7 +51,6 @@ public class registerseller {
                 int count = Integer.parseInt(fields[8].trim());
                 int stockcount = Integer.parseInt(fields[10].trim());
 
-                // Use JdbcTemplate to insert data into the "combo" table
                 String insertSql = "INSERT INTO combo (id,cat, cost, description, rating, topic, url, person, state, count,seller, stockcount) " +
                         "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
                 jdbcTemplate.update(insertSql,maxId, cat, cost, description, rating, topic, url, person, state, count,seller, stockcount);
@@ -62,11 +58,9 @@ public class registerseller {
             
             return "CSV data uploaded successfully.";
         } catch (DataAccessException e) {
-            // Handle database-related errors
             e.printStackTrace();
             return "Error uploading CSV data to the database: " + e.getMessage();
         } catch (Exception e) {
-            // Handle other general errors
             e.printStackTrace();
             return "Error uploading CSV data: " + e.getMessage();
         }

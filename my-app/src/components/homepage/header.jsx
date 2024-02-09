@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useSnackbar } from "notistack";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; 
+import "./homcom.css"; 
+import carticon from "../../images/icons8-cart-50.png"
 function Header() {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
@@ -21,14 +23,6 @@ function Header() {
         navigate(`/${typeo}/men`);
     };
 
-    const selectStyle = (backgroundColor, additionalStyles = {}) => ({
-        backgroundColor,
-        color: "white",
-        border: "none",
-        padding: "5px",
-        borderRadius: "5px",
-        ...additionalStyles
-    });
 
     const handlelogout = () => {
         const broadcastChannel = new BroadcastChannel('logoutChannel');
@@ -101,37 +95,38 @@ function Header() {
     return (
         <div className="logout-button">
             {(Cookies.get('type') === 'buyer') && (<>
-                <img src={forpic} alt={forpic} style={{ height: '35px', marginLeft: '100px' }} />
-                <button style={{ backgroundColor: "#5B0888" }} onClick={() => handlehelp("user")}>{username}</button>
-                <select onChange={handleChange} style={selectStyle("#5B0888")}>
+                <img src={forpic} alt={forpic} className='profilepic'/>
+                <button className='helpbut' onClick={() => handlehelp("user")}>{username}</button>
+                <select onChange={handleChange} className='delivery'>
                     {deliveryOptions.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
                         </option>
                     ))}
                 </select>
-                <select onChange={handleCategoryChange} style={selectStyle("#713ABE", { marginLeft: "10px" })}>
+                <select onChange={handleCategoryChange} className='catbut'>
                     {categoryOptions.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
                         </option>
                     ))}
                 </select>
-                <button style={{ backgroundColor: "#713ABE" }} onClick={() => handlehelp("help")}>Help</button>
-                <select onChange={handleActionChange} style={selectStyle("#793FDF", { marginLeft: "5px" })}>
+                <button onClick={() => handlehelp("help")} className='helpbutton'>Help</button>
+                <select onChange={handleActionChange} className='selmenu'>
                     {actionOption.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
                         </option>
                     ))}
                 </select>
-                <div style={{ marginLeft: "10px", backgroundColor: "#793FDF", borderRadius: "5px", padding: "5px" }}>
+                <div className='cartview'> 
+                <img src={carticon} alt={carticon} className='carticon'></img>
                     {cart.length}
                 </div>
-                <button onClick={() => handlehelp("phone")} style={{ backgroundColor: "#7752FE" }}>Wishlist </button>
+                <button onClick={() => handlehelp("phone")} className='wishbut'>Wishlist </button>
             </>)}
             {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (
-                <select onChange={handleActionChange} style={selectStyle("#451952", { marginLeft: "5px" })}>
+                <select onChange={handleActionChange} className='purple'>
                     {actionOptions.map((option, index) => (
                         <option key={index} value={option}>
                             {option}
@@ -140,7 +135,7 @@ function Header() {
                 </select>
             )}
             {(Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') && (
-                <button onClick={handlelogout}>Logout</button>
+                <button onClick={handlelogout} className='purple'>Logout</button>
             )}
         </div>
     );

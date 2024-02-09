@@ -34,7 +34,7 @@ public class JwtUtils {
 
     public static String generateStrongSecretKey() {
         SecureRandom secureRandom = new SecureRandom();
-        byte[] key = new byte[64]; // 64 bytes = 512 bits
+        byte[] key = new byte[64]; 
         secureRandom.nextBytes(key);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(key);
     }

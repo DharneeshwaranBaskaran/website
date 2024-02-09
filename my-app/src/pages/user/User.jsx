@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import axios from "axios";
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useNavigate } from 'react-router-dom';
@@ -9,10 +9,7 @@ const User = () => {
   const [user, setUser] = useState({});
   const { jwt, setjwt } = useLoginContext();
   const navigate = useNavigate();
-  const handlehome = (key) => {
-    navigate(`/${Cookies.get("type")}/${key}`);
-  }
-  
+
   useEffect(() => {
     const username = Cookies.get("username");
     axios.get(`http://localhost:8080/user/${username}`)
@@ -23,19 +20,25 @@ const User = () => {
         console.error("Error fetching user data:", error);
       });
   }, []);
+  const emailWithoutQuotes = user.email ? user.email.replace(/^"(.*)"$/, '$1') : ''; 
+  const addressWithoutQuotes = user.address ? user.address.replace(/^"(.*)"$/, '$1') : '';
+
+  const handlehome = (key) => {
+    navigate(`/${Cookies.get("type")}/${key}`);
+  }
   
   return (
     <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button"   >
-        <button onClick={()=>handlehome("homepage")} >Home </button>
+        <button onClick={()=>handlehome("homepage")} className='purple'>Home </button>
       </div>
       <div className="app" >
         <div className="logins" >
           <p >User:{user.username}</p>
-          <p > Email:{user.email}<button onClick={()=>handlehome("mail")} className="usebut">edit</button></p>
-          <p >Address:{user.address}<button onClick={()=>handlehome("address")} className="usebut">edit</button></p>
+          <p > Email:{emailWithoutQuotes}<button onClick={()=>handlehome("mail")} className="usebut">edit</button></p>
+          <p >Address:{addressWithoutQuotes}<button onClick={()=>handlehome("address")} className="usebut">edit</button></p>
           <p >Balance:${user.balance}<button onClick={()=>handlehome("add")} className="usebut">edit</button></p>
         </div></div>
         </>)}
