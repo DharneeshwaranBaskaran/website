@@ -26,14 +26,10 @@ const Email = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(email),
         });
-      
         if (response.ok) {
           enqueueSnackbar("Updated Successfully");
         } 
-      } catch (error) {
-        
-      }
-      
+      } catch (error) {}
       navigate(`/${Cookies.get("type")}/homepage`);
     }
   }
@@ -41,8 +37,7 @@ const Email = () => {
     navigate(`/${Cookies.get("type")}/homepage`);
   }
 
-  return (
-    
+  return (   
     <div className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 
       <>

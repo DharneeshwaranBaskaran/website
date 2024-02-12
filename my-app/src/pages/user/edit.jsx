@@ -29,7 +29,6 @@ function Edit() {
     if (response.ok) {
       enqueueSnackbar("Registration Successful", { variant: "success" });
       navigate(`/${type}/homepage`);
-
     } else if (response.status === 409) {
       const errorData = await response.json();
       enqueueSnackbar(errorData.error, { variant: "error" });

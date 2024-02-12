@@ -94,7 +94,7 @@ function Buyhome() {
     }
   };
 
-  const handleview = (comid, id, topic) => {
+  const handleview = (comid, id) => {
     Cookies.set('myID', comid);
     Cookies.set('rec', "");
     Cookies.remove('value');

@@ -1,14 +1,11 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
-import { useLoginContext } from "../../usercontext/UserContext";
-import Cookies from "js-cookie";
 function Help() {
   const navigate = useNavigate();
   const handleback = () => {
     navigate("/buyer/homepage");
   }
-  const { jwt, setjwt } = useLoginContext();
   const sendEmail = () => {
     window.location.href = "mailto:support@example.com";
   }
@@ -26,7 +23,6 @@ function Help() {
 
   return (
     <div className="backgroundcol">
-      {jwt ==Cookies.get('token')&& ( 
       <>
       <div className="logout-button">
         <button onClick={handleback}className='purple'>Home </button>
@@ -49,7 +45,7 @@ function Help() {
           <p>Phone:9840950950</p>
         </div>
       </div>
-      </> )}
+      </> 
     </div>
   );
 }

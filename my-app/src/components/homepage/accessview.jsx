@@ -95,7 +95,8 @@ function Acccomacchome() {
                         </tr>
                     ))}
                 </tbody>
-            </table></>
+            </table>
+        </>
     );
 }
 export default Acccomacchome;

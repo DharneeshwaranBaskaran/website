@@ -31,7 +31,6 @@ function App() {
   const [showModal,setShowModal]=useState(false); 
   const [Balance, setBalance] = useState(0);  
   useEffect(() => {
-    // Check if ipcRenderer is available before using it
     if (ipcRenderer) {
       ipcRenderer.send('some-event', 'Hello from React!');
     }
@@ -73,7 +72,6 @@ function App() {
         <Route path={`/${type}/status`}element={<Status/>}/>
         </>
               )}
-             
         </Routes>
         </Suspense>
         </LoginContext.Provider>      

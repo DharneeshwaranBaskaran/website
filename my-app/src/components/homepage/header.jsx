@@ -23,7 +23,6 @@ function Header() {
         navigate(`/${typeo}/men`);
     };
 
-
     const handlelogout = () => {
         const broadcastChannel = new BroadcastChannel('logoutChannel');
         broadcastChannel.postMessage('logout');
@@ -66,6 +65,7 @@ function Header() {
                 console.error("Error fetching user data:", error);
             });
     }, []);
+    
     const handleActionChange = (event) => {
         if (event.target.value == "Remove")
             navigate(`/${typeo}/history`);

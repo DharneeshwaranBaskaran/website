@@ -31,7 +31,7 @@ function Phone() {
   const removeItemFromCart = async (id) => {
       try {
         const response = await fetch(`http://localhost:8080/updatewish/${id}/${username}`, {
-          method: 'PUT',
+          method: 'PUT'
         });
     
         if (response.ok) {
@@ -60,9 +60,8 @@ function Phone() {
   const addtocart = async (id) => {
     try {
       const response = await fetch(`http://localhost:8080/api/transferToCart/${id}`, {
-        method: 'POST',
+        method: 'POST'
       });
-  
       if (response.ok) {
         const responseData = await response.text();  
         navigate(`/${Cookies.get("type")}/cart`);
@@ -74,7 +73,6 @@ function Phone() {
     }
   };
   
-
   return (
     <div  className="backgroundcol">
       {jwt ==Cookies.get('token')&& ( 

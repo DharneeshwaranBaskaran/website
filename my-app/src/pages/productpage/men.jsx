@@ -103,7 +103,6 @@ function Men() {
       <div className="logout-button">  
       <div className='hei'>
         <Select
-        
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}>
           <MenuItem value="">All</MenuItem>

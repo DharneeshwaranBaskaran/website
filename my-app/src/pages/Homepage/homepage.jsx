@@ -6,27 +6,17 @@ import { useLoginContext } from "../../usercontext/UserContext";
 import Skeleton from "./skeleton_home";
 import { Helper } from "../../components/helper/helpers";
 import "./homepage.css"
-const Sellerview = lazy(() => import("../../components/homepage/sellerview"));
-const Acccessview = lazy(() => import("../../components/homepage/accessview"));
-const Buyerview = lazy(() => import("../../components/homepage/buyerview"));
+import FeatureFlags from "../../featureflag/featureflag";
 
 function HomePage() {
   const { jwt, setjwt } = useLoginContext();
   return (
     <div className="backgroundhome">
-      {(jwt == Cookies.get('token') && Cookies.get('type') == Helper(jwt).type && Helper(jwt).id == Cookies.get("dataid")) &&(
-        <> <Suspense fallback={<Skeleton />}><div>
-          {(Cookies.get('type') === 'seller' || Cookies.get('type') === 'company') && (<>
-            <Sellerview />
-          </>)}
-          {(Cookies.get('type') === 'access' || Cookies.get('type') === 'companyaccess') && (<>
-            <Acccessview />
-          </>)}
-          {Cookies.get('type') === 'buyer' && (<>
-            <Buyerview />
-          </>)}
-        </div>  </Suspense>
-        </>
+      {(jwt == Cookies.get('token') && Cookies.get('type') == Helper(jwt).type && Helper(jwt).id == Cookies.get("dataid")) && (
+        <Suspense fallback={<Skeleton />}> 
+              {FeatureFlags.ishome()} 
+         
+        </Suspense>
       )}
     </div>
   );

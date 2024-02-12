@@ -11,10 +11,9 @@ const withLogoutHandler = (WrappedComponent) => {
     useEffect(() => {
       const handleLogout = () => {
         navigate("/start");
-        const cookies = Cookies.get();
-        for (const cookie in cookies) {
-          Cookies.remove(cookie);
-        }
+        Object.keys(Cookies.get()).forEach(cookie => {
+          Cookies.remove(cookie, { path: '' }); 
+      });
         window.location.reload();
         enqueueSnackbar("Logout Successful");
       };

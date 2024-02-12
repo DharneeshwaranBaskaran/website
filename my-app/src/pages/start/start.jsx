@@ -13,7 +13,6 @@ const VIDEO_PATH = 'https://www.youtube.com/watch?v=hHqW0gtiMy4';
 
 function Start() {
 
- 
 //Initialisation
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -129,12 +128,7 @@ useEffect(() => {
         <RegistrationOption type={2} handleRegister={handletoregister} handleLogin={handletologin} />
       </div>
       <h2 className="alignheader" data-testid="PRODUCTS:"> PRODUCTS: </h2>
-    
       <div className="search-container" data-testid="search-container"> 
-
-
-{/* rendering phase */}
-
         <Autosuggest
           suggestions={suggestionsList}
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -152,7 +146,7 @@ useEffect(() => {
       </div>
       <div className='class-contain' data-testid="custom-card">
         {(currentItems).length !== 0 ? (
-       <>
+          <>
             {(currentItems).map(item => (
               <CustomCard
                 key={item.id}
@@ -161,24 +155,25 @@ useEffect(() => {
               />
             ))}
           </>
-        ) : (<>
-          <DissatisfiedSymbol />
-          <h2 data-testid="no products">No products Found</h2>
-        </>)}
-      </div >
-      <div className="pagination" data-testid="pagination">
+        ) : (
+          <>
+            <DissatisfiedSymbol />
+            <h2 data-testid="no products">No products Found</h2>
+          </>
+        )}
+      </div>
+      <div className="pagination" data-testid="pagination-button">
         <ul> 
-          <div data-testid="pagination-button" >
-            {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
-              <li
-                key={i}
-                onClick={() => paginate(i + 1)}
-                className={currentPage === i + 1 ? 'active' : ''}
-              >
-                {i + 1}
-              </li>
-            ))}
-          </div>
+          
+          {Array.from({ length: Math.ceil(filteredItems.length / itemsPerPage) }, (_, i) => (
+            <li
+              key={i}
+              onClick={() => paginate(i + 1)}
+              className={currentPage === i + 1 ? 'active' : ''}
+            >
+              {i + 1}
+            </li>
+          ))}
         </ul>
       </div><br />
       <div className="video-container" data-testid="video-container">
@@ -190,7 +185,6 @@ useEffect(() => {
           <RegistrationOption type={0} header={"As company:"} handleRegister={handletoregister} handleLogin={handletologin} />
         </h2>
         <h2>Are You a DataBase Viewer?</h2> 
-        
         <RegistrationOption type={3} header={"As Individual:"} handleLogin={handletologin} />
         <RegistrationOption type={4} header={"As company:"} handleLogin={handletologin} />
       </div>

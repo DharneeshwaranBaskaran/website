@@ -41,7 +41,7 @@ function RegisterPage() {
   const [isconPassword, setIsconpassword] = useState(false)
   const [isAddress, setIsAddress] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
-
+  const [err, setErr] = useState('');
   const handlePhoneNumberChange = (e) => {
     const inputPhoneNumber = e.target.value;
     const onlyNumbers = /^[0-9]*$/;
@@ -124,33 +124,35 @@ function RegisterPage() {
       enqueueSnackbar("Registration Failed", { variant: "error" });
     }
   };
-  const handleInputChange = (e, setValue, setValid, minLength, errorMessage, setInvalidFlag, setError) => {
+  const handleInputChange = (e, setValue, setValid, minLength, errorMessage, setInvalidFlag, setError,typ) => {
     const value = e.target.value;
     setValue(value);
     setValid(value.length >= minLength);
     if (value.length >= minLength) {
       setError('');
       setInvalidFlag(false);
+    }else if(typ="conpassword" && password!=conpassword){
+      setError2("*passwords don't match");
     } else {
       setInvalidFlag(true);
       setError(errorMessage);
-    }
+    } 
   };
-
+ 
   const handleChange = (e) => {
-    handleInputChange(e, setUsername, setValidUsername, 6, '*Username should contain a minimum of 6 characters', setIsClicked, setError);
+    handleInputChange(e, setUsername, setValidUsername, 6, '*Username should contain a minimum of 6 characters', setIsClicked, setError,"username");
   };
   const handleChange1 = (e) => {
-    handleInputChange(e, setPassword, setValidPassword, 6, '*Passwords should contain a minimum of 6 characters', setIspassword, setError1);
+    handleInputChange(e, setPassword, setValidPassword, 6, '*Passwords should contain a minimum of 6 characters', setIspassword, setError1,"password");
   };
   const handleChange2 = (e) => {
-    handleInputChange(e, setConPassword, setValidConPassword, 6, '*Passwords should contain a minimum of 6 characters', setIsconpassword, setError2);
+    handleInputChange(e, setConPassword, setValidConPassword, 6, '*Passwords should contain a minimum of 6 characters', setIsconpassword, setError2,"conpassword");
   };
   const handleChange3 = (e) => {
     handleInputChange(e, setEmail, setValidEmail, 6, '*Email should contain a minimum of 6 characters', setIsAddress, setError3);
   };
   const handleChange4 = (e) => {
-    handleInputChange(e, setAddress, setValidAddress, 6, '*Email should contain a minimum of 6 characters or Enter a valid Email', setIsAddress, setError3);
+    handleInputChange(e, setAddress, setValidAddress, 6, '*Email should contain a minimum of 6 characters or Enter a valid Email', setIsAddress,setErr);
   };
   const handleChange5 = (e) => {
     handleInputChange(e, setname, () => true, 6, '*Name should contain a minimum of 6 characters', setIsname, setError4);
@@ -212,8 +214,7 @@ function RegisterPage() {
             {type !== 'buyer' && <Input type="text" placeholder="Company Address" value={comaddress} onChange={handleChange8} />}
             {type === 'company' && <Input type="text" placeholder="Website" value={website} onChange={handleChange9} />}
           </div>
-          <button onClick={handleRegister} className="lob">
-            Register</button>
+          <button onClick={handleRegister} className="lob"> Register</button>
           <div className="log">
             <p>already have a account:</p>
             <button onClick={redirectinglogin} className="lob"> Login </button>

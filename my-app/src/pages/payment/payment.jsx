@@ -8,6 +8,7 @@ import { useLoginContext } from "../../usercontext/UserContext";
 import Cookies from "js-cookie";
 import { Helper } from "../../components/helper/helpers"; 
 import "./payment.css"
+import FeatureFlags from "../../featureflag/featureflag";
 function Payment() {
   const navigate = useNavigate();
   let Username = Cookies.get('username');
@@ -41,8 +42,6 @@ function Payment() {
       console.error('Error fetching data:', error);
     }
   };
-
- 
 
   const handleRegister = async (event) => {
     let endpoint = "";
@@ -148,7 +147,7 @@ function Payment() {
             {InputField("text", "Type", type, handleChange2)}
             <button className="lob" onClick={handleRegister}>
               Give Access</button>
-            {Cookies.get('type') === 'company' && (<>
+              {FeatureFlags.iscsvaccess() && (<>
               <div>
                 <input type="file" accept=".csv" onChange={handleFileUpload} className="color"/>
                 <br />
