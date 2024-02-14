@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import PaymentButton from "../../components/cart/payment";
 import { Helper } from "../../components/helper/helpers"; 
 import "./cart.css"
+import carticon from "../../images/icons8-cart-50.png"
 function Cart() {
   const { enqueueSnackbar } = useSnackbar();
   const [It, setIt] = useState([]);
@@ -109,7 +110,7 @@ function Cart() {
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (
-    <div className="backgroundcol">
+    <div className="backgroundcols">
        {(jwt ==Cookies.get('token')&& Cookies.get('type')==Helper(jwt).type && Helper(jwt).id==Cookies.get("dataid") ) &&( 
       <>
       <div className="logout-button">
@@ -172,14 +173,18 @@ function Cart() {
                 ))
               ) : (<tr>
                 <td colSpan="5" className="ali">
-                  <h1>Cart is empty</h1>
+                  <div className="cartempty">  
+                  <img src={carticon} alt={carticon} className='carticon'></img>
+                  <h1 >Cart is empty</h1>
+                  </div>
                 </td>
               </tr>
               )}
             </tbody>
           </table>
           <div className="cart-total marright" >Total: $ {calculateTotal(Items)}</div>
-          <div className="cart-item-count marleft" >Available Balance:${Balance}</div>
+          <div className="cart-item-count marleft" >Available Balance:${Balance}</div> 
+          
           <PaymentButton/>
         </div>
       </>)}

@@ -1,12 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development', 
+  mode: 'development',
   target: 'electron-renderer',
-  entry: './src/electroncomponents/renderer.js', 
+  entry: './src/electroncomponents/renderer.js',
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'renderer.bundle.js', 
+    filename: 'renderer.bundle.js',
     libraryTarget: 'commonjs2',
   },
   module: {
@@ -24,9 +24,9 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js', '.jsx'], // Update the extensions list
     fallback: {
-      fs: false, 
+    
       path: require.resolve('path-browserify'),
     },
   },

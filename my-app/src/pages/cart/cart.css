@@ -11,11 +11,17 @@
 .ali{
     text-align: center;
 }
-.backgroundcol {
+.backgroundcols {
     background-color: #e5e5ff;
-    height: 750px;
+    height: auto;
+    min-height: 800px;
 }
 .addr{
     display: flex;
      align-items: center
+}
+.cartempty{
+    display: flex; 
+    align-items: center; 
+    margin-left: 40%;
 }
