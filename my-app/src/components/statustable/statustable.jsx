@@ -1,5 +1,5 @@
 import React from 'react';
-
+import "./status.css";
 const Statustable = ({ data, handleSelectChange, handleEdit }) => {
   return (
     <table className="purchase-history-table">
@@ -19,16 +19,9 @@ const Statustable = ({ data, handleSelectChange, handleEdit }) => {
             <td>{item.count}</td>
             <td>
               <select
+              className='status'
                 onChange={(e) => handleSelectChange(index, e.target.value)}
-                style={{
-                  backgroundColor: "#713ABE",
-                  color: "white",
-                  border: "none",
-                  padding: "5px",
-                  borderRadius: "5px",
-                  marginTop: "10px",
-                  marginLeft: "10px"
-                }}>
+               >
                 <option value="">Current status: {item.status}</option>
                 <option value="Order Placed">Order Placed</option>
                 <option value="Shipping">Shipping</option>

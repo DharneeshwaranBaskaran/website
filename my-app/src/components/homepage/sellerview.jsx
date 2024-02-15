@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
-import PieChart from "../../electroncomponents/graphs/piechart";
+import PieChart from "../graphs/piechart"
 import '../../App.css';
 import { useSnackbar } from "notistack";
-import BubbleGraph from "../../electroncomponents/graphs/BubbleGraph";
-import BarGraph from "../../electroncomponents/graphs/Bargraph";
+import BubbleGraph from "../graphs/BubbleGraph";
+import BarGraph from "../graphs/Bargraph";
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import Header from "./header";

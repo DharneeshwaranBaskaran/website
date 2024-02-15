@@ -144,12 +144,12 @@ const PaymentButton = ({ }) => {
 
   return (
     <div className="cart-buttons">
-      <button className="cart-button" onClick={() => handleButtonClick("later")}>Buy Now pay Later</button>
-      <button className="cart-button"  onClick={() => handleButtonClick("express")}>Express Delivery</button>
-      <button className="cart-button"  onClick={() => handleButtonClick("retain")}>Pay And Retain</button>
-      <button className="cart-button"  onClick={() => handleButtonClick("pay")}>Pay</button>
-      <button onClick={() => handlehistory("add")} className="cart-button">Add Balance</button>
-      <button onClick={() => handlehistory("address")} className="cart-button" >Alter Address</button>
+      <button className="cart-button purple" onClick={() => handleButtonClick("later")}>Buy Now pay Later</button>
+      <button className="cart-button purple"  onClick={() => handleButtonClick("express")}>Express Delivery</button>
+      <button className="cart-button lightpurple"  onClick={() => handleButtonClick("retain")}>Pay And Retain</button>
+      <button className="cart-button lightpurple"  onClick={() => handleButtonClick("pay")}>Pay</button>
+      <button onClick={() => handlehistory("add")} className="cart-button pur">Add Balance</button>
+      <button onClick={() => handlehistory("address")} className="cart-button pur" >Alter Address</button>
     </div>
   );
 };

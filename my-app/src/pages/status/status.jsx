@@ -5,7 +5,7 @@ import '../../App.css';
 import withLogoutHandler from "../../components/hoc/withLogouthandler";
 import { useLoginContext } from "../../usercontext/UserContext";
 import Cookies from "js-cookie"; 
-import Statustable from "../../electroncomponents/statustable/statustable";
+import Statustable from "../../components/statustable/statustable";
 const Status = () => {
   const Username = Cookies.get("username");
   const navigate = useNavigate();
