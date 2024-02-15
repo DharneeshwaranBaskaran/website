@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
 import PieChart from "../graphs/piechart";
 import '../../App.css';
@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import BubbleGraph from "../graphs/BubbleGraph";
 import BarGraph from "../graphs/Bargraph";
 import Header from "./header";
-import "./homcom.css"; 
+import "./homcom.css";
 const { ipcRenderer } = window.require('electron');
 function Sellerhome() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -22,23 +22,23 @@ function Sellerhome() {
     const [inputValues, setInputValues] = useState(Array(sortedData.length).fill(''));
     const { enqueueSnackbar } = useSnackbar();
     const [selectValues, setSelectValues] = useState(user.map((item) => ""));
-    const [excelDownloaded, setExcelDownloaded] = useState(false);  
-    const [pdfDownloaded,setpdfdownloaded] = useState(false); 
+    const [excelDownloaded, setExcelDownloaded] = useState(false);
+    const [pdfDownloaded, setpdfdownloaded] = useState(false);
 
     useEffect(() => {
-      ipcRenderer.send('fetchData', [`http://localhost:8080/${sel}/${username}`, `http://localhost:8080/history/view/${username}`]);
-      ipcRenderer.on('setData', (event, { index, data }) => {
-        if (index === 0) {
-          setuser(data);
-        } else {
-          setData(data);
-        }
-      });
-      return () => {
-        ipcRenderer.removeAllListeners('setData');
-      };
+        ipcRenderer.send('fetchData', [`http://localhost:8080/${sel}/${username}`, `http://localhost:8080/history/view/${username}`]);
+        ipcRenderer.on('setData', (event, { index, data }) => {
+            if (index === 0) {
+                setuser(data);
+            } else {
+                setData(data);
+            }
+        });
+        return () => {
+            ipcRenderer.removeAllListeners('setData');
+        };
     }, []);
-   
+
     const handleSelectChange = (index, value) => {
         const newSelectValues = [...selectValues];
         newSelectValues[index] = value;
@@ -48,10 +48,10 @@ function Sellerhome() {
         setSortingCriteria(event.target.value);
         count = count + 1;
     };
-    
+
     const handleEdit = async (id, index) => {
-        ipcRenderer.send('handleEdit', { typeo,id, type: selectValues[index] }); 
-        window.location.reload(); 
+        ipcRenderer.send('handleEdit', { typeo, id, type: selectValues[index] });
+        window.location.reload();
         enqueueSnackbar("Updated Sucessfully");
     }
 
@@ -60,7 +60,7 @@ function Sellerhome() {
         newInputValues[index] = e.target.value;
         setInputValues(newInputValues);
     };
-    const handlestock = (id, topic,count, index) => {
+    const handlestock = (id, topic, count, index) => {
         if (count <= 0) {
             enqueueSnackbar("Enter a Number greater than 0")
         }
@@ -68,12 +68,12 @@ function Sellerhome() {
             ipcRenderer.send('handleStock', { id, topic, count });
             enqueueSnackbar("Updated Sucessfully");
         }
-        window.location.reload(); 
+        window.location.reload();
     }
 
     const handleRemove = (id) => {
         ipcRenderer.send('handleRemove', id, sel);
-        window.location.reload(); 
+        window.location.reload();
         enqueueSnackbar("Updated Sucessfully");
     }
     const filterData = (data, query) => {
@@ -101,11 +101,11 @@ function Sellerhome() {
         />);
 
     useEffect(() => {
-        if (excelDownloaded) 
+        if (excelDownloaded)
             enqueueSnackbar('Excel file downloaded in Downloads');
-        if(pdfDownloaded)
+        if (pdfDownloaded)
             enqueueSnackbar('Pdf file downloaded in Downloads');
-    }, [excelDownloaded,pdfDownloaded]);
+    }, [excelDownloaded, pdfDownloaded]);
 
     const handleDownloadExcel = () => {
         ipcRenderer.send('downloadExcel', sortedData);
@@ -113,11 +113,11 @@ function Sellerhome() {
     const handleDownloadPDF = () => {
         ipcRenderer.send('downloadPDF', sortedData);
     };
-    ipcRenderer.on('excelDownloaded', (event, filePath) => {
+    ipcRenderer.on('excelDownloaded', () => {
         setExcelDownloaded(true);
     });
-    ipcRenderer.on('pdfDownloaded', (event, filePath) => {
-       setpdfdownloaded(true);      
+    ipcRenderer.on('pdfDownloaded', () => {
+        setpdfdownloaded(true);
     });
     return (<>
         <Header />
@@ -141,14 +141,14 @@ function Sellerhome() {
                 <BubbleGraph data={sortedData} />
             </div>
             {renderInputField("text", "Search...", searchQuery, (e) => setSearchQuery(e.target.value), { marginLeft: "10px" }, "search-bar")}
-            <div id="pdf-content">
+            <div>
                 <table className="purchase-history-table">
                     <thead>
                         <tr>
                             <th>Id</th>
                             <th>Topic</th>
                             <th>Count</th>
-                            <th>Stock</th> 
+                            <th>Stock</th>
                             <th>Seller</th>
                             <th className="add-stock-cell">Add Stock</th>
                         </tr>
@@ -158,19 +158,19 @@ function Sellerhome() {
                             <tr key={index}>
                                 <td>{item.id}</td>
                                 <td>{item.topic}</td>
-                                <td>{item.count}</td> 
+                                <td>{item.count}</td>
                                 <td>{item.stockcount}</td>
                                 <td>{item.seller}</td>
                                 <td className="add-stock-cell">{renderInputField("number", "count", inputValues[index], (e) => handleChangein(index, e), { backgroundColor: "#E4F1FF", color: "black", border: "none", padding: "5px", width: "50px", borderRadius: "5px", marginTop: "10px", marginLeft: "10px", })}
-                                    <button onClick={() => handlestock(item.id, item.topic,inputValues[index], index)} className="cart-button" >Add</button></td>
+                                    <button onClick={() => handlestock(item.id, item.topic, inputValues[index], index)} className="cart-button" >Add</button></td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
             <div className="logout-button">
-                <button onClick={handleDownloadExcel}className="purple">Download Excel</button>
-                <button onClick={handleDownloadPDF}className="purple">Download PDF</button>
+                <button onClick={handleDownloadExcel} className="purple">Download Excel</button>
+                <button onClick={handleDownloadPDF} className="purple">Download PDF</button>
             </div>
             <h2>Users</h2>
             <table className="purchase-history-table">

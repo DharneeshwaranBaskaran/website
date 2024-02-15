@@ -37,9 +37,8 @@ const Status = () => {
     setTimeout(() => {
       window.location.reload();
     }, 1000);
-    
-    
   }
+  
   return (
     <div className="backgroundcol">
       {jwt == Cookies.get('token') && (
