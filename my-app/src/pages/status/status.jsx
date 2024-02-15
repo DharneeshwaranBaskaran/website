@@ -15,29 +15,47 @@ const Status = () => {
   const handlehome = () => {
     navigate(`/${Cookies.get("type")}/homepage`);
   }
+  const fetchData = async (urls, setDataCallbacks) => {
+    try {
+      const responses = await Promise.all(
+        urls.map(url => fetch(url).then(response => response.json()))
+      );
+      responses.forEach((data, index) => {
+        setDataCallbacks[index](data);
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const handleSelectChange = (index, value) => {
     const newSelectValues = [...selectValues];
     newSelectValues[index] = value;
     setSelectValues(newSelectValues);
   };
   useEffect(() => {
-    ipcRenderer.send('fetchData', [`http://localhost:8080/status/${Username}`]);
-    ipcRenderer.on('setData', (event, { index, data }) => {
-        setData(data);
-    });
-    return () => {
-      ipcRenderer.removeAllListeners('setData');
-    };
+    fetchData(
+      [`http://localhost:8080/status/${Username}`],
+      [setData]
+    );
   }, []);
 
   const handleEdit = async (id, index) => {
-    ipcRenderer.send('handleEditStatus', { id, status: selectValues[index] }); 
-    enqueueSnackbar("Updated Sucessfully");
-    setTimeout(() => {
+    const response = await fetch(`http://localhost:8080/api/updatestatus`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', },
+      body: JSON.stringify({ id, status: selectValues[index] }),
+      credentials: 'include',
+    });
+    if (response.ok) {
+      enqueueSnackbar("Registration Successful", { variant: "success" });
       window.location.reload();
-    }, 1000);
+    } else if (response.status === 409) {
+      const errorData = await response.json();
+      enqueueSnackbar(errorData.error, { variant: "error" });
+    } else {
+      enqueueSnackbar("Registration Failed", { variant: "error" });
+    }
   }
-  
   return (
     <div className="backgroundcol">
       {jwt == Cookies.get('token') && (
