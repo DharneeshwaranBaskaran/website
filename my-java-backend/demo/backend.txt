@@ -12,7 +12,7 @@ Backend(Java Spring Boot)
 -A Spring class that simplifies JDBC operations. It is used for executing SQL queries and retrieving results from the database.
 
 3)CORS (Cross-Origin Resource Sharing):
-=>@CrossOrigin(origins = "http://localhost:3000"): 
+=>@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"}): 
 -Enables cross-origin resource sharing for the specified origin. This annotation allows requests from "http://localhost:3000."
 
 4)Value Injection:

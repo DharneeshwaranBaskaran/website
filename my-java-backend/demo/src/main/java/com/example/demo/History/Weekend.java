@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class Weekend {
 
     private final JdbcTemplate jdbcTemplate;

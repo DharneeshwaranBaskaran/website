@@ -13,7 +13,7 @@ import com.example.demo.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class LoginController {
      
     @Value("${jwt.secret-key}")

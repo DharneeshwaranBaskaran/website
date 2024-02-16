@@ -1,4 +1,4 @@
-package com.example.demo.combo;
+package com.example.demo.electron;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,23 +8,26 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.combo.Combo;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
-public class Combostart {
+@CrossOrigin(origins = "http://localhost:3001")
+
+public class combostartseller {
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public Combostart(JdbcTemplate jdbcTemplate) {
+    public combostartseller(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @GetMapping("/combodata")
+    @GetMapping("/combodataseller")
     public ResponseEntity<List<Combo>> getCombo() {
         try {
             String sql = "SELECT * FROM combo WHERE state = ?";

@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class remindercontroller {
 
     private final JdbcTemplate jdbcTemplate;

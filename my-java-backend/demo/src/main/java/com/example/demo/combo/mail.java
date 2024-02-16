@@ -14,7 +14,7 @@ import java.util.Properties;
 
 @Controller
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class mail {
 
     private final JdbcTemplate jdbcTemplate;

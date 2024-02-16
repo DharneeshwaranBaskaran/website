@@ -12,7 +12,7 @@ import java.util.Properties;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000") 
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"}) 
 public class accessinsert {
     @Autowired
     private JdbcTemplate jdbcTemplate;
