@@ -92,5 +92,23 @@ public ResponseEntity<String> companyLogin(@RequestBody LoginRequest loginReques
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
     }
 }
+@PostMapping("/delivery")
+public ResponseEntity<String> delivery(@RequestBody LoginRequest loginRequest) {
+try{
+        String retrievedPassword = loginRequest.getPassword();
+        String userId = "1";
 
+        if ( loginRequest.getUsername().equals("theking") && retrievedPassword.equals("bigbro")) {
+            String jwtToken = JwtUtils.generateToken(userId, loginRequest.getUsername(), "delivery");
+            System.out.println(jwtToken);
+            return ResponseEntity.ok(jwtToken);
+        } else {
+            System.out.println("error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred.");
+    }
+}
 }

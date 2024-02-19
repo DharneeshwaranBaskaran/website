@@ -87,7 +87,6 @@ function Add() {
           const data = await response.json();
         } 
       } catch (error) {
-        enqueueSnackbar(error, { variant: "error" });
       }
       enqueueSnackbar(`Balance Updated to ${newBalance}`, { variant: "success" });
       enqueueSnackbar("Back to Cart", { variant: "default" });

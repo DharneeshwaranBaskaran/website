@@ -25,8 +25,6 @@ const Statustable = ({ data, handleSelectChange, handleEdit }) => {
                 <option value="">Current status: {item.status}</option>
                 <option value="Order Placed">Order Placed</option>
                 <option value="Shipping">Shipping</option>
-                <option value="Out For Delivery">Out For Delivery</option>
-                <option value="Delivered">Delivered</option>
               </select>
               <button className="cart-button" onClick={() => handleEdit(item.id, index)}>Edit</button>
             </td>
