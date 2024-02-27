@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useSnackbar } from "notistack";
-import { useNavigate } from 'react-router-dom'; 
-import "./homcom.css"; 
+import { useNavigate } from 'react-router-dom';
+import "./homcom.css";
+import { BroadcastChannel } from 'broadcast-channel';
 import carticon from "../../images/icons8-cart-50.png"
 function Header() {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
-    const actionOptions = ["Menu", "Remove", "Add", "Access","Status","Logout"];
+    const actionOptions = ["Menu", "Remove", "Add", "Access", "Status", "Logout"];
     const deliveryOptions = ["Weekend Delivery", "Yes", "No"];
     const categoryOptions = ["Category", "Men", "Women", "Kids"];
     const actionOption = ["Menu", "Cart", "Logout"];
@@ -27,12 +28,12 @@ function Header() {
         const broadcastChannel = new BroadcastChannel('logoutChannel');
         broadcastChannel.postMessage('logout');
         navigate("/start");
-        const cookies = Cookies.get();
-        for (const cookie in cookies) {
-            Cookies.remove(cookie);
-        }
-        window.location.reload()
+        Cookies.remove("token");
+        Cookies.remove("dataid");
+        Cookies.remove("username");
+        Cookies.remove("type");
         enqueueSnackbar("Logout Successful");
+        setTimeout(window.location.reload(), 1000);
     }
 
     const handlehelp = (str) => {
@@ -65,7 +66,7 @@ function Header() {
                 console.error("Error fetching user data:", error);
             });
     }, []);
-    
+
     const handleActionChange = (event) => {
         if (event.target.value == "Remove")
             navigate(`/${typeo}/history`);
@@ -74,19 +75,19 @@ function Header() {
         } else if (event.target.value == "Access") {
             navigate(`/${typeo}/payment`);
         } else if (event.target.value == "Cart") {
-            navigate(`/${typeo}/cart`); 
-        }else if (event.target.value == "Status") {
-            navigate(`/${typeo}/status`); 
+            navigate(`/${typeo}/cart`);
+        } else if (event.target.value == "Status") {
+            navigate(`/${typeo}/status`);
         } else {
+            navigate("/start");
+            Cookies.remove("token");
+            Cookies.remove("dataid");
+            Cookies.remove("username");
+            Cookies.remove("type");
+            setTimeout(window.location.reload(), 1000);
+            enqueueSnackbar("Logout Successful");
             const broadcastChannel = new BroadcastChannel('logoutChannel');
             broadcastChannel.postMessage('logout');
-            navigate("/start");
-            const cookies = Cookies.get();
-            for (const cookie in cookies) {
-                Cookies.remove(cookie);
-            }
-            window.location.reload();
-            enqueueSnackbar("Logout Successful");
         }
     };
     const handleChange = (event) => {
@@ -95,7 +96,7 @@ function Header() {
     return (
         <div className="logout-button">
             {(Cookies.get('type') === 'buyer') && (<>
-                <img src={forpic} alt={forpic} className='profilepic'/>
+                <img src={forpic} alt={forpic} className='profilepic' />
                 <button className='helpbut' onClick={() => handlehelp("user")}>{username}</button>
                 <select onChange={handleChange} className='delivery'>
                     {deliveryOptions.map((option, index) => (
@@ -119,8 +120,8 @@ function Header() {
                         </option>
                     ))}
                 </select>
-                <div className='cartview'> 
-                <img src={carticon} alt={carticon} className='carticon'></img>
+                <div className='cartview'>
+                    <img src={carticon} alt={carticon} className='carticon'></img>
                     {cart.length}
                 </div>
                 <button onClick={() => handlehelp("phone")} className='wishbut'>Wishlist </button>

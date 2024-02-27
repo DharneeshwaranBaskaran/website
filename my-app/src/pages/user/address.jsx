@@ -33,11 +33,11 @@ const Address = () => {
         const response = await fetch(url, options);
         if (response.ok) {
           const data = await response.json();
-          enqueueSnackbar("Updated Successfully");
         } 
       } catch (error) {
       }
       navigate(`/${Cookies.get("type")}/homepage`);
+      enqueueSnackbar("Updated Successfully");
     }
   }
   

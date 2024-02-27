@@ -52,7 +52,7 @@ function Start() {
       Cookies.set('type', type);
       navigate(`/${type}/register`);
     } 
-    window.location.reload();
+    setTimeout(window.location.reload(), 1000);
   };
 
   const handletologin = (key) => {

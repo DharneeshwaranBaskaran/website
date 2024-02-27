@@ -48,7 +48,7 @@ const Status = () => {
     });
     if (response.ok) {
       enqueueSnackbar("Registration Successful", { variant: "success" });
-      window.location.reload();
+      setTimeout(window.location.reload(), 1000);
     } else if (response.status === 409) {
       const errorData = await response.json();
       enqueueSnackbar(errorData.error, { variant: "error" });

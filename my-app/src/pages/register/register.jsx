@@ -128,11 +128,15 @@ function RegisterPage() {
     const value = e.target.value;
     setValue(value);
     setValid(value.length >= minLength);
-    if (value.length >= minLength) {
-      setError('');
-      setInvalidFlag(false);
+    if(typ=="email" && !(email.includes("@")) ){
+      setError3('*Enter a valid Email');
+      setInvalidFlag(true);
+      setError(errorMessage);
     }else if(typ="conpassword" && password!=conpassword){
       setError2("*passwords don't match");
+    }else if (value.length >= minLength) {
+      setError('');
+      setInvalidFlag(false);
     } else {
       setInvalidFlag(true);
       setError(errorMessage);
@@ -149,7 +153,7 @@ function RegisterPage() {
     handleInputChange(e, setConPassword, setValidConPassword, 6, '*Passwords should contain a minimum of 6 characters', setIsconpassword, setError2,"conpassword");
   };
   const handleChange3 = (e) => {
-    handleInputChange(e, setEmail, setValidEmail, 6, '*Email should contain a minimum of 6 characters', setIsAddress, setError3);
+    handleInputChange(e, setEmail, setValidEmail, 6, '*Enter a valid Email', setIsAddress, setError3,"email");
   };
   const handleChange4 = (e) => {
     handleInputChange(e, setAddress, setValidAddress, 6, '*Email should contain a minimum of 6 characters or Enter a valid Email', setIsAddress,setErr);

@@ -82,7 +82,7 @@ function Cart() {
       }).catch((error) => {
         console.error('Error updating item:', error);
       });
-    window.location.reload();
+      setTimeout(window.location.reload(), 1000);
     enqueueSnackbar(id + " removed from cart");
   };
   let backButton = null;
@@ -106,7 +106,7 @@ function Cart() {
     } catch (error) {
       enqueueSnackbar(error, { variant: "error" });
     }
-    window.location.reload();
+    setTimeout(window.location.reload(), 1000);
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (

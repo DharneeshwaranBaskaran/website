@@ -49,7 +49,8 @@ function Phone() {
       } catch (error) {
         console.error('Error updating wish item:', error);
       }
-      window.location.reload();Cookies.get("type")
+      setTimeout(window.location.reload(), 1000);
+      Cookies.get("type")
       enqueueSnackbar(id+" removed from cart");
   };
 

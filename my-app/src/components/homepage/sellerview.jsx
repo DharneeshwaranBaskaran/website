@@ -62,7 +62,7 @@ function Sellerhome() {
         });
         if (response.ok) {
             enqueueSnackbar("Registration Successful", { variant: "success" });
-            window.location.reload();
+            setTimeout(window.location.reload(), 1000);
         } else if (response.status === 409) {
             const errorData = await response.json();
             enqueueSnackbar(errorData.error, { variant: "error" });
@@ -92,7 +92,7 @@ function Sellerhome() {
                 return response.json();
             }).then((data) => {
                 enqueueSnackbar(data.message, { variant: 'success' });
-                window.location.reload();
+                setTimeout(window.location.reload(), 1000);
             }).catch((error) => {
                 console.error('Error updating stock count:', error);
                 enqueueSnackbar('Error updating stock count', { variant: 'error' });
@@ -109,11 +109,11 @@ function Sellerhome() {
                 throw new Error(`Error deleting data: ${response.statusText}`);
             } return response.json();
         }).then((data) => {
-            window.location.reload();
+            setTimeout(window.location.reload(), 1000);
         }).catch((error) => {
             console.error('Error deleting data:', error);
         });
-        window.location.reload();
+        setTimeout(window.location.reload(), 1000);
         enqueueSnackbar("Removed Successfully");
     }
     const filterData = (data, query) => {

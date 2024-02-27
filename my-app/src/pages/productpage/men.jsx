@@ -101,16 +101,17 @@ function Men() {
     {jwt ==Cookies.get('token')&& ( 
         <>
       <div className="logout-button">  
-      <div className='hei'>
+      
         <Select
-          value={selectedCategory}
+          value={selectedCategory} 
+          className='hei'
           onChange={(e) => setSelectedCategory(e.target.value)}>
           <MenuItem value="">All</MenuItem>
           <MenuItem value={fil1}>{fil1}</MenuItem>
           <MenuItem value={fil2}>{fil2}</MenuItem>
           <MenuItem value={fil3}>{fil3}</MenuItem>
         </Select> 
-        </div>
+       
         <button onClick={handlebackhome}className='purple'>Back </button>
         <button onClick={toggleModal} className='purple'>Offer Products</button>
         <button onClick={toggleSorting} className='lightpurple'>

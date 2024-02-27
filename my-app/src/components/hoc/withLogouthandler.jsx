@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { BroadcastChannel } from "broadcast-channel";
-import Cookies from 'js-cookie'; 
+import Cookies from 'js-cookie';
 
 const withLogoutHandler = (WrappedComponent) => {
   return (props) => {
@@ -11,11 +11,12 @@ const withLogoutHandler = (WrappedComponent) => {
     useEffect(() => {
       const handleLogout = () => {
         navigate("/start");
-        Object.keys(Cookies.get()).forEach(cookie => {
-          Cookies.remove(cookie, { path: '' }); 
-      });
-        window.location.reload();
+        Cookies.remove("token");
+        Cookies.remove("dataid");
+        Cookies.remove("username");
+        Cookies.remove("type");
         enqueueSnackbar("Logout Successful");
+        setTimeout(window.location.reload(), 1000);
       };
 
       const logoutChannel = new BroadcastChannel('logoutChannel');

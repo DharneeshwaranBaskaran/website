@@ -107,7 +107,7 @@ function History() {
       .catch((error) => {
         console.error('Error deleting combo:', error);
       });
-      window.location.reload();
+      setTimeout(window.location.reload(), 1000);
       enqueueSnackbar("Product Removed Successfully");
   };
 

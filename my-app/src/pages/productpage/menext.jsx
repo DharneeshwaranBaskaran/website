@@ -36,7 +36,7 @@ function Menext() {
     navigate(`/buyer/register`);
     Cookies.set('type', "buyer");
     enqueueSnackbar("Register", { variant: "default" });
-    window.location.reload();
+    setTimeout(window.location.reload(), 1000);
   }
   useEffect(() => {
     fetch(`http://localhost:8080/cart/getItems/${Username}`)
@@ -86,7 +86,7 @@ function Menext() {
                 enqueueSnackbar(message, { variant: 'success' });
                 setCount(0);
                 navigate(`/${type}/${page}`);
-                window.location.reload();
+                setTimeout(window.location.reload(), 1000);
               });
             } else if (response.status === 400) {
               response.text().then((errorMessage) => {
@@ -122,6 +122,7 @@ function Menext() {
       Cookies.set('cartItems', JSON.stringify(existingCartItems));
       setCount(0);
       navigate(`/${type}/${page}`);
+      setTimeout(window.location.reload(), 1000);
     } else {
       enqueueSnackbar(`Please select at least one item before adding to ${successMessage.toLowerCase()}.`, {
         variant: 'warning',

@@ -48,14 +48,14 @@ public class paylaterinsertion {
                             resultSet.getDouble("cost"), resultSet.getInt("count"), resultSet.getString("username"),
                             resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
                             resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
-                            resultSet.getString("weekend"), "status");
+                            resultSet.getString("weekend"), "Order Placed");
                 } else {
                     jdbcTemplate.update(insertSql, resultSet.getString("topic"), resultSet.getString("description"),
                             resultSet.getDouble("cost") * 10 / 9, resultSet.getInt("count"),
                             resultSet.getString("username"),
                             resultSet.getBoolean("state"), resultSet.getDouble("rating"), resultSet.getString("url"),
                             resultSet.getString("person"), resultSet.getString("seller"), resultSet.getInt("combo_id"),
-                            resultSet.getString("weekend"), "status");
+                            resultSet.getString("weekend"), "Order Placed");
                 }
 
                 dataToSend.add("Topic: " + resultSet.getString("topic") +
