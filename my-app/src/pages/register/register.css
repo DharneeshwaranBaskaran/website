@@ -2,9 +2,9 @@
     color: red;
     font-size: 10px; 
 }
-.background{
+.backgroundlen{
     background-image: url('../../images/backpic.jpg'); 
-    height: 720px;
+    height: 920px;
 } 
 .padding{
     padding: 35px;

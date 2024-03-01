@@ -68,8 +68,10 @@ function Add() {
     const amountToAdd = parseFloat(inputValue);
     if (isNaN(amountToAdd) || amountToAdd <= 0 || amountToAdd.length < 1) {
       enqueueSnackbar("Please enter a valid positive number", { variant: "error" });
+      enqueueSnackbar("Click add balance to return", { variant: "info" });
     } else if (Upi.length < 6 || !(Upi.includes("@"))) {
-      enqueueSnackbar("Enter a valid Upi")
+      enqueueSnackbar("Enter a valid Upi");
+      enqueueSnackbar("Click add balance to return", { variant: "info" });
     } else {
       const newBalance = Balance + amountToAdd; 
       setBalance(newBalance);

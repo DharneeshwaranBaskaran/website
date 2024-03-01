@@ -107,8 +107,9 @@ function History() {
       .catch((error) => {
         console.error('Error deleting combo:', error);
       });
-      setTimeout(window.location.reload(), 1000);
       enqueueSnackbar("Product Removed Successfully");
+      setTimeout(window.location.reload(), 1000);
+      
   };
 
   const handleSearchChange = (e) => {
@@ -175,7 +176,8 @@ function History() {
         return {};
       })
       .then((data) => {
-        navigate(`/${type}/homepage`);
+        navigate(`/${type}/homepage`); 
+        enqueueSnackbar("Product launch Successful");
       })
       .catch((error) => {
         if (error instanceof TypeError && error.message === 'Failed to fetch') {

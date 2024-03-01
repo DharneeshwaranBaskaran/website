@@ -104,9 +104,9 @@ function Cart() {
         const data = await response.json();
       } 
     } catch (error) {
-      enqueueSnackbar(error, { variant: "error" });
-    }
-    setTimeout(window.location.reload(), 1000);
+    }  
+    enqueueSnackbar("Updated Sucessfully",{ variant: "success" })
+    setTimeout(window.location.reload(), 2000);
   };
   const filteredItems = Items.filter(item => item.topic.toLowerCase().includes(searchQuery.toLowerCase()));
   return (
@@ -191,6 +191,7 @@ function Cart() {
       <p className="marleft">*$10 Extra for Non Premium Users in Express Delivery</p>
       <p className="marleft">*Products will be delivered within 24 hours in Express Delivery</p>
       <p className="marleft">*The total should be less than $50 for payment later</p>
+      <p className="marleft">*Products added to cart can be viewed only if Address is available</p>
       </>
       )}
     </div>

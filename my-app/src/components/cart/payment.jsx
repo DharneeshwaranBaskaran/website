@@ -53,7 +53,7 @@ const PaymentButton = ({ }) => {
       if (Items.length === 0)
         enqueueSnackbar("Your cart is empty", { variant: "info" });
       else if (Balance > total) {
-        const newBalance = Balance - (total * 9 / 10);
+        let newBalance = Balance - (total * 9 / 10);
         if (val === "retain") {
           setBalance(newBalance);
           fetch(`http://localhost:8080/HistoryRetainCart/${Username}`, {
